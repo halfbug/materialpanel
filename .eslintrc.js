@@ -5,21 +5,29 @@ module.exports = {
   },
   extends: [
     'plugin:react/recommended',
-    'standard-with-typescript'
+    'standard-with-typescript',
+    'next/core-web-vitals',
+    'prettier',
+    'airbnb'
   ],
   overrides: [
   ],
   parserOptions: {
     ecmaVersion: 'latest',
-    sourceType: 'module'
+    sourceType: 'module',
+    project: "tsconfig.json"
   },
   plugins: [
-    'react'
+    'react',
+    '@typescript-eslint',
   ],
   rules: {
     'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx', '.tsx'] }],
     'no-use-before-define': 'off',
     'linebreak-style': 0,
+    'react/react-in-jsx-scope' : 'off',
+    'react/function-component-definition' : 'off',
+    "react/require-default-props":'off',
     // 'react-hooks/rules-of-hooks': 'error', // Checks rules of Hooks
     // 'react-hooks/exhaustive-deps': 'warn', // Checks effect dependencies
     'jsx-a11y/anchor-is-valid': 'warn',
@@ -36,6 +44,10 @@ module.exports = {
     'import/extensions': 'off',
     'react/no-unescaped-entities': 'warn',
     'no-unused-vars': 'warn',
+    "@typescript-eslint/strict-boolean-expressions": "off",
+    '@typescript-eslint/no-unused-vars': 'warn',
+    'react/no-unused-prop-types': 'warn',
+    'radix': 'warn',
   },
   settings: {
     'import/resolver': {

@@ -5,7 +5,7 @@ import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
 function PageHeader() {
   const user = {
     name: 'Catherine Pike',
-    avatar: '/static/images/avatars/1.jpg'
+    avatar: '/static/images/avatars/1.jpg',
   };
   return (
     <Grid container justifyContent="space-between" alignItems="center">
@@ -14,7 +14,8 @@ function PageHeader() {
           Merchant
         </Typography>
         <Typography variant="subtitle2">
-          {user.name}, these are your recent stores
+          {user.name}
+          , these are your recent stores
         </Typography>
       </Grid>
       <Grid item>

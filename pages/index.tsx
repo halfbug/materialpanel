@@ -4,7 +4,7 @@ import {
   Card,
   Container,
   Button,
-  styled
+  styled,
 } from '@mui/material';
 import type { ReactElement } from 'react';
 import BaseLayout from 'src/layouts/BaseLayout';
@@ -22,7 +22,7 @@ const HeaderWrapper = styled(Card)(
   align-items: center;
   height: ${theme.spacing(10)};
   margin-bottom: ${theme.spacing(10)};
-`
+`,
 );
 
 const OverviewWrapper = styled(Box)(
@@ -31,7 +31,7 @@ const OverviewWrapper = styled(Box)(
     background: ${theme.palette.common.white};
     flex: 1;
     overflow-x: hidden;
-`
+`,
 );
 
 function Overview() {
@@ -54,7 +54,7 @@ function Overview() {
               <Box>
                 <Button
                   component={Link}
-                  href="/login" //"/dashboards/crypto"
+                  href="/login" // "/dashboards/crypto"
                   variant="contained"
                   sx={{ ml: 2 }}
                 >
@@ -65,18 +65,17 @@ function Overview() {
           </Box>
         </Container>
       </HeaderWrapper>
-      
+
       <Hero />
       <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-              flex={1}
-               
-             />
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        flex={1}
+      />
       <Container maxWidth="lg" sx={{ mt: 8 }}>
         <Typography textAlign="center" variant="subtitle1">
-           
+
           <Link
             href="https://groupshop.co"
             target="_blank"

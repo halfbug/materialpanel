@@ -1,7 +1,7 @@
 import { Card } from '@mui/material';
 import { CryptoOrder } from '@/models/crypto_order';
-import RecentOrdersTable from './RecentOrdersTable';
 import { subDays } from 'date-fns';
+import RecentOrdersTable from './RecentOrdersTable';
 
 function RecentOrders() {
   const cryptoOrders: CryptoOrder[] = [
@@ -16,7 +16,7 @@ function RecentOrders() {
       amountCrypto: 34.4565,
       amount: 56787,
       cryptoCurrency: 'ETH',
-      currency: '$'
+      currency: '$',
     },
     {
       id: '2',
@@ -29,7 +29,7 @@ function RecentOrders() {
       amountCrypto: 6.58454334,
       amount: 8734587,
       cryptoCurrency: 'BTC',
-      currency: '$'
+      currency: '$',
     },
     {
       id: '3',
@@ -42,7 +42,7 @@ function RecentOrders() {
       amountCrypto: 6.58454334,
       amount: 8734587,
       cryptoCurrency: 'BTC',
-      currency: '$'
+      currency: '$',
     },
     {
       id: '4',
@@ -55,7 +55,7 @@ function RecentOrders() {
       amountCrypto: 6.58454334,
       amount: 8734587,
       cryptoCurrency: 'BTC',
-      currency: '$'
+      currency: '$',
     },
     {
       id: '5',
@@ -68,7 +68,7 @@ function RecentOrders() {
       amountCrypto: 6.58454334,
       amount: 8734587,
       cryptoCurrency: 'BTC',
-      currency: '$'
+      currency: '$',
     },
     {
       id: '6',
@@ -81,7 +81,7 @@ function RecentOrders() {
       amountCrypto: 6.58454334,
       amount: 8734587,
       cryptoCurrency: 'BTC',
-      currency: '$'
+      currency: '$',
     },
     {
       id: '7',
@@ -94,7 +94,7 @@ function RecentOrders() {
       amountCrypto: 2.346546,
       amount: 234234,
       cryptoCurrency: 'BTC',
-      currency: '$'
+      currency: '$',
     },
     {
       id: '8',
@@ -107,7 +107,7 @@ function RecentOrders() {
       amountCrypto: 3.345456,
       amount: 34544,
       cryptoCurrency: 'BTC',
-      currency: '$'
+      currency: '$',
     },
     {
       id: '9',
@@ -120,7 +120,7 @@ function RecentOrders() {
       amountCrypto: 1.4389567945,
       amount: 123843,
       cryptoCurrency: 'BTC',
-      currency: '$'
+      currency: '$',
     },
     {
       id: '10',
@@ -133,8 +133,8 @@ function RecentOrders() {
       amountCrypto: 765.5695,
       amount: 7567,
       cryptoCurrency: 'ADA',
-      currency: '$'
-    }
+      currency: '$',
+    },
   ];
 
   return (
