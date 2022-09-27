@@ -4,7 +4,7 @@
   "display": "standalone",
   "start_url": ".",
   "short_name": "Tokyo",
-  "name": "Tokyo Free White NextJS Typescript Admin Dashboard",
+  "name": "GS Admin",
   "icons": [
     {
       "src": "/icon-192x192.png",

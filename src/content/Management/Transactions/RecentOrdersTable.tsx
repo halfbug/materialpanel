@@ -185,7 +185,7 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
         <CardHeader
           action={
             <Box width={150}>
-              <FormControl fullWidth variant="outlined">
+              {/* <FormControl fullWidth variant="outlined">
                 <InputLabel>Status</InputLabel>
                 <Select
                   value={filters.status || 'all'}
@@ -199,10 +199,10 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                     </MenuItem>
                   ))}
                 </Select>
-              </FormControl>
+              </FormControl> */}
             </Box>
           }
-          title="Recent Orders"
+          title="Merchant Stores"
         />
       )}
       <Divider />

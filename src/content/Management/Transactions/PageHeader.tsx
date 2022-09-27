@@ -11,20 +11,20 @@ function PageHeader() {
     <Grid container justifyContent="space-between" alignItems="center">
       <Grid item>
         <Typography variant="h3" component="h3" gutterBottom>
-          Transactions
+          Merchant
         </Typography>
         <Typography variant="subtitle2">
-          {user.name}, these are your recent transactions
+          {user.name}, these are your recent stores
         </Typography>
       </Grid>
       <Grid item>
-        <Button
+        {/* <Button
           sx={{ mt: { xs: 2, md: 0 } }}
           variant="contained"
           startIcon={<AddTwoToneIcon fontSize="small" />}
         >
           Create transaction
-        </Button>
+        </Button> */}
       </Grid>
     </Grid>
   );

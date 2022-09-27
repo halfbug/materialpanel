@@ -79,7 +79,7 @@ function Sidebar() {
           }}
         />
         <Box p={2}>
-          <Button
+          {/* <Button
             href="https://bloomui.com"
             target="_blank"
             rel="noopener noreferrer"
@@ -89,7 +89,7 @@ function Sidebar() {
             fullWidth
           >
             Upgrade to PRO
-          </Button>
+          </Button> */}
         </Box>
       </SidebarWrapper>
       <Drawer

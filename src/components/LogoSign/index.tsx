@@ -24,6 +24,7 @@ const LogoSignWrapper = styled(Box)(
   () => `
         width: 52px;
         height: 38px;
+        text-align: center;
 `
 );
 
@@ -99,7 +100,7 @@ function Logo() {
 
   return (
     <TooltipWrapper
-      title="Tokyo Free White Next.js Typescript Admin Dashboard"
+      title="GS Admin"
       arrow
     >
       <LogoWrapper href="/">
@@ -116,9 +117,10 @@ function Logo() {
           badgeContent="1.0"
         >
           <LogoSignWrapper>
-            <LogoSign>
-              <LogoSignInner />
-            </LogoSign>
+            {/* <LogoSign>
+              <LogoSignInner /> 
+            </LogoSign> */}
+            <img alt="404" height={55} src={`${process.env.NEXT_PUBLIC_IMAGE_PATH}/gs-logo.png`} />
           </LogoSignWrapper>
         </Badge>
       </LogoWrapper>

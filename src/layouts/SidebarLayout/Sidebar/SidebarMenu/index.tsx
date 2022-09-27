@@ -187,7 +187,7 @@ function SidebarMenu() {
           <SubMenuWrapper>
             <List component="div">
               <ListItem component="div">
-                <NextLink href="/" passHref>
+                <NextLink href="/dashboards/general" passHref>
                   <Button
                     className={currentRoute === '="/' ? 'active' : ''}
                     disableRipple
@@ -206,14 +206,14 @@ function SidebarMenu() {
           component="div"
           subheader={
             <ListSubheader component="div" disableSticky>
-              Dashboards
+              Merchant
             </ListSubheader>
           }
         >
           <SubMenuWrapper>
             <List component="div">
               <ListItem component="div">
-                <NextLink href="/dashboards/crypto" passHref>
+                <NextLink href="/management/transactions" passHref>
                   <Button
                     className={
                       currentRoute === '/dashboards/crypto' ? 'active' : ''
@@ -223,11 +223,11 @@ function SidebarMenu() {
                     onClick={closeSidebar}
                     startIcon={<BrightnessLowTwoToneIcon />}
                   >
-                    Cryptocurrency
+                    Dashboard
                   </Button>
                 </NextLink>
               </ListItem>
-              <ListItem component="div">
+              {/* <ListItem component="div">
                 <NextLink href="/applications/messenger" passHref>
                   <Button
                     className={
@@ -241,11 +241,11 @@ function SidebarMenu() {
                     Messenger
                   </Button>
                 </NextLink>
-              </ListItem>
+              </ListItem> */}
             </List>
           </SubMenuWrapper>
         </List>
-        <List
+        {/* <List
           component="div"
           subheader={
             <ListSubheader component="div" disableSticky>
@@ -536,7 +536,7 @@ function SidebarMenu() {
               </ListItem>
             </List>
           </SubMenuWrapper>
-        </List>
+        </List> */}
       </MenuWrapper>
     </>
   );

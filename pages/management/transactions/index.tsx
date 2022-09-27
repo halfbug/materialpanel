@@ -11,7 +11,7 @@ function ApplicationsTransactions() {
   return (
     <>
       <Head>
-        <title>Transactions - Applications</title>
+        <title>Merchant Stores</title>
       </Head>
       <PageTitleWrapper>
         <PageHeader />

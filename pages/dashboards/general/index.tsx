@@ -12,11 +12,11 @@ import Wallets from '@/content/Dashboards/Crypto/Wallets';
 import AccountSecurity from '@/content/Dashboards/Crypto/AccountSecurity';
 import WatchList from '@/content/Dashboards/Crypto/WatchList';
 
-function DashboardCrypto() {
+function DashboardGeneral() {
   return (
     <>
       <Head>
-        <title>Crypto Dashboard</title>
+        <title>Dashboard</title>
       </Head>
       <PageTitleWrapper>
         <PageHeader />
@@ -48,6 +48,6 @@ function DashboardCrypto() {
   );
 }
 
-DashboardCrypto.getLayout = (page) => <SidebarLayout>{page}</SidebarLayout>;
+DashboardGeneral.getLayout = (page) => <SidebarLayout>{page}</SidebarLayout>;
 
-export default DashboardCrypto;
+export default DashboardGeneral;
