@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable import/no-extraneous-dependencies */
 import { FC, ReactNode } from 'react';
 import PropTypes from 'prop-types';
 import { Scrollbars } from 'react-custom-scrollbars-2';
@@ -16,22 +18,20 @@ const Scrollbar: FC<ScrollbarProps> = ({ className, children, ...rest }) => {
     <Scrollbars
       autoHide
       universal
-      renderThumbVertical={() => {
-        return (
-          <Box
-            sx={{
-              width: 5,
-              background: `${theme.colors.alpha.black[10]}`,
-              borderRadius: `${theme.general.borderRadiusLg}`,
-              transition: `${theme.transitions.create(['background'])}`,
+      renderThumbVertical={() => (
+        <Box
+          sx={{
+            width: 5,
+            background: `${theme.colors.alpha.black[10]}`,
+            borderRadius: `${theme.general.borderRadiusLg}`,
+            transition: `${theme.transitions.create(['background'])}`,
 
-              '&:hover': {
-                background: `${theme.colors.alpha.black[30]}`
-              }
-            }}
-          />
-        );
-      }}
+            '&:hover': {
+              background: `${theme.colors.alpha.black[30]}`,
+            },
+          }}
+        />
+      )}
       {...rest}
     >
       {children}
@@ -41,7 +41,7 @@ const Scrollbar: FC<ScrollbarProps> = ({ className, children, ...rest }) => {
 
 Scrollbar.propTypes = {
   children: PropTypes.node,
-  className: PropTypes.string
+  className: PropTypes.string,
 };
 
 export default Scrollbar;

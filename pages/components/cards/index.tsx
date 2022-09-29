@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable react/jsx-props-no-spreading */
 import Head from 'next/head';
 import SidebarLayout from '@/layouts/SidebarLayout';
 import { useState } from 'react';
@@ -10,7 +12,7 @@ import {
   Card,
   CardHeader,
   CardContent,
-  Divider
+  Divider,
 } from '@mui/material';
 import Footer from '@/components/Footer';
 import CardActions from '@mui/material/CardActions';
@@ -40,8 +42,8 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
   marginLeft: 'auto',
   transition: theme.transitions.create('transform', {
-    duration: theme.transitions.duration.shortest
-  })
+    duration: theme.transitions.duration.shortest,
+  }),
 }));
 
 const bull = (
@@ -95,7 +97,13 @@ function Cards() {
                       Word of the Day
                     </Typography>
                     <Typography variant="h5" component="div">
-                      be{bull}nev{bull}o{bull}lent
+                      be
+                      {bull}
+                      nev
+                      {bull}
+                      o
+                      {bull}
+                      lent
                     </Typography>
                     <Typography sx={{ mb: 1.5 }} color="text.secondary">
                       adjective
@@ -103,7 +111,7 @@ function Cards() {
                     <Typography variant="body2">
                       well meaning and kindly.
                       <br />
-                      {'"a benevolent smile"'}
+                      "a benevolent smile"
                     </Typography>
                   </CardContent>
                   <CardActions>
@@ -120,23 +128,23 @@ function Cards() {
               <CardContent>
                 <Card sx={{ maxWidth: 345 }}>
                   <CardHeader
-                    avatar={
+                    avatar={(
                       <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
                         R
                       </Avatar>
-                    }
-                    action={
+                    )}
+                    action={(
                       <IconButton aria-label="settings">
                         <MoreVertIcon />
                       </IconButton>
-                    }
+                    )}
                     title="Shrimp and Chorizo Paella"
                     subheader="September 14, 2016"
                   />
                   <CardMedia
                     sx={{
                       height: 0,
-                      paddingTop: '56.25%' // 16:9
+                      paddingTop: '56.25%', // 16:9
                     }}
                     image="/static/images/placeholders/covers/1.jpg"
                     title="Paella dish"

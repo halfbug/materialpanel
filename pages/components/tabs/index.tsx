@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+/* eslint-disable react/jsx-props-no-spreading */
 import Head from 'next/head';
 import SidebarLayout from '@/layouts/SidebarLayout';
 import PageTitle from '@/components/PageTitle';
@@ -8,7 +10,7 @@ import {
   Card,
   CardHeader,
   CardContent,
-  Divider
+  Divider,
 } from '@mui/material';
 import { useState, SyntheticEvent } from 'react';
 
@@ -25,7 +27,9 @@ interface TabPanelProps {
 }
 
 function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
+  const {
+    children, value, index, ...other
+  } = props;
 
   return (
     <div
@@ -47,7 +51,7 @@ function TabPanel(props: TabPanelProps) {
 function a11yProps(index: number) {
   return {
     id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`
+    'aria-controls': `simple-tabpanel-${index}`,
   };
 }
 

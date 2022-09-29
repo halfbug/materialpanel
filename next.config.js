@@ -6,10 +6,10 @@ const redirects = {
       {
         source: '/dashboards',
         destination: '/dashboards/crypto',
-        permanent: true
-      }
+        permanent: true,
+      },
     ];
-  }
+  },
 };
 
 module.exports = withImages(redirects);

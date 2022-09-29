@@ -1,4 +1,8 @@
-import { forwardRef, Ref, useState, ReactElement, ChangeEvent } from 'react';
+/* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import {
+  forwardRef, Ref, useState, ReactElement, ChangeEvent,
+} from 'react';
 import {
   Avatar,
   Link,
@@ -19,7 +23,7 @@ import {
   DialogContent,
   DialogTitle,
   Slide,
-  Hidden
+  Hidden,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { TransitionProps } from '@mui/material/transitions';
@@ -28,12 +32,10 @@ import FindInPageTwoToneIcon from '@mui/icons-material/FindInPageTwoTone';
 
 import ChevronRightTwoToneIcon from '@mui/icons-material/ChevronRightTwoTone';
 
-const Transition = forwardRef(function Transition(
+const Transition = forwardRef((
   props: TransitionProps & { children: ReactElement<any, any> },
-  ref: Ref<unknown>
-) {
-  return <Slide direction="down" ref={ref} {...props} />;
-});
+  ref: Ref<unknown>,
+) => <Slide direction="down" ref={ref} {...props} />);
 
 const DialogWrapper = styled(Dialog)(
   () => `
@@ -44,7 +46,7 @@ const DialogWrapper = styled(Dialog)(
     .MuiDialog-paperScrollPaper {
         max-height: calc(100vh - 64px)
     }
-`
+`,
 );
 
 const SearchInputWrapper = styled(TextField)(
@@ -54,14 +56,14 @@ const SearchInputWrapper = styled(TextField)(
     .MuiInputBase-input {
         font-size: ${theme.typography.pxToRem(17)};
     }
-`
+`,
 );
 
 const DialogTitleWrapper = styled(DialogTitle)(
   ({ theme }) => `
     background: ${theme.colors.alpha.black[5]};
     padding: ${theme.spacing(3)}
-`
+`,
 );
 
 function HeaderSearch() {
@@ -110,14 +112,14 @@ function HeaderSearch() {
         <DialogTitleWrapper>
           <SearchInputWrapper
             value={searchValue}
-            autoFocus={true}
+            autoFocus
             onChange={handleSearchChange}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
                   <SearchTwoToneIcon />
                 </InputAdornment>
-              )
+              ),
             }}
             placeholder="Search terms here..."
             fullWidth
@@ -134,7 +136,8 @@ function HeaderSearch() {
               justifyContent="space-between"
             >
               <Typography variant="body2" component="span">
-                Search results for{' '}
+                Search results for
+                {' '}
                 <Typography
                   sx={{ fontWeight: 'bold' }}
                   variant="body1"
@@ -154,8 +157,7 @@ function HeaderSearch() {
                   <ListItemAvatar>
                     <Avatar
                       sx={{
-                        background: (theme: Theme) =>
-                          theme.palette.secondary.main
+                        background: (theme: Theme) => theme.palette.secondary.main,
                       }}
                     >
                       <FindInPageTwoToneIcon />
@@ -177,8 +179,7 @@ function HeaderSearch() {
                     component="span"
                     variant="body2"
                     sx={{
-                      color: (theme: Theme) =>
-                        lighten(theme.palette.secondary.main, 0.5)
+                      color: (theme: Theme) => lighten(theme.palette.secondary.main, 0.5),
                     }}
                   >
                     This page contains all the necessary information for
@@ -193,8 +194,7 @@ function HeaderSearch() {
                   <ListItemAvatar>
                     <Avatar
                       sx={{
-                        background: (theme: Theme) =>
-                          theme.palette.secondary.main
+                        background: (theme: Theme) => theme.palette.secondary.main,
                       }}
                     >
                       <FindInPageTwoToneIcon />
@@ -216,8 +216,7 @@ function HeaderSearch() {
                     component="span"
                     variant="body2"
                     sx={{
-                      color: (theme: Theme) =>
-                        lighten(theme.palette.secondary.main, 0.5)
+                      color: (theme: Theme) => lighten(theme.palette.secondary.main, 0.5),
                     }}
                   >
                     This is yet another search result pointing to a app page.
@@ -231,8 +230,7 @@ function HeaderSearch() {
                   <ListItemAvatar>
                     <Avatar
                       sx={{
-                        background: (theme: Theme) =>
-                          theme.palette.secondary.main
+                        background: (theme: Theme) => theme.palette.secondary.main,
                       }}
                     >
                       <FindInPageTwoToneIcon />
@@ -254,8 +252,7 @@ function HeaderSearch() {
                     component="span"
                     variant="body2"
                     sx={{
-                      color: (theme: Theme) =>
-                        lighten(theme.palette.secondary.main, 0.5)
+                      color: (theme: Theme) => lighten(theme.palette.secondary.main, 0.5),
                     }}
                   >
                     Choose if you would like to show or not this typography

@@ -9,7 +9,7 @@ import {
   IconButton,
   Button,
   CardActions,
-  Link
+  Link,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
@@ -23,7 +23,7 @@ const CardActionsWrapper = styled(CardActions)(
   ({ theme }) => `
      background: ${theme.colors.alpha.black[5]};
      padding: ${theme.spacing(3)};
-`
+`,
 );
 
 function ActivityTab() {
@@ -31,24 +31,26 @@ function ActivityTab() {
     <Card>
       <CardHeader
         avatar={<Avatar src="/static/images/avatars/5.jpg" />}
-        action={
+        action={(
           <IconButton color="primary">
             <MoreHorizTwoToneIcon fontSize="medium" />
           </IconButton>
-        }
+        )}
         titleTypographyProps={{ variant: 'h4' }}
         subheaderTypographyProps={{ variant: 'subtitle2' }}
         title="Allison Lipshutz"
-        subheader={
+        subheader={(
           <>
-            Managing Partner,{' '}
+            Managing Partner,
+            {' '}
             <Link
               href="@/content/Management/Users/settings/ActivityTab#"
               underline="hover"
             >
               #software
             </Link>
-            ,{' '}
+            ,
+            {' '}
             <Link
               href="@/content/Management/Users/settings/ActivityTab#"
               underline="hover"
@@ -57,7 +59,7 @@ function ActivityTab() {
             </Link>
             , Google Inc.
           </>
-        }
+        )}
       />
       <Box px={3} pb={2}>
         <Typography variant="h4" fontWeight="normal">
@@ -79,7 +81,8 @@ function ActivityTab() {
             underline="hover"
           >
             example.com
-          </Link>{' '}
+          </Link>
+          {' '}
           • 4 mins read
         </Typography>
       </Box>
@@ -88,7 +91,7 @@ function ActivityTab() {
         sx={{
           display: { xs: 'block', md: 'flex' },
           alignItems: 'center',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
         }}
       >
         <Box>
@@ -110,11 +113,14 @@ function ActivityTab() {
           <Typography variant="subtitle2" component="span">
             <Text color="black">
               <b>485</b>
-            </Text>{' '}
-            reactions •{' '}
+            </Text>
+            {' '}
+            reactions •
+            {' '}
             <Text color="black">
               <b>63</b>
-            </Text>{' '}
+            </Text>
+            {' '}
             comments
           </Typography>
         </Box>

@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import {
   Button,
   Card,
@@ -9,7 +10,7 @@ import {
   alpha,
   Tooltip,
   CardActionArea,
-  styled
+  styled,
 } from '@mui/material';
 import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
 
@@ -25,10 +26,10 @@ const AvatarWrapper = styled(Avatar)(
     height: ${theme.spacing(5.5)};
     width: ${theme.spacing(5.5)};
     background: ${
-      theme.palette.mode === 'dark'
-        ? theme.colors.alpha.trueWhite[30]
-        : alpha(theme.colors.alpha.black[100], 0.07)
-    };
+  theme.palette.mode === 'dark'
+    ? theme.colors.alpha.trueWhite[30]
+    : alpha(theme.colors.alpha.black[100], 0.07)
+};
   
     img {
       background: ${theme.colors.alpha.trueWhite[100]};
@@ -38,7 +39,7 @@ const AvatarWrapper = styled(Avatar)(
       height: ${theme.spacing(4.5)};
       width: ${theme.spacing(4.5)};
     }
-`
+`,
 );
 
 const AvatarAddWrapper = styled(Avatar)(
@@ -47,7 +48,7 @@ const AvatarAddWrapper = styled(Avatar)(
         color: ${theme.colors.primary.main};
         width: ${theme.spacing(8)};
         height: ${theme.spacing(8)};
-`
+`,
 );
 
 const CardAddAction = styled(Card)(
@@ -71,7 +72,7 @@ const CardAddAction = styled(Card)(
         &:hover {
           border-color: ${theme.colors.alpha.black[70]};
         }
-`
+`,
 );
 
 function Wallets() {
@@ -82,7 +83,7 @@ function Wallets() {
         alignItems="center"
         justifyContent="space-between"
         sx={{
-          pb: 3
+          pb: 3,
         }}
       >
         <Typography variant="h3">Wallets</Typography>
@@ -98,7 +99,7 @@ function Wallets() {
         <Grid xs={12} sm={6} md={3} item>
           <Card
             sx={{
-              px: 1
+              px: 1,
             }}
           >
             <CardContent>
@@ -116,7 +117,7 @@ function Wallets() {
               </Typography>
               <Box
                 sx={{
-                  pt: 3
+                  pt: 3,
                 }}
               >
                 <Typography variant="h3" gutterBottom noWrap>
@@ -132,7 +133,7 @@ function Wallets() {
         <Grid xs={12} sm={6} md={3} item>
           <Card
             sx={{
-              px: 1
+              px: 1,
             }}
           >
             <CardContent>
@@ -150,7 +151,7 @@ function Wallets() {
               </Typography>
               <Box
                 sx={{
-                  pt: 3
+                  pt: 3,
                 }}
               >
                 <Typography variant="h3" gutterBottom noWrap>
@@ -166,7 +167,7 @@ function Wallets() {
         <Grid xs={12} sm={6} md={3} item>
           <Card
             sx={{
-              px: 1
+              px: 1,
             }}
           >
             <CardContent>
@@ -184,7 +185,7 @@ function Wallets() {
               </Typography>
               <Box
                 sx={{
-                  pt: 3
+                  pt: 3,
                 }}
               >
                 <Typography variant="h3" gutterBottom noWrap>
@@ -202,7 +203,7 @@ function Wallets() {
             <CardAddAction>
               <CardActionArea
                 sx={{
-                  px: 1
+                  px: 1,
                 }}
               >
                 <CardContent>

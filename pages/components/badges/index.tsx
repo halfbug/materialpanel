@@ -8,7 +8,7 @@ import {
   Card,
   CardHeader,
   CardContent,
-  Divider
+  Divider,
 } from '@mui/material';
 import { useState } from 'react';
 import Footer from '@/components/Footer';
@@ -98,11 +98,11 @@ function Badges() {
                     display: 'flex',
                     flexDirection: 'column',
                     '& > *': {
-                      marginBottom: 2
+                      marginBottom: 2,
                     },
                     '& .MuiBadge-root': {
-                      marginRight: 4
-                    }
+                      marginRight: 4,
+                    },
                   }}
                 >
                   <div>
@@ -138,12 +138,12 @@ function Badges() {
                     </Badge>
                     <FormControlLabel
                       sx={{ color: 'text.primary' }}
-                      control={
+                      control={(
                         <Switch
                           checked={!invisible}
                           onChange={handleBadgeVisibility}
                         />
-                      }
+                      )}
                       label="Show Badge"
                     />
                   </div>

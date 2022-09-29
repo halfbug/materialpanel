@@ -1,3 +1,5 @@
+/* eslint-disable import/prefer-default-export */
+/* eslint-disable no-shadow */
 import React from 'react';
 
 import { Theme } from '@mui/material';
@@ -253,5 +255,5 @@ declare module '@mui/material/styles' {
 const themeMap: { [key: string]: Theme } = {
   PureLightTheme,
   GreyGooseTheme,
-  PurpleFlowTheme
+  PurpleFlowTheme,
 };

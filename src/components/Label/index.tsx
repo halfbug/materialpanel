@@ -1,3 +1,5 @@
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable react/jsx-props-no-spreading */
 import { FC, ReactNode } from 'react';
 import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
@@ -62,7 +64,7 @@ const LabelWrapper = styled('span')(
           color: ${theme.palette.info.main}
         }
       }
-`
+`,
 );
 
 const Label: FC<LabelProps> = ({
@@ -70,13 +72,11 @@ const Label: FC<LabelProps> = ({
   color = 'secondary',
   children,
   ...rest
-}) => {
-  return (
-    <LabelWrapper className={'MuiLabel-' + color} {...rest}>
-      {children}
-    </LabelWrapper>
-  );
-};
+}) => (
+  <LabelWrapper className={`MuiLabel-${color}`} {...rest}>
+    {children}
+  </LabelWrapper>
+);
 
 Label.propTypes = {
   children: PropTypes.node,
@@ -88,8 +88,8 @@ Label.propTypes = {
     'error',
     'warning',
     'success',
-    'info'
-  ])
+    'info',
+  ]),
 };
 
 export default Label;

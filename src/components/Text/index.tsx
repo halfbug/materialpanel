@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable import/no-extraneous-dependencies */
 import { FC, ReactNode } from 'react';
 import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
@@ -56,7 +58,7 @@ const TextWrapper = styled('span')(
           color: ${theme.palette.info.main}
         }
       }
-`
+`,
 );
 
 const Text: FC<TextProps> = ({
@@ -65,16 +67,14 @@ const Text: FC<TextProps> = ({
   flex,
   children,
   ...rest
-}) => {
-  return (
-    <TextWrapper
-      className={clsx('MuiText-' + color, { flexItem: flex })}
-      {...rest}
-    >
-      {children}
-    </TextWrapper>
-  );
-};
+}) => (
+  <TextWrapper
+    className={clsx(`MuiText-${color}`, { flexItem: flex })}
+    {...rest}
+  >
+    {children}
+  </TextWrapper>
+);
 
 Text.propTypes = {
   children: PropTypes.node,
@@ -86,8 +86,8 @@ Text.propTypes = {
     'warning',
     'success',
     'info',
-    'black'
-  ])
+    'black',
+  ]),
 };
 
 export default Text;

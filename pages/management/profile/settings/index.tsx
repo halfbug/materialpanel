@@ -3,7 +3,9 @@ import Head from 'next/head';
 import SidebarLayout from '@/layouts/SidebarLayout';
 import PageHeader from '@/content/Management/Users/settings/PageHeader';
 import PageTitleWrapper from '@/components/PageTitleWrapper';
-import { Container, Tabs, Tab, Grid } from '@mui/material';
+import {
+  Container, Tabs, Tab, Grid,
+} from '@mui/material';
 import Footer from '@/components/Footer';
 import { styled } from '@mui/material/styles';
 
@@ -17,7 +19,7 @@ const TabsWrapper = styled(Tabs)(
     .MuiTabs-scrollableX {
       overflow-x: auto !important;
     }
-`
+`,
 );
 
 function ManagementUserSettings() {
@@ -27,7 +29,7 @@ function ManagementUserSettings() {
     { value: 'activity', label: 'Activity' },
     { value: 'edit_profile', label: 'Edit Profile' },
     { value: 'notifications', label: 'Notifications' },
-    { value: 'security', label: 'Passwords/Security' }
+    { value: 'security', label: 'Passwords/Security' },
   ];
 
   const handleTabsChange = (_event: ChangeEvent<{}>, value: string): void => {

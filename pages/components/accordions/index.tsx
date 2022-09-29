@@ -9,7 +9,7 @@ import {
   Card,
   CardHeader,
   CardContent,
-  Divider
+  Divider,
 } from '@mui/material';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';

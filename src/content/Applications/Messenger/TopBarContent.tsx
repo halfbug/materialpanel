@@ -15,7 +15,7 @@ import {
   ListItemText,
   ListItemIcon,
   styled,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import { formatDistance, subMinutes } from 'date-fns';
 import CallTwoToneIcon from '@mui/icons-material/CallTwoTone';
@@ -38,14 +38,14 @@ const RootWrapper = styled(Box)(
           align-items: center;
           justify-content: space-between;
       }
-`
+`,
 );
 
 const ListItemIconWrapper = styled(ListItemIcon)(
   ({ theme }) => `
         min-width: 36px;
         color: ${theme.colors.primary.light};
-`
+`,
 );
 
 const AccordionSummaryWrapper = styled(AccordionSummary)(
@@ -79,7 +79,7 @@ const AccordionSummaryWrapper = styled(AccordionSummary)(
             }
           }
         }
-`
+`,
 );
 
 function TopBarContent() {
@@ -93,10 +93,9 @@ function TopBarContent() {
 
   const [expanded, setExpanded] = useState<string | false>('section1');
 
-  const handleChange =
-    (section: string) => (_event: SyntheticEvent, isExpanded: boolean) => {
-      setExpanded(isExpanded ? section : false);
-    };
+  const handleChange = (section: string) => (_event: SyntheticEvent, isExpanded: boolean) => {
+    setExpanded(isExpanded ? section : false);
+  };
 
   return (
     <>
@@ -106,7 +105,7 @@ function TopBarContent() {
             variant="rounded"
             sx={{
               width: 48,
-              height: 48
+              height: 48,
             }}
             alt="Zain Baptista"
             src="/static/images/avatars/1.jpg"
@@ -115,14 +114,14 @@ function TopBarContent() {
             <Typography variant="h4">Zain Baptista</Typography>
             <Typography variant="subtitle1">
               {formatDistance(subMinutes(new Date(), 8), new Date(), {
-                addSuffix: true
+                addSuffix: true,
               })}
             </Typography>
           </Box>
         </Box>
         <Box
           sx={{
-            display: { xs: 'none', lg: 'flex' }
+            display: { xs: 'none', lg: 'flex' },
           }}
         >
           <Tooltip placement="bottom" title="Start a voice call">
@@ -144,7 +143,7 @@ function TopBarContent() {
       </RootWrapper>
       <Drawer
         sx={{
-          display: { xs: 'none', md: 'flex' }
+          display: { xs: 'none', md: 'flex' },
         }}
         variant="temporary"
         anchor={theme.direction === 'rtl' ? 'left' : 'right'}
@@ -154,13 +153,13 @@ function TopBarContent() {
       >
         <Box
           sx={{
-            minWidth: 360
+            minWidth: 360,
           }}
           p={2}
         >
           <Box
             sx={{
-              textAlign: 'center'
+              textAlign: 'center',
             }}
           >
             <Avatar
@@ -168,7 +167,7 @@ function TopBarContent() {
                 mx: 'auto',
                 my: 2,
                 width: theme.spacing(12),
-                height: theme.spacing(12)
+                height: theme.spacing(12),
               }}
               variant="rounded"
               alt="Zain Baptista"
@@ -176,15 +175,16 @@ function TopBarContent() {
             />
             <Typography variant="h4">Zain Baptista</Typography>
             <Typography variant="subtitle2">
-              Active{' '}
+              Active
+              {' '}
               {formatDistance(subMinutes(new Date(), 7), new Date(), {
-                addSuffix: true
+                addSuffix: true,
               })}
             </Typography>
           </Box>
           <Divider
             sx={{
-              my: 3
+              my: 3,
             }}
           />
 
@@ -197,7 +197,7 @@ function TopBarContent() {
             </AccordionSummaryWrapper>
             <AccordionDetails
               sx={{
-                p: 0
+                p: 0,
               }}
             >
               <List component="nav">
@@ -240,7 +240,7 @@ function TopBarContent() {
             </AccordionSummaryWrapper>
             <AccordionDetails
               sx={{
-                p: 0
+                p: 0,
               }}
             >
               <List component="nav">
@@ -294,7 +294,7 @@ function TopBarContent() {
             </AccordionSummaryWrapper>
             <AccordionDetails
               sx={{
-                p: 0
+                p: 0,
               }}
             >
               <List component="nav">

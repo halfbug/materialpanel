@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import {
   Button,
   Card,
@@ -9,7 +10,7 @@ import {
   Stack,
   Divider,
   styled,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import Text from 'src/components/Text';
 import Label from 'src/components/Label';
@@ -31,10 +32,10 @@ const AvatarWrapper = styled(Avatar)(
     height: ${theme.spacing(5.5)};
     width: ${theme.spacing(5.5)};
     background: ${
-      theme.palette.mode === 'dark'
-        ? theme.colors.alpha.trueWhite[30]
-        : alpha(theme.colors.alpha.black[100], 0.07)
-    };
+  theme.palette.mode === 'dark'
+    ? theme.colors.alpha.trueWhite[30]
+    : alpha(theme.colors.alpha.black[100], 0.07)
+};
   
     img {
       background: ${theme.colors.alpha.trueWhite[100]};
@@ -44,7 +45,7 @@ const AvatarWrapper = styled(Avatar)(
       height: ${theme.spacing(4.5)};
       width: ${theme.spacing(4.5)};
     }
-`
+`,
 );
 
 function WatchListRow() {
@@ -53,18 +54,18 @@ function WatchListRow() {
   const Box1Options: ApexOptions = {
     chart: {
       animations: {
-        enabled: false
+        enabled: false,
       },
       background: 'transparent',
       toolbar: {
-        show: false
+        show: false,
       },
       sparkline: {
-        enabled: true
+        enabled: true,
       },
       zoom: {
-        enabled: false
-      }
+        enabled: false,
+      },
     },
     labels: [
       'Monday',
@@ -73,15 +74,15 @@ function WatchListRow() {
       'Thursday',
       'Friday',
       'Saturday',
-      'Sunday'
+      'Sunday',
     ],
     stroke: {
       curve: 'smooth',
       colors: [theme.colors.primary.main],
-      width: 2
+      width: 2,
     },
     yaxis: {
-      show: false
+      show: false,
     },
     colors: [theme.colors.primary.main],
     grid: {
@@ -89,51 +90,51 @@ function WatchListRow() {
         top: 10,
         right: 5,
         bottom: 10,
-        left: 5
-      }
+        left: 5,
+      },
     },
     theme: {
-      mode: theme.palette.mode
+      mode: theme.palette.mode,
     },
     tooltip: {
       fixed: {
-        enabled: true
+        enabled: true,
       },
       x: {
-        show: true
+        show: true,
       },
       y: {
         title: {
-          formatter: function () {
+          formatter() {
             return 'Price: $';
-          }
-        }
+          },
+        },
       },
       marker: {
-        show: false
-      }
-    }
+        show: false,
+      },
+    },
   };
 
   const Box1Data = [
     {
       name: 'Bitcoin',
-      data: [55.701, 57.598, 48.607, 46.439, 58.755, 46.978, 58.16]
-    }
+      data: [55.701, 57.598, 48.607, 46.439, 58.755, 46.978, 58.16],
+    },
   ];
 
   const Box2Data = [
     {
       name: 'Ethereum',
-      data: [1.854, 1.873, 1.992, 2.009, 1.909, 1.942, 1.884]
-    }
+      data: [1.854, 1.873, 1.992, 2.009, 1.909, 1.942, 1.884],
+    },
   ];
 
   const Box3Data = [
     {
       name: 'Cardano',
-      data: [13, 16, 14, 18, 8, 11, 20]
-    }
+      data: [13, 16, 14, 18, 8, 11, 20],
+    },
   ];
 
   return (
@@ -148,7 +149,7 @@ function WatchListRow() {
         <Box
           sx={{
             width: '100%',
-            p: 3
+            p: 3,
           }}
         >
           <Box
@@ -184,13 +185,13 @@ function WatchListRow() {
               sx={{
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'flex-start'
+                justifyContent: 'flex-start',
               }}
             >
               <Typography
                 variant="h2"
                 sx={{
-                  pr: 1
+                  pr: 1,
                 }}
               >
                 $56,475.99
@@ -201,7 +202,7 @@ function WatchListRow() {
             </Box>
             <TrendingUpTwoToneIcon
               sx={{
-                color: `${theme.colors.success.main}`
+                color: `${theme.colors.success.main}`,
               }}
             />
           </Box>
@@ -217,7 +218,7 @@ function WatchListRow() {
         <Box
           sx={{
             width: '100%',
-            p: 3
+            p: 3,
           }}
         >
           <Box
@@ -253,13 +254,13 @@ function WatchListRow() {
               sx={{
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'flex-start'
+                justifyContent: 'flex-start',
               }}
             >
               <Typography
                 variant="h2"
                 sx={{
-                  pr: 1
+                  pr: 1,
                 }}
               >
                 $1,968.00
@@ -270,7 +271,7 @@ function WatchListRow() {
             </Box>
             <TrendingDownTwoToneIcon
               sx={{
-                color: `${theme.colors.error.main}`
+                color: `${theme.colors.error.main}`,
               }}
             />
           </Box>
@@ -286,7 +287,7 @@ function WatchListRow() {
         <Box
           sx={{
             width: '100%',
-            p: 3
+            p: 3,
           }}
         >
           <Box
@@ -322,13 +323,13 @@ function WatchListRow() {
               sx={{
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'flex-start'
+                justifyContent: 'flex-start',
               }}
             >
               <Typography
                 variant="h2"
                 sx={{
-                  pr: 1
+                  pr: 1,
                 }}
               >
                 $23.00
@@ -339,7 +340,7 @@ function WatchListRow() {
             </Box>
             <TrendingFlatTwoToneIcon
               sx={{
-                color: `${theme.colors.warning.main}`
+                color: `${theme.colors.warning.main}`,
               }}
             />
           </Box>
@@ -359,7 +360,7 @@ function WatchListRow() {
         sx={{
           p: 3,
           display: 'flex',
-          justifyContent: 'center'
+          justifyContent: 'center',
         }}
       >
         <Button variant="outlined">View more assets</Button>

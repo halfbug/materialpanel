@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-no-bind */
+/* eslint-disable @next/next/no-img-element */
 import { useState } from 'react';
 import {
   Box,
@@ -6,7 +8,7 @@ import {
   Container,
   Button,
   Grid,
-  styled
+  styled,
 } from '@mui/material';
 import type { ReactElement } from 'react';
 import BaseLayout from 'src/layouts/BaseLayout';
@@ -18,7 +20,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 const GridWrapper = styled(Grid)(
   ({ theme }) => `
     background: ${theme.colors.gradients.blue5};
-`
+`,
 );
 
 const MainContent = styled(Box)(
@@ -30,19 +32,19 @@ const MainContent = styled(Box)(
     flex-direction: column;
     align-items: center;
     justify-content: center;
-`
+`,
 );
 
 const TypographyPrimary = styled(Typography)(
   ({ theme }) => `
       color: ${theme.colors.alpha.white[100]};
-`
+`,
 );
 
 const TypographySecondary = styled(Typography)(
   ({ theme }) => `
       color: ${theme.colors.alpha.white[70]};
-`
+`,
 );
 
 function Status500() {

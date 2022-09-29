@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import {
   Avatar,
   Tooltip,
@@ -6,7 +7,7 @@ import {
   Button,
   styled,
   InputBase,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import AttachFileTwoToneIcon from '@mui/icons-material/AttachFileTwoTone';
 import SendTwoToneIcon from '@mui/icons-material/SendTwoTone';
@@ -16,11 +17,11 @@ const MessageInputWrapper = styled(InputBase)(
     font-size: ${theme.typography.pxToRem(18)};
     padding: ${theme.spacing(1)};
     width: 100%;
-`
+`,
 );
 
 const Input = styled('input')({
-  display: 'none'
+  display: 'none',
 });
 
 function BottomBarContent() {
@@ -28,7 +29,7 @@ function BottomBarContent() {
 
   const user = {
     name: 'Catherine Pike',
-    avatar: '/static/images/avatars/1.jpg'
+    avatar: '/static/images/avatars/1.jpg',
   };
 
   return (
@@ -37,7 +38,7 @@ function BottomBarContent() {
         background: theme.colors.alpha.white[50],
         display: 'flex',
         alignItems: 'center',
-        p: 2
+        p: 2,
       }}
     >
       <Box flexGrow={1} display="flex" alignItems="center">

@@ -3,7 +3,7 @@ import { Typography } from '@mui/material';
 function PageHeader() {
   const user = {
     name: 'Catherine Pike',
-    avatar: '/static/images/avatars/1.jpg'
+    avatar: '/static/images/avatars/1.jpg',
   };
 
   return (
@@ -12,7 +12,8 @@ function PageHeader() {
         User Settings
       </Typography>
       <Typography variant="subtitle2">
-        {user.name}, this could be your user settings panel.
+        {user.name}
+        , this could be your user settings panel.
       </Typography>
     </>
   );

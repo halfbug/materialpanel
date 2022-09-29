@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable @next/next/no-img-element */
 import {
   Box,
   Card,
@@ -8,7 +10,7 @@ import {
   FormControl,
   OutlinedInput,
   InputAdornment,
-  styled
+  styled,
 } from '@mui/material';
 import Head from 'next/head';
 import SearchTwoToneIcon from '@mui/icons-material/SearchTwoTone';
@@ -21,7 +23,7 @@ const MainContent = styled(Box)(
     display: flex;
     flex: 1;
     flex-direction: column;
-`
+`,
 );
 
 const TopWrapper = styled(Box)(
@@ -32,19 +34,19 @@ const TopWrapper = styled(Box)(
   align-items: center;
   justify-content: center;
   padding: ${theme.spacing(6)};
-`
+`,
 );
 
 const OutlinedInputWrapper = styled(OutlinedInput)(
   ({ theme }) => `
     background-color: ${theme.colors.alpha.white[100]};
-`
+`,
 );
 
 const ButtonSearch = styled(Button)(
   ({ theme }) => `
     margin-right: -${theme.spacing(1)};
-`
+`,
 );
 
 function Status404() {
@@ -77,18 +79,18 @@ function Status404() {
                   <OutlinedInputWrapper
                     type="text"
                     placeholder="Search terms here..."
-                    endAdornment={
+                    endAdornment={(
                       <InputAdornment position="end">
                         <ButtonSearch variant="contained" size="small">
                           Search
                         </ButtonSearch>
                       </InputAdornment>
-                    }
-                    startAdornment={
+                    )}
+                    startAdornment={(
                       <InputAdornment position="start">
                         <SearchTwoToneIcon />
                       </InputAdornment>
-                    }
+                    )}
                   />
                 </FormControl>
                 <Divider sx={{ my: 4 }}>OR</Divider>

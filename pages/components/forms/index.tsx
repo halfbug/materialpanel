@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import Head from 'next/head';
 import SidebarLayout from '@/layouts/SidebarLayout';
 import PageTitle from '@/components/PageTitle';
@@ -10,7 +11,7 @@ import {
   Card,
   CardHeader,
   CardContent,
-  Divider
+  Divider,
 } from '@mui/material';
 import Footer from '@/components/Footer';
 
@@ -38,20 +39,20 @@ const label = { inputProps: { 'aria-label': 'Switch demo' } };
 const currencies = [
   {
     value: 'USD',
-    label: '$'
+    label: '$',
   },
   {
     value: 'EUR',
-    label: '€'
+    label: '€',
   },
   {
     value: 'BTC',
-    label: '฿'
+    label: '฿',
   },
   {
     value: 'JPY',
-    label: '¥'
-  }
+    label: '¥',
+  },
 ];
 
 function Forms() {
@@ -95,7 +96,7 @@ function Forms() {
                 <Box
                   component="form"
                   sx={{
-                    '& .MuiTextField-root': { m: 1, width: '25ch' }
+                    '& .MuiTextField-root': { m: 1, width: '25ch' },
                   }}
                   noValidate
                   autoComplete="off"
@@ -124,7 +125,7 @@ function Forms() {
                       label="Read Only"
                       defaultValue="Hello World"
                       InputProps={{
-                        readOnly: true
+                        readOnly: true,
                       }}
                     />
                     <TextField
@@ -132,7 +133,7 @@ function Forms() {
                       label="Number"
                       type="number"
                       InputLabelProps={{
-                        shrink: true
+                        shrink: true,
                       }}
                     />
                     <TextField
@@ -174,7 +175,7 @@ function Forms() {
                       label="Read Only"
                       defaultValue="Hello World"
                       InputProps={{
-                        readOnly: true
+                        readOnly: true,
                       }}
                       variant="filled"
                     />
@@ -183,7 +184,7 @@ function Forms() {
                       label="Number"
                       type="number"
                       InputLabelProps={{
-                        shrink: true
+                        shrink: true,
                       }}
                       variant="filled"
                     />
@@ -228,7 +229,7 @@ function Forms() {
                       label="Read Only"
                       defaultValue="Hello World"
                       InputProps={{
-                        readOnly: true
+                        readOnly: true,
                       }}
                       variant="standard"
                     />
@@ -237,7 +238,7 @@ function Forms() {
                       label="Number"
                       type="number"
                       InputLabelProps={{
-                        shrink: true
+                        shrink: true,
                       }}
                       variant="standard"
                     />
@@ -267,7 +268,7 @@ function Forms() {
                 <Box
                   component="form"
                   sx={{
-                    '& .MuiTextField-root': { m: 1, width: '25ch' }
+                    '& .MuiTextField-root': { m: 1, width: '25ch' },
                   }}
                   noValidate
                   autoComplete="off"
@@ -294,7 +295,7 @@ function Forms() {
                       value={currency}
                       onChange={handleChange}
                       SelectProps={{
-                        native: true
+                        native: true,
                       }}
                       helperText="Please select your currency"
                     >
@@ -328,7 +329,7 @@ function Forms() {
                       value={currency}
                       onChange={handleChange}
                       SelectProps={{
-                        native: true
+                        native: true,
                       }}
                       helperText="Please select your currency"
                       variant="filled"
@@ -363,7 +364,7 @@ function Forms() {
                       value={currency}
                       onChange={handleChange}
                       SelectProps={{
-                        native: true
+                        native: true,
                       }}
                       helperText="Please select your currency"
                       variant="standard"
@@ -406,8 +407,8 @@ function Forms() {
                   sx={{
                     color: pink[800],
                     '&.Mui-checked': {
-                      color: pink[600]
-                    }
+                      color: pink[600],
+                    },
                   }}
                 />
                 <Divider sx={{ my: 5 }} />

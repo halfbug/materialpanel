@@ -6,7 +6,7 @@ import {
   ToggleButtonGroup,
   Card,
   Typography,
-  styled
+  styled,
 } from '@mui/material';
 import ViewWeekTwoToneIcon from '@mui/icons-material/ViewWeekTwoTone';
 import TableRowsTwoToneIcon from '@mui/icons-material/TableRowsTwoTone';
@@ -18,7 +18,7 @@ const EmptyResultsWrapper = styled('img')(
       max-width: 100%;
       width: ${theme.spacing(66)};
       height: ${theme.spacing(34)};
-`
+`,
 );
 
 function WatchList() {
@@ -26,7 +26,7 @@ function WatchList() {
 
   const handleViewOrientation = (
     _event: MouseEvent<HTMLElement>,
-    newValue: string | null
+    newValue: string | null,
   ) => {
     setTab(newValue);
   };
@@ -38,7 +38,7 @@ function WatchList() {
         alignItems="center"
         justifyContent="space-between"
         sx={{
-          pb: 3
+          pb: 3,
         }}
       >
         <Typography variant="h3">Watch List</Typography>
@@ -64,7 +64,7 @@ function WatchList() {
         <Card
           sx={{
             textAlign: 'center',
-            p: 3
+            p: 3,
           }}
         >
           <EmptyResultsWrapper src="/static/images/placeholders/illustrations/1.svg" />
@@ -75,7 +75,7 @@ function WatchList() {
             fontWeight="normal"
             color="text.secondary"
             sx={{
-              mt: 3
+              mt: 3,
             }}
             gutterBottom
           >
@@ -85,7 +85,7 @@ function WatchList() {
             variant="contained"
             size="large"
             sx={{
-              mt: 4
+              mt: 4,
             }}
           >
             Maybe, a button?

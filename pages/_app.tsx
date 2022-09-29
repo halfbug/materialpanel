@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import type { ReactElement, ReactNode } from 'react';
 
 import type { NextPage } from 'next';
