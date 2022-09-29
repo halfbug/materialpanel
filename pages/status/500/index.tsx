@@ -107,34 +107,34 @@ function Status500() {
               </Box>
             </Container>
           </Grid>
-          <Hidden mdDown>
-            <GridWrapper
-              xs={12}
-              md={6}
-              alignItems="center"
-              display="flex"
-              justifyContent="center"
-              item
-            >
-              <Container maxWidth="sm">
-                <Box textAlign="center">
-                  <TypographyPrimary variant="h1" sx={{ my: 2 }}>
-                    GS Admin
-                  </TypographyPrimary>
-                  <TypographySecondary
-                    variant="h4"
-                    fontWeight="normal"
-                    sx={{ mb: 4 }}
-                  >
-                    Super Adminstration
-                  </TypographySecondary>
-                  <Button href="/" size="large" variant="contained">
-                    Overview
-                  </Button>
-                </Box>
-              </Container>
-            </GridWrapper>
-          </Hidden>
+          {/* <Hidden mdDown> */}
+          <GridWrapper
+            xs={12}
+            md={6}
+            alignItems="center"
+            display="flex"
+            justifyContent="center"
+            item
+          >
+            <Container maxWidth="sm">
+              <Box textAlign="center">
+                <TypographyPrimary variant="h1" sx={{ my: 2 }}>
+                  GS Admin
+                </TypographyPrimary>
+                <TypographySecondary
+                  variant="h4"
+                  fontWeight="normal"
+                  sx={{ mb: 4 }}
+                >
+                  Super Adminstration
+                </TypographySecondary>
+                <Button href="/" size="large" variant="contained">
+                  Overview
+                </Button>
+              </Box>
+            </Container>
+          </GridWrapper>
+          {/* </Hidden> */}
         </Grid>
       </MainContent>
     </>
