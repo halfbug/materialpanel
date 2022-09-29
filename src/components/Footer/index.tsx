@@ -1,9 +1,11 @@
-import { Box, Container, Link, Typography, styled } from '@mui/material';
+import {
+  Box, Container, Link, Typography, styled,
+} from '@mui/material';
 
 const FooterWrapper = styled(Container)(
   ({ theme }) => `
         margin-top: ${theme.spacing(4)};
-`
+`,
 );
 
 function Footer() {
@@ -23,11 +25,12 @@ function Footer() {
         </Box>
         <Typography
           sx={{
-            pt: { xs: 2, md: 0 }
+            pt: { xs: 2, md: 0 },
           }}
           variant="subtitle1"
         >
-          Crafted by{' '}
+          Crafted by
+          {' '}
           <Link
             href="https://bloomui.com"
             target="_blank"

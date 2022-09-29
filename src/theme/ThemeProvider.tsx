@@ -1,7 +1,12 @@
-import { FC, useState, createContext, useEffect } from 'react';
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable react/jsx-no-constructed-context-values */
+/* eslint-disable no-shadow */
+import {
+  FC, useState, createContext, useEffect,
+} from 'react';
 import { ThemeProvider } from '@mui/material';
-import { themeCreator } from './base';
 import { StylesProvider } from '@mui/styles';
+import { themeCreator } from './base';
 
 export const ThemeContext = createContext((_themeName: string): void => {});
 
@@ -9,8 +14,7 @@ const ThemeProviderWrapper: FC = (props) => {
   const [themeName, _setThemeName] = useState('PureLightTheme');
 
   useEffect(() => {
-    const curThemeName =
-      window.localStorage.getItem('appTheme') || 'PureLightTheme';
+    const curThemeName = window.localStorage.getItem('appTheme') || 'PureLightTheme';
     _setThemeName(curThemeName);
   }, []);
 

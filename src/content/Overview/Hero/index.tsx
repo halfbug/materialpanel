@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @next/next/no-img-element */
 import {
   Box,
   Button,
   Container,
   Grid,
   Typography,
-  styled
+  styled,
 } from '@mui/material';
 
 import Link from 'src/components/Link';
@@ -12,13 +14,13 @@ import Link from 'src/components/Link';
 const TypographyH1 = styled(Typography)(
   ({ theme }) => `
     font-size: ${theme.typography.pxToRem(50)};
-`
+`,
 );
 
 const TypographyH2 = styled(Typography)(
   ({ theme }) => `
     font-size: ${theme.typography.pxToRem(17)};
-`
+`,
 );
 
 const LabelWrapper = styled(Box)(
@@ -32,7 +34,7 @@ const LabelWrapper = styled(Box)(
     font-size: ${theme.typography.pxToRem(11)};
     padding: ${theme.spacing(0.5)} ${theme.spacing(1.5)};
     margin-bottom: ${theme.spacing(2)};
-`
+`,
 );
 
 const MuiAvatar = styled(Box)(
@@ -52,7 +54,7 @@ const MuiAvatar = styled(Box)(
       height: 60%;
       display: block;
     }
-`
+`,
 );
 
 const TsAvatar = styled(Box)(
@@ -72,7 +74,7 @@ const TsAvatar = styled(Box)(
       height: 60%;
       display: block;
     }
-`
+`,
 );
 
 const NextJsAvatar = styled(Box)(
@@ -92,7 +94,7 @@ const NextJsAvatar = styled(Box)(
       height: 60%;
       display: block;
     }
-`
+`,
 );
 
 function Hero() {
@@ -109,7 +111,6 @@ function Hero() {
           <TypographyH1 sx={{ mb: 2 }} variant="h1">
             Groupshop
           </TypographyH1>
-         
 
           <TypographyH2
             sx={{ lineHeight: 1.5, pb: 4 }}

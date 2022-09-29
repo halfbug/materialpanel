@@ -17,14 +17,14 @@ import {
   Divider,
   Drawer,
   IconButton,
-  useTheme
+  useTheme,
 } from '@mui/material';
 
 const RootWrapper = styled(Box)(
   ({ theme }) => `
        height: calc(100vh - ${theme.header.height});
        display: flex;
-`
+`,
 );
 
 const Sidebar = styled(Box)(
@@ -32,7 +32,7 @@ const Sidebar = styled(Box)(
         width: 300px;
         background: ${theme.colors.alpha.white[100]};
         border-right: ${theme.colors.alpha.black[10]} solid 1px;
-`
+`,
 );
 
 const ChatWindow = styled(Box)(
@@ -42,7 +42,7 @@ const ChatWindow = styled(Box)(
         display: flex;
         flex-direction: column;
         flex: 1;
-`
+`,
 );
 
 const ChatTopBar = styled(Box)(
@@ -51,7 +51,7 @@ const ChatTopBar = styled(Box)(
         border-bottom: ${theme.colors.alpha.black[10]} solid 1px;
         padding: ${theme.spacing(2)};
         align-items: center;
-`
+`,
 );
 
 const IconButtonToggle = styled(IconButton)(
@@ -59,7 +59,7 @@ const IconButtonToggle = styled(IconButton)(
   width: ${theme.spacing(4)};
   height: ${theme.spacing(4)};
   background: ${theme.colors.alpha.white[100]};
-`
+`,
 );
 
 const DrawerWrapperMobile = styled(Drawer)(
@@ -71,7 +71,7 @@ const DrawerWrapperMobile = styled(Drawer)(
         width: 340px;
         z-index: 3;
   }
-`
+`,
 );
 
 function ApplicationsMessenger() {
@@ -90,7 +90,7 @@ function ApplicationsMessenger() {
       <RootWrapper className="Mui-FixedWrapper">
         <DrawerWrapperMobile
           sx={{
-            display: { lg: 'none', xs: 'inline-block' }
+            display: { lg: 'none', xs: 'inline-block' },
           }}
           variant="temporary"
           anchor={theme.direction === 'rtl' ? 'right' : 'left'}
@@ -103,7 +103,7 @@ function ApplicationsMessenger() {
         </DrawerWrapperMobile>
         <Sidebar
           sx={{
-            display: { xs: 'none', lg: 'inline-block' }
+            display: { xs: 'none', lg: 'inline-block' },
           }}
         >
           <Scrollbar>
@@ -113,13 +113,13 @@ function ApplicationsMessenger() {
         <ChatWindow>
           <ChatTopBar
             sx={{
-              display: { xs: 'flex', lg: 'inline-block' }
+              display: { xs: 'flex', lg: 'inline-block' },
             }}
           >
             <IconButtonToggle
               sx={{
                 display: { lg: 'none', xs: 'flex' },
-                mr: 2
+                mr: 2,
               }}
               color="primary"
               onClick={handleDrawerToggle}

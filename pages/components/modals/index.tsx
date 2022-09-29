@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import Head from 'next/head';
 import SidebarLayout from '@/layouts/SidebarLayout';
 import PropTypes from 'prop-types';
@@ -11,7 +12,7 @@ import {
   Card,
   CardHeader,
   CardContent,
-  Divider
+  Divider,
 } from '@mui/material';
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
@@ -79,7 +80,7 @@ function SimpleDialog(props) {
 SimpleDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
-  selectedValue: PropTypes.string.isRequired
+  selectedValue: PropTypes.string.isRequired,
 };
 
 function Modals() {
@@ -121,7 +122,9 @@ function Modals() {
               <Divider />
               <CardContent>
                 <Typography variant="subtitle1" component="div">
-                  Selected: {selectedValue}
+                  Selected:
+                  {' '}
+                  {selectedValue}
                 </Typography>
                 <br />
                 <Button variant="outlined" onClick={handleClickOpen}>

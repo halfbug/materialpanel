@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @next/next/no-img-element */
 import {
   Box,
   Card,
@@ -10,7 +13,7 @@ import {
   InputAdornment,
   styled,
   TextField,
-  Grid
+  Grid,
 } from '@mui/material';
 import Head from 'next/head';
 import SearchTwoToneIcon from '@mui/icons-material/SearchTwoTone';
@@ -23,7 +26,7 @@ const MainContent = styled(Box)(
     display: flex;
     flex: 1;
     flex-direction: column;
-`
+`,
 );
 
 const TopWrapper = styled(Box)(
@@ -34,19 +37,19 @@ const TopWrapper = styled(Box)(
   align-items: center;
   justify-content: center;
   padding: ${theme.spacing(6)};
-`
+`,
 );
 
 const OutlinedInputWrapper = styled(OutlinedInput)(
   ({ theme }) => `
     background-color: ${theme.colors.alpha.white[100]};
-`
+`,
 );
 
 const ButtonSearch = styled(Button)(
   ({ theme }) => `
     margin-right: -${theme.spacing(1)};
-`
+`,
 );
 
 function Status404() {
@@ -58,28 +61,28 @@ function Status404() {
       <MainContent>
         <TopWrapper>
           <Container maxWidth="md">
-            <Box textAlign="center">
-              
-             
-            </Box>
+            <Box textAlign="center" />
             <Container maxWidth="sm">
               <Card sx={{ textAlign: 'center', mt: 3, p: 4 }}>
-              <img alt="404" height={80} src={`${process.env.NEXT_PUBLIC_IMAGE_PATH}/default-logo.png`} />
+                <img alt="404" height={80} src={`${process.env.NEXT_PUBLIC_IMAGE_PATH}/default-logo.png`} />
                 <FormControl variant="outlined" fullWidth>
-                <Grid mt={2}>
-                 <Grid item mb={1}>
-                <TextField id="outlined-basic" label="Username" variant="outlined" />
-                </Grid>
-                <Grid item mb={1}>
-                <TextField id="outlined-basic" label="Password" variant="outlined"  type="password" />
-                </Grid>
-                <Grid item><Button href="/dashboards/general" variant="outlined">
-                  Login
-                </Button></Grid>
-                
-                </Grid>
+                  <Grid mt={2}>
+                    <Grid item mb={1}>
+                      <TextField id="outlined-basic" label="Username" variant="outlined" />
+                    </Grid>
+                    <Grid item mb={1}>
+                      <TextField id="outlined-basic" label="Password" variant="outlined" type="password" />
+                    </Grid>
+                    <Grid item>
+                      <Button href="/dashboards/general" variant="outlined">
+                        Login
+                      </Button>
+
+                    </Grid>
+
+                  </Grid>
                 </FormControl>
-                                
+
               </Card>
             </Container>
           </Container>

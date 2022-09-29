@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import {
   Box,
   Typography,
@@ -5,7 +6,7 @@ import {
   Divider,
   IconButton,
   Tooltip,
-  styled
+  styled,
 } from '@mui/material';
 import type { ReactElement } from 'react';
 import BaseLayout from '@/layouts/BaseLayout';
@@ -23,7 +24,7 @@ const MainContent = styled(Box)(
     display: flex;
     flex: 1;
     flex-direction: column;
-`
+`,
 );
 
 const TopWrapper = styled(Box)(
@@ -34,7 +35,7 @@ const TopWrapper = styled(Box)(
   align-items: center;
   justify-content: center;
   padding: ${theme.spacing(6)};
-`
+`,
 );
 
 function StatusMaintenance() {
@@ -75,7 +76,8 @@ function StatusMaintenance() {
             >
               <Box>
                 <Typography component="span" variant="subtitle1">
-                  Phone:{' '}
+                  Phone:
+                  {' '}
                 </Typography>
                 <Typography
                   component="span"

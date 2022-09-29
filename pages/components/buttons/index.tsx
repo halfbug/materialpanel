@@ -10,7 +10,7 @@ import {
   Card,
   CardHeader,
   CardContent,
-  Divider
+  Divider,
 } from '@mui/material';
 import Footer from '@/components/Footer';
 import DeleteIcon from '@mui/icons-material/Delete';

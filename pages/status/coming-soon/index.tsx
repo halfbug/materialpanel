@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from 'react';
 import {
   Box,
@@ -11,7 +13,7 @@ import {
   InputAdornment,
   Button,
   styled,
-  FormHelperText
+  FormHelperText,
 } from '@mui/material';
 import type { ReactElement } from 'react';
 import BaseLayout from '@/layouts/BaseLayout';
@@ -30,7 +32,7 @@ const MainContent = styled(Box)(
     display: flex;
     flex: 1;
     flex-direction: column;
-`
+`,
 );
 
 const TopWrapper = styled(Box)(
@@ -41,36 +43,36 @@ const TopWrapper = styled(Box)(
   align-items: center;
   justify-content: center;
   padding: ${theme.spacing(6)};
-`
+`,
 );
 
 const TypographyH1 = styled(Typography)(
   ({ theme }) => `
   font-size: ${theme.typography.pxToRem(75)};
-`
+`,
 );
 
 const TypographyH3 = styled(Typography)(
   ({ theme }) => `
   color: ${theme.colors.alpha.black[50]};
-`
+`,
 );
 
 const OutlinedInputWrapper = styled(OutlinedInput)(
   ({ theme }) => `
     background-color: ${theme.colors.alpha.white[100]};
-`
+`,
 );
 
 const ButtonNotify = styled(Button)(
   ({ theme }) => `
     margin-right: -${theme.spacing(1)};
-`
+`,
 );
 
 function StatusComingSoon() {
   const calculateTimeLeft = () => {
-    const difference = +new Date(`2023`) - +new Date();
+    const difference = +new Date('2023') - +new Date();
     let timeLeft = {};
 
     if (difference > 0) {
@@ -78,7 +80,7 @@ function StatusComingSoon() {
         days: Math.floor(difference / (1000 * 60 * 60 * 24)),
         hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
         minutes: Math.floor((difference / 1000 / 60) % 60),
-        seconds: Math.floor((difference / 1000) % 60)
+        seconds: Math.floor((difference / 1000) % 60),
       };
     }
 
@@ -104,7 +106,7 @@ function StatusComingSoon() {
       <Box textAlign="center" px={3}>
         <TypographyH1 variant="h1">{timeLeft[interval]}</TypographyH1>
         <TypographyH3 variant="h3">{interval}</TypographyH3>
-      </Box>
+      </Box>,
     );
   });
 
@@ -149,18 +151,18 @@ function StatusComingSoon() {
                   <OutlinedInputWrapper
                     type="text"
                     placeholder="Enter your email address here..."
-                    endAdornment={
+                    endAdornment={(
                       <InputAdornment position="end">
                         <ButtonNotify variant="contained" size="small">
                           Notify Me
                         </ButtonNotify>
                       </InputAdornment>
-                    }
-                    startAdornment={
+                    )}
+                    startAdornment={(
                       <InputAdornment position="start">
                         <MailTwoToneIcon />
                       </InputAdornment>
-                    }
+                    )}
                   />
                   <FormHelperText>
                     We'll email you once our website is launched!

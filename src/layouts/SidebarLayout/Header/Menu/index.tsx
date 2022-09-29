@@ -5,7 +5,7 @@ import {
   ListItemText,
   Menu,
   MenuItem,
-  styled
+  styled,
 } from '@mui/material';
 import { useRef, useState } from 'react';
 import Link from 'src/components/Link';
@@ -60,7 +60,7 @@ const ListWrapper = styled(Box)(
                 }
             }
         }
-`
+`,
 );
 
 function HeaderMenu() {

@@ -1,5 +1,9 @@
+/* eslint-disable max-len */
+/* eslint-disable react/jsx-props-no-spreading */
 import * as React from 'react';
-import Document, { Html, Head, Main, NextScript } from 'next/document';
+import Document, {
+  Html, Head, Main, NextScript,
+} from 'next/document';
 import createEmotionServer from '@emotion/server/create-instance';
 import createEmotionCache from 'src/createEmotionCache';
 
@@ -56,11 +60,9 @@ MyDocument.getInitialProps = async (ctx) => {
   const cache = createEmotionCache();
   const { extractCriticalToChunks } = createEmotionServer(cache);
 
-  ctx.renderPage = () =>
-    originalRenderPage({
-      enhanceApp: (App: any) => (props) =>
-        <App emotionCache={cache} {...props} />
-    });
+  ctx.renderPage = () => originalRenderPage({
+    enhanceApp: (App: any) => (props) => <App emotionCache={cache} {...props} />,
+  });
 
   const initialProps = await Document.getInitialProps(ctx);
   // This is important. It prevents emotion to render invalid HTML.
@@ -80,7 +82,7 @@ MyDocument.getInitialProps = async (ctx) => {
     // Styles fragment is rendered after the app and page rendering finish.
     styles: [
       ...React.Children.toArray(initialProps.styles),
-      ...emotionStyleTags
-    ]
+      ...emotionStyleTags,
+    ],
   };
 };

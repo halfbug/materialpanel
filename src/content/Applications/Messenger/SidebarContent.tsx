@@ -19,7 +19,7 @@ import {
   ListItemAvatar,
   ListItemText,
   lighten,
-  styled
+  styled,
 } from '@mui/material';
 import { formatDistance, subMinutes, subHours } from 'date-fns';
 import SettingsTwoToneIcon from '@mui/icons-material/SettingsTwoTone';
@@ -37,7 +37,7 @@ const AvatarSuccess = styled(Avatar)(
           height: ${theme.spacing(8)};
           margin-left: auto;
           margin-right: auto;
-    `
+    `,
 );
 
 const MeetingBox = styled(Box)(
@@ -46,13 +46,13 @@ const MeetingBox = styled(Box)(
           margin: ${theme.spacing(2)} 0;
           border-radius: ${theme.general.borderRadius};
           padding: ${theme.spacing(2)};
-    `
+    `,
 );
 
 const RootWrapper = styled(Box)(
   ({ theme }) => `
         padding: ${theme.spacing(2.5)};
-  `
+  `,
 );
 
 const ListItemWrapper = styled(ListItemButton)(
@@ -60,7 +60,7 @@ const ListItemWrapper = styled(ListItemButton)(
         &.MuiButtonBase-root {
             margin: ${theme.spacing(1)} 0;
         }
-  `
+  `,
 );
 
 const TabsContainerWrapper = styled(Box)(
@@ -89,24 +89,24 @@ const TabsContainerWrapper = styled(Box)(
                 color: ${theme.colors.alpha.black[100]};
             }
         }
-  `
+  `,
 );
 
 function SidebarContent() {
   const user = {
     name: 'Catherine Pike',
     avatar: '/static/images/avatars/1.jpg',
-    jobtitle: 'Software Developer'
+    jobtitle: 'Software Developer',
   };
 
   const [state, setState] = useState({
-    invisible: true
+    invisible: true,
   });
 
   const handleChange = (event) => {
     setState({
       ...state,
-      [event.target.name]: event.target.checked
+      [event.target.name]: event.target.checked,
     });
   };
 
@@ -115,7 +115,7 @@ function SidebarContent() {
   const tabs = [
     { value: 'all', label: 'All' },
     { value: 'unread', label: 'Unread' },
-    { value: 'archived', label: 'Archived' }
+    { value: 'archived', label: 'Archived' },
   ];
 
   const handleTabsChange = (_event: ChangeEvent<{}>, value: string): void => {
@@ -129,7 +129,7 @@ function SidebarContent() {
         <Box
           sx={{
             ml: 1.5,
-            flex: 1
+            flex: 1,
           }}
         >
           <Box
@@ -147,7 +147,7 @@ function SidebarContent() {
             </Box>
             <IconButton
               sx={{
-                p: 1
+                p: 1,
               }}
               size="small"
               color="primary"
@@ -157,14 +157,14 @@ function SidebarContent() {
           </Box>
 
           <FormControlLabel
-            control={
+            control={(
               <Switch
                 checked={state.invisible}
                 onChange={handleChange}
                 name="invisible"
                 color="primary"
               />
-            }
+            )}
             label="Invisible"
           />
         </Box>
@@ -173,7 +173,7 @@ function SidebarContent() {
       <TextField
         sx={{
           mt: 2,
-          mb: 1
+          mb: 1,
         }}
         size="small"
         fullWidth
@@ -182,7 +182,7 @@ function SidebarContent() {
             <InputAdornment position="start">
               <SearchTwoToneIcon />
             </InputAdornment>
-          )
+          ),
         }}
         placeholder="Search..."
       />
@@ -190,7 +190,7 @@ function SidebarContent() {
       <Typography
         sx={{
           mb: 1,
-          mt: 2
+          mt: 2,
         }}
         variant="h3"
       >
@@ -221,16 +221,16 @@ function SidebarContent() {
               </ListItemAvatar>
               <ListItemText
                 sx={{
-                  mr: 1
+                  mr: 1,
                 }}
                 primaryTypographyProps={{
                   color: 'textPrimary',
                   variant: 'h5',
-                  noWrap: true
+                  noWrap: true,
                 }}
                 secondaryTypographyProps={{
                   color: 'textSecondary',
-                  noWrap: true
+                  noWrap: true,
                 }}
                 primary="Zain Baptista"
                 secondary="Hey there, how are you today? Is it ok if I call you?"
@@ -245,16 +245,16 @@ function SidebarContent() {
               </ListItemAvatar>
               <ListItemText
                 sx={{
-                  mr: 1
+                  mr: 1,
                 }}
                 primaryTypographyProps={{
                   color: 'textPrimary',
                   variant: 'h5',
-                  noWrap: true
+                  noWrap: true,
                 }}
                 secondaryTypographyProps={{
                   color: 'textSecondary',
-                  noWrap: true
+                  noWrap: true,
                 }}
                 primary="Kierra Herwitz"
                 secondary="Hi! Did you manage to send me those documents"
@@ -266,16 +266,16 @@ function SidebarContent() {
               </ListItemAvatar>
               <ListItemText
                 sx={{
-                  mr: 1
+                  mr: 1,
                 }}
                 primaryTypographyProps={{
                   color: 'textPrimary',
                   variant: 'h5',
-                  noWrap: true
+                  noWrap: true,
                 }}
                 secondaryTypographyProps={{
                   color: 'textSecondary',
-                  noWrap: true
+                  noWrap: true,
                 }}
                 primary="Craig Vaccaro"
                 secondary="Ola, I still haven't received the program schedule"
@@ -287,16 +287,16 @@ function SidebarContent() {
               </ListItemAvatar>
               <ListItemText
                 sx={{
-                  mr: 1
+                  mr: 1,
                 }}
                 primaryTypographyProps={{
                   color: 'textPrimary',
                   variant: 'h5',
-                  noWrap: true
+                  noWrap: true,
                 }}
                 secondaryTypographyProps={{
                   color: 'textSecondary',
-                  noWrap: true
+                  noWrap: true,
                 }}
                 primary="Adison Press"
                 secondary="I recently did some buying on Amazon and now I'm stuck"
@@ -315,16 +315,16 @@ function SidebarContent() {
               </ListItemAvatar>
               <ListItemText
                 sx={{
-                  mr: 1
+                  mr: 1,
                 }}
                 primaryTypographyProps={{
                   color: 'textPrimary',
                   variant: 'h5',
-                  noWrap: true
+                  noWrap: true,
                 }}
                 secondaryTypographyProps={{
                   color: 'textSecondary',
-                  noWrap: true
+                  noWrap: true,
                 }}
                 primary="Zain Baptista"
                 secondary="Hey there, how are you today? Is it ok if I call you?"
@@ -339,16 +339,16 @@ function SidebarContent() {
               </ListItemAvatar>
               <ListItemText
                 sx={{
-                  mr: 1
+                  mr: 1,
                 }}
                 primaryTypographyProps={{
                   color: 'textPrimary',
                   variant: 'h5',
-                  noWrap: true
+                  noWrap: true,
                 }}
                 secondaryTypographyProps={{
                   color: 'textSecondary',
-                  noWrap: true
+                  noWrap: true,
                 }}
                 primary="Adison Press"
                 secondary="I recently did some buying on Amazon and now I'm stuck"
@@ -363,7 +363,7 @@ function SidebarContent() {
           <Box pb={3}>
             <Divider
               sx={{
-                mb: 3
+                mb: 3,
               }}
             />
             <AvatarSuccess>
@@ -372,7 +372,7 @@ function SidebarContent() {
             <Typography
               sx={{
                 mt: 2,
-                textAlign: 'center'
+                textAlign: 'center',
               }}
               variant="subtitle2"
             >
@@ -380,7 +380,7 @@ function SidebarContent() {
             </Typography>
             <Divider
               sx={{
-                mt: 3
+                mt: 3,
               }}
             />
           </Box>
@@ -389,7 +389,7 @@ function SidebarContent() {
       <Box display="flex" pb={1} mt={4} alignItems="center">
         <Typography
           sx={{
-            mr: 1
+            mr: 1,
           }}
           variant="h3"
         >
@@ -408,7 +408,7 @@ function SidebarContent() {
             <Typography
               variant="subtitle2"
               sx={{
-                lineHeight: 1
+                lineHeight: 1,
               }}
               color="text.primary"
             >
@@ -416,7 +416,7 @@ function SidebarContent() {
             </Typography>
             <Typography variant="subtitle1">
               {formatDistance(subMinutes(new Date(), 12), new Date(), {
-                addSuffix: true
+                addSuffix: true,
               })}
             </Typography>
           </Box>
@@ -427,7 +427,7 @@ function SidebarContent() {
               <Avatar
                 sx={{
                   width: 28,
-                  height: 28
+                  height: 28,
                 }}
                 component={Link}
                 href="#"
@@ -439,7 +439,7 @@ function SidebarContent() {
               <Avatar
                 sx={{
                   width: 28,
-                  height: 28
+                  height: 28,
                 }}
                 component={Link}
                 href="#"
@@ -451,7 +451,7 @@ function SidebarContent() {
               <Avatar
                 sx={{
                   width: 28,
-                  height: 28
+                  height: 28,
                 }}
                 component={Link}
                 href="#"
@@ -476,7 +476,7 @@ function SidebarContent() {
             <Typography
               variant="subtitle2"
               sx={{
-                lineHeight: 1
+                lineHeight: 1,
               }}
               color="text.primary"
             >
@@ -484,7 +484,7 @@ function SidebarContent() {
             </Typography>
             <Typography variant="subtitle1">
               {formatDistance(subHours(new Date(), 4), new Date(), {
-                addSuffix: true
+                addSuffix: true,
               })}
             </Typography>
           </Box>
@@ -495,7 +495,7 @@ function SidebarContent() {
               <Avatar
                 sx={{
                   width: 28,
-                  height: 28
+                  height: 28,
                 }}
                 component={Link}
                 href="#"
@@ -507,7 +507,7 @@ function SidebarContent() {
               <Avatar
                 sx={{
                   width: 28,
-                  height: 28
+                  height: 28,
                 }}
                 component={Link}
                 href="#"

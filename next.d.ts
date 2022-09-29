@@ -1,7 +1,7 @@
 import type { ReactElement, ReactNode } from 'react';
 import type {
   NextComponentType,
-  NextPageContext
+  NextPageContext,
 } from 'next/dist/shared/lib/utils';
 
 declare module 'next' {

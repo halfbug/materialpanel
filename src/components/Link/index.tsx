@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import * as React from 'react';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
@@ -18,9 +19,10 @@ interface NextLinkComposedProps
 export const NextLinkComposed = React.forwardRef<
   HTMLAnchorElement,
   NextLinkComposedProps
->(function NextLinkComposed(props, ref) {
-  const { to, linkAs, replace, scroll, shallow, prefetch, locale, ...other } =
-    props;
+>((props, ref) => {
+  const {
+    to, linkAs, replace, scroll, shallow, prefetch, locale, ...other
+  } = props;
 
   return (
     <NextLink
@@ -49,10 +51,10 @@ export type LinkProps = {
 
 // A styled version of the Next.js Link component:
 // https://nextjs.org/docs/api-reference/next/link
-const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(function Link(
+const Link = React.forwardRef<HTMLAnchorElement, LinkProps>((
   props,
-  ref
-) {
+  ref,
+) => {
   const {
     activeClassName = 'active',
     as,
@@ -72,12 +74,11 @@ const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(function Link(
   const router = useRouter();
   const pathname = typeof href === 'string' ? href : href.pathname;
   const className = clsx(classNameProps, {
-    [activeClassName]: router.pathname === pathname && activeClassName
+    [activeClassName]: router.pathname === pathname && activeClassName,
   });
 
-  const isExternal =
-    typeof href === 'string' &&
-    (href.indexOf('http') === 0 || href.indexOf('mailto:') === 0);
+  const isExternal = typeof href === 'string'
+    && (href.indexOf('http') === 0 || href.indexOf('mailto:') === 0);
 
   if (isExternal) {
     if (noLinkStyle) {
@@ -95,7 +96,7 @@ const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(function Link(
     scroll,
     shallow,
     prefetch,
-    locale
+    locale,
   };
 
   if (noLinkStyle) {

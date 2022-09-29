@@ -6,7 +6,7 @@ import {
   Divider,
   Avatar,
   useTheme,
-  styled
+  styled,
 } from '@mui/material';
 
 import ShoppingBagTwoToneIcon from '@mui/icons-material/ShoppingBagTwoTone';
@@ -19,7 +19,7 @@ const AvatarPrimary = styled(Avatar)(
       color: ${theme.colors.primary.main};
       width: ${theme.spacing(7)};
       height: ${theme.spacing(7)};
-`
+`,
 );
 
 function RecentActivity() {

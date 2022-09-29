@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useContext } from 'react';
 import { useRouter } from 'next/router';
 
@@ -8,7 +10,7 @@ import {
   List,
   styled,
   Button,
-  ListItem
+  ListItem,
 } from '@mui/material';
 import NextLink from 'next/link';
 import { SidebarContext } from 'src/contexts/SidebarContext';
@@ -51,7 +53,7 @@ const MenuWrapper = styled(Box)(
       padding: ${theme.spacing(0, 2.5)};
       line-height: 1.4;
     }
-`
+`,
 );
 
 const SubMenuWrapper = styled(Box)(
@@ -148,9 +150,9 @@ const SubMenuWrapper = styled(Box)(
                 background: ${theme.colors.alpha.trueWhite[100]};
                 opacity: 0;
                 transition: ${theme.transitions.create([
-                  'transform',
-                  'opacity'
-                ])};
+    'transform',
+    'opacity',
+  ])};
                 width: 6px;
                 height: 6px;
                 transform: scale(0);
@@ -172,7 +174,7 @@ const SubMenuWrapper = styled(Box)(
         }
       }
     }
-`
+`,
 );
 
 function SidebarMenu() {
@@ -181,53 +183,52 @@ function SidebarMenu() {
   const currentRoute = router.pathname;
 
   return (
-    <>
-      <MenuWrapper>
-        <List component="div">
-          <SubMenuWrapper>
-            <List component="div">
-              <ListItem component="div">
-                <NextLink href="/dashboards/general" passHref>
-                  <Button
-                    className={currentRoute === '="/' ? 'active' : ''}
-                    disableRipple
-                    component="a"
-                    onClick={closeSidebar}
-                    startIcon={<DesignServicesTwoToneIcon />}
-                  >
-                    Overview
-                  </Button>
-                </NextLink>
-              </ListItem>
-            </List>
-          </SubMenuWrapper>
-        </List>
-        <List
-          component="div"
-          subheader={
-            <ListSubheader component="div" disableSticky>
-              Merchant
-            </ListSubheader>
-          }
-        >
-          <SubMenuWrapper>
-            <List component="div">
-              <ListItem component="div">
-                <NextLink href="/management/transactions" passHref>
-                  <Button
-                    className={
+    <MenuWrapper>
+      <List component="div">
+        <SubMenuWrapper>
+          <List component="div">
+            <ListItem component="div">
+              <NextLink href="/dashboards/general" passHref>
+                <Button
+                  className={currentRoute === '="/' ? 'active' : ''}
+                  disableRipple
+                  component="a"
+                  onClick={closeSidebar}
+                  startIcon={<DesignServicesTwoToneIcon />}
+                >
+                  Overview
+                </Button>
+              </NextLink>
+            </ListItem>
+          </List>
+        </SubMenuWrapper>
+      </List>
+      <List
+        component="div"
+        subheader={(
+          <ListSubheader component="div" disableSticky>
+            Merchant
+          </ListSubheader>
+          )}
+      >
+        <SubMenuWrapper>
+          <List component="div">
+            <ListItem component="div">
+              <NextLink href="/management/transactions" passHref>
+                <Button
+                  className={
                       currentRoute === '/dashboards/crypto' ? 'active' : ''
                     }
-                    disableRipple
-                    component="a"
-                    onClick={closeSidebar}
-                    startIcon={<BrightnessLowTwoToneIcon />}
-                  >
-                    Dashboard
-                  </Button>
-                </NextLink>
-              </ListItem>
-              {/* <ListItem component="div">
+                  disableRipple
+                  component="a"
+                  onClick={closeSidebar}
+                  startIcon={<BrightnessLowTwoToneIcon />}
+                >
+                  Dashboard
+                </Button>
+              </NextLink>
+            </ListItem>
+            {/* <ListItem component="div">
                 <NextLink href="/applications/messenger" passHref>
                   <Button
                     className={
@@ -242,10 +243,10 @@ function SidebarMenu() {
                   </Button>
                 </NextLink>
               </ListItem> */}
-            </List>
-          </SubMenuWrapper>
-        </List>
-        {/* <List
+          </List>
+        </SubMenuWrapper>
+      </List>
+      {/* <List
           component="div"
           subheader={
             <ListSubheader component="div" disableSticky>
@@ -537,8 +538,7 @@ function SidebarMenu() {
             </List>
           </SubMenuWrapper>
         </List> */}
-      </MenuWrapper>
-    </>
+    </MenuWrapper>
   );
 }
 

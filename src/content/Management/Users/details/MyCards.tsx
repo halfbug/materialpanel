@@ -14,7 +14,7 @@ import {
   Tooltip,
   IconButton,
   Avatar,
-  styled
+  styled,
 } from '@mui/material';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
@@ -25,7 +25,7 @@ const AvatarAddWrapper = styled(Avatar)(
         color: ${theme.colors.primary.main};
         width: ${theme.spacing(8)};
         height: ${theme.spacing(8)};
-`
+`,
 );
 
 const CardLogo = styled('img')(
@@ -35,7 +35,7 @@ const CardLogo = styled('img')(
       padding: ${theme.spacing(1)};
       margin-right: ${theme.spacing(2)};
       background: ${theme.colors.alpha.white[100]};
-`
+`,
 );
 
 const CardAddAction = styled(Card)(
@@ -59,7 +59,7 @@ const CardAddAction = styled(Card)(
         &:hover {
           border-color: ${theme.colors.alpha.black[100]};
         }
-`
+`,
 );
 
 const IconButtonError = styled(IconButton)(
@@ -71,7 +71,7 @@ const IconButtonError = styled(IconButton)(
      &:hover {
       background: ${lighten(theme.colors.error.lighter, 0.4)};
      }
-`
+`,
 );
 
 const CardCc = styled(Card)(
@@ -79,12 +79,12 @@ const CardCc = styled(Card)(
      border: 1px solid ${theme.colors.alpha.black[30]};
      background: ${theme.colors.alpha.black[5]};
      box-shadow: none;
-`
+`,
 );
 
 function MyCards() {
   const data = {
-    savedCards: 7
+    savedCards: 7,
   };
 
   const [selectedValue, setSelectedValue] = useState('a');
@@ -97,7 +97,7 @@ function MyCards() {
 
   return (
     <Card>
-      <CardHeader subheader={data.savedCards + ' saved cards'} title="Cards" />
+      <CardHeader subheader={`${data.savedCards} saved cards`} title="Cards" />
       <Divider />
       <Box p={3}>
         <Grid container spacing={3}>
@@ -113,7 +113,8 @@ function MyCards() {
                     •••• 6879
                   </Typography>
                   <Typography variant="subtitle2">
-                    Expires:{' '}
+                    Expires:
+                    {' '}
                     <Typography component="span" color="text.primary">
                       12/24
                     </Typography>
@@ -128,7 +129,7 @@ function MyCards() {
               >
                 <FormControlLabel
                   value="a"
-                  control={
+                  control={(
                     <Radio
                       checked={selectedValue === 'a'}
                       onChange={handleChange}
@@ -136,7 +137,7 @@ function MyCards() {
                       color="primary"
                       name="primary-card"
                     />
-                  }
+                  )}
                   label="Primary"
                 />
                 <Tooltip arrow title="Remove this card">
@@ -159,7 +160,8 @@ function MyCards() {
                     •••• 4634
                   </Typography>
                   <Typography variant="subtitle2">
-                    Expires:{' '}
+                    Expires:
+                    {' '}
                     <Typography component="span" color="text.primary">
                       6/22
                     </Typography>
@@ -174,7 +176,7 @@ function MyCards() {
               >
                 <FormControlLabel
                   value="b"
-                  control={
+                  control={(
                     <Radio
                       checked={selectedValue === 'b'}
                       onChange={handleChange}
@@ -182,7 +184,7 @@ function MyCards() {
                       color="primary"
                       name="primary-card"
                     />
-                  }
+                  )}
                   label="Primary"
                 />
                 <Tooltip arrow title="Remove this card">
