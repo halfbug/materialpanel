@@ -14,6 +14,8 @@ import createEmotionCache from 'src/createEmotionCache';
 import { SidebarProvider } from 'src/contexts/SidebarContext';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import { ApolloProvider } from '@apollo/client';
+import { useApollo } from 'src/hooks/useApollo';
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -24,6 +26,7 @@ type NextPageWithLayout = NextPage & {
 interface TokyoAppProps extends AppProps {
   emotionCache?: EmotionCache;
   Component: NextPageWithLayout;
+  pageProps: any;
 }
 
 function TokyoApp(props: TokyoAppProps) {
@@ -33,8 +36,10 @@ function TokyoApp(props: TokyoAppProps) {
   Router.events.on('routeChangeStart', nProgress.start);
   Router.events.on('routeChangeError', nProgress.done);
   Router.events.on('routeChangeComplete', nProgress.done);
+  const apolloClient = useApollo(pageProps.initialApolloState);
 
   return (
+    <ApolloProvider client={apolloClient}>
     <CacheProvider value={emotionCache}>
       <Head>
         <title>GS Admin</title>
@@ -52,6 +57,7 @@ function TokyoApp(props: TokyoAppProps) {
         </ThemeProvider>
       </SidebarProvider>
     </CacheProvider>
+    </ApolloProvider>
   );
 }
 

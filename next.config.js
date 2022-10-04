@@ -12,4 +12,11 @@ const redirects = {
   },
 };
 
-module.exports = withImages(redirects);
+module.exports = withImages({
+  redirects, 
+  env: {
+    BE_URL: process.env.BE_URL,
+    API_URL: process.env.API_URL,
+    IMAGE_PATH: process.env.IMAGE_PATH,
+  },
+});
