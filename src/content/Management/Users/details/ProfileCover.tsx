@@ -180,7 +180,7 @@ const ProfileCover = ({ user }) => (
 );
 
 ProfileCover.propTypes = {
-  // @ts-expect-error
+
   user: PropTypes.object.isRequired,
 };
 
