@@ -7,7 +7,7 @@ import Head from 'next/head';
 import Router from 'next/router';
 import nProgress from 'nprogress';
 import 'nprogress/nprogress.css';
-import ThemeProvider from 'src/theme/ThemeProvider';
+import ThemeProviderWrapper from 'src/theme/ThemeProvider';
 import CssBaseline from '@mui/material/CssBaseline';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import createEmotionCache from 'src/createEmotionCache';
@@ -49,12 +49,12 @@ function TokyoApp(props: TokyoAppProps) {
           />
         </Head>
         <SidebarProvider>
-          <ThemeProvider>
+          <ThemeProviderWrapper>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <CssBaseline />
               {getLayout(<Component {...pageProps} />)}
             </LocalizationProvider>
-          </ThemeProvider>
+          </ThemeProviderWrapper>
         </SidebarProvider>
       </CacheProvider>
     </ApolloProvider>

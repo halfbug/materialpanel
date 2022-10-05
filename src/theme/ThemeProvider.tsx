@@ -10,7 +10,7 @@ import { themeCreator } from './base';
 
 export const ThemeContext = createContext((_themeName: string): void => {});
 
-const ThemeProviderWrapper: FC = (props) => {
+const ThemeProviderWrapper = ({ children }:{ children: any}) => {
   const [themeName, _setThemeName] = useState('PureLightTheme');
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const ThemeProviderWrapper: FC = (props) => {
   return (
     <StylesProvider injectFirst>
       <ThemeContext.Provider value={setThemeName}>
-        <ThemeProvider theme={theme}>{props.children}</ThemeProvider>
+        <ThemeProvider theme={theme}>{children}</ThemeProvider>
       </ThemeContext.Provider>
     </StylesProvider>
   );
