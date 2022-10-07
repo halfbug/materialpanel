@@ -3,7 +3,9 @@ import { gql } from '@apollo/client';
 const ALL_STORES = gql`
 query stores{
     stores {
-    brandName        
+    id
+    brandName 
+    createdAt       
   }
 }
 `;
@@ -11,6 +13,7 @@ query stores{
 const ALL_STORES1 = gql`
 query stores{
     stores {
+    id
     brandName        
   }
 }

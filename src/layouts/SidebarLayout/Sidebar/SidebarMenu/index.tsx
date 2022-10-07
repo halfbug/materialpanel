@@ -17,8 +17,7 @@ import { SidebarContext } from 'src/contexts/SidebarContext';
 
 import DesignServicesTwoToneIcon from '@mui/icons-material/DesignServicesTwoTone';
 import BrightnessLowTwoToneIcon from '@mui/icons-material/BrightnessLowTwoTone';
-import { ALL_STORES } from '@/graphql/store.graphql';
-import { useQuery } from '@apollo/client';
+
 // import MmsTwoToneIcon from '@mui/icons-material/MmsTwoTone';
 // import TableChartTwoToneIcon from '@mui/icons-material/TableChartTwoTone';
 // import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone';
@@ -183,11 +182,6 @@ function SidebarMenu() {
   const { closeSidebar } = useContext(SidebarContext);
   const router = useRouter();
   const currentRoute = router.pathname;
-  const {
-    loading, data,
-  } = useQuery(ALL_STORES);
-  console.log('🚀 ~ file: index.tsx ~ line 189 ~ SidebarMenu ~ data', data);
-  console.log('🚀 ~ file: index.tsx ~ line 189 ~ SidebarMenu ~ loading', loading);
 
   return (
     <MenuWrapper>
