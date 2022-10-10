@@ -23,7 +23,7 @@ function Footer() {
             &copy; 2022 - GS Admin
           </Typography>
         </Box>
-        <Typography
+        {/* <Typography
           sx={{
             pt: { xs: 2, md: 0 },
           }}
@@ -38,7 +38,7 @@ function Footer() {
           >
             BloomUI.com
           </Link>
-        </Typography>
+        </Typography> */}
       </Box>
     </FooterWrapper>
   );
