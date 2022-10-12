@@ -19,4 +19,30 @@ query stores{
 }
 `;
 
-export { ALL_STORES, ALL_STORES1 };
+const VIDEO_POST = gql`
+mutation CreateVideo($createVideoInput: CreateVideoInput!) {
+  createVideo(CreateVideoInput: $createVideoInput) {
+      storeId
+      name
+      status
+  }
+}
+`;
+
+const GET_ALL_VIDEOS = gql`
+  query videos($storeId: String!) {
+    videos(storeId: $storeId) {
+    _id
+    name
+    type
+    status
+    storeId
+    createdAt
+    updatedAt
+  }
+}
+`;
+
+export {
+  ALL_STORES, ALL_STORES1, VIDEO_POST, GET_ALL_VIDEOS,
+};

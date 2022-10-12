@@ -183,6 +183,8 @@ function SidebarMenu() {
   const router = useRouter();
   const currentRoute = router.pathname;
 
+  console.log('currentRoute', currentRoute);
+
   return (
     <MenuWrapper>
       <List component="div">
@@ -210,7 +212,7 @@ function SidebarMenu() {
           <ListSubheader component="div" disableSticky>
             Merchant
           </ListSubheader>
-          )}
+        )}
       >
         <SubMenuWrapper>
           <List component="div">
@@ -218,6 +220,8 @@ function SidebarMenu() {
               <NextLink href="/merchant" passHref>
                 <Button
                   className={
+                  //   currentRoute === '/dashboards/crypto' ? 'active' : ''
+                  // }
                       currentRoute === '/merchant' ? 'active' : ''
                     }
                   disableRipple
@@ -226,6 +230,21 @@ function SidebarMenu() {
                   startIcon={<BrightnessLowTwoToneIcon />}
                 >
                   Dashboard
+                </Button>
+              </NextLink>
+            </ListItem>
+            <ListItem component="div">
+              <NextLink href="/store/videoupload" passHref>
+                <Button
+                  className={
+                    currentRoute === '/dashboards/crypto' ? 'active' : ''
+                  }
+                  disableRipple
+                  component="a"
+                  onClick={closeSidebar}
+                  startIcon={<BrightnessLowTwoToneIcon />}
+                >
+                  Video Upload
                 </Button>
               </NextLink>
             </ListItem>
