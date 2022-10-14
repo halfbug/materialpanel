@@ -20,6 +20,7 @@ import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
+import NextLink from 'next/link';
 
 // interface Data {
 //   calories: number;
@@ -103,7 +104,8 @@ export interface HeadCell<T>{
   disablePadding: boolean;
   id: keyof T;
   label: string;
-  type?: 'string' | 'numeric' | 'datetime'| 'custom' ;
+  type?: 'string' | 'numeric' | 'datetime'| 'custom' | 'timestamp';
+  options?: any;
 }
 
 interface EnhancedTableProps<T> {
@@ -321,22 +323,28 @@ export const EnhancedTable = <T extends {}>(props : ITableProps<T>) => {
                     aria-checked={isItemSelected}
                     tabIndex={-1}
                     key={row?.id}
-                    selected={isItemSelected}
+                    // selected={isItemSelected}
                   >
-                    {headCells.map(({ id, type }) => (
+                    {headCells.map(({ id, type, options }) => (
                       <TableCell
                         id={labelId}
                         scope="row"
                       >
 
-                        {// eslint-disable-next-line func-names
+                        {// eslint-disable-next-line func-names, consistent-return
                         (function () {
-                          switch (type) {
-                            case 'datetime':
-                              return new Date(parseInt(row[id].toString(), 10)).toDateString();
-
-                            default:
-                              return row[id];
+                          console.log(options);
+                          if (row[id] || type === 'custom') {
+                            switch (type) {
+                              case 'timestamp':
+                                return new Date(parseInt(row[id]?.toString(), 10)).toDateString();
+                              case 'datetime':
+                                return new Date(row[id]).toDateString();
+                              case 'custom':
+                                return options.map((e) => <NextLink href={`${e.link}?sid=${row?.id}`} passHref>{e.btn}</NextLink>);
+                              default:
+                                return row[id];
+                            }
                           }
                         }())
 }

@@ -5,7 +5,8 @@ query stores{
     stores {
     id
     brandName 
-    createdAt       
+    createdAt
+    planResetDate       
   }
 }
 `;
