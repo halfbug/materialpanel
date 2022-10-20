@@ -44,6 +44,20 @@ const GET_ALL_VIDEOS = gql`
 }
 `;
 
+const VIDEOS_UPDATE = gql`
+  mutation updateVideo($updateVideoInput: UpdateVideoInput!) {
+    updateVideo(UpdateVideoInput: $updateVideoInput) {
+      storeId
+      _id
+      name
+      type
+      status
+      createdAt
+      updatedAt
+  }
+}
+`;
+
 export {
-  ALL_STORES, ALL_STORES1, VIDEO_POST, GET_ALL_VIDEOS,
+  ALL_STORES, ALL_STORES1, VIDEO_POST, GET_ALL_VIDEOS, VIDEOS_UPDATE,
 };

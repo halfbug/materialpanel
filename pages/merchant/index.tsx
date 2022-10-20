@@ -45,7 +45,7 @@ function StoreList() {
       disablePadding: false,
       type: 'custom',
       label: 'options',
-      options: [{ btn: <IconButton aria-label="delete" color="primary"><Dashboard /></IconButton>, link: '/dashboard' }, { btn: <IconButton aria-label="delete" color="primary"><VideoCameraFront /></IconButton>, link: '/videw' }],
+      options: [{ btn: <IconButton aria-label="delete" color="primary"><Dashboard /></IconButton>, link: '/dashboard' }, { btn: <IconButton aria-label="delete" color="primary"><VideoCameraFront /></IconButton>, link: '/store/videoupload' }],
     },
   ];
   return (

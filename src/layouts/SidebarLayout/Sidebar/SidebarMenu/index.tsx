@@ -233,7 +233,7 @@ function SidebarMenu() {
                 </Button>
               </NextLink>
             </ListItem>
-            <ListItem component="div">
+            {/* <ListItem component="div">
               <NextLink href="/store/videoupload" passHref>
                 <Button
                   className={
@@ -247,7 +247,7 @@ function SidebarMenu() {
                   Video Upload
                 </Button>
               </NextLink>
-            </ListItem>
+            </ListItem> */}
             {/* <ListItem component="div">
                 <NextLink href="/applications/messenger" passHref>
                   <Button
