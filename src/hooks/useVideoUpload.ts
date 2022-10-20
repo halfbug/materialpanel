@@ -127,7 +127,7 @@ const useVideoUpload = () => {
     videoStatusUpdate({
       variables: {
         updateVideoInput: {
-          data: selectVideo,
+          selectedIds: selectVideo,
           storeId: sid,
         },
       },
