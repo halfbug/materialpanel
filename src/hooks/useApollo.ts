@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable no-undef */
+
 import { useMemo } from 'react';
 import { ApolloClient, HttpLink, InMemoryCache } from
   '@apollo/client';

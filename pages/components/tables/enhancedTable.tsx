@@ -341,7 +341,7 @@ export const EnhancedTable = <T extends {}>(props : ITableProps<T>) => {
                               case 'datetime':
                                 return new Date(row[id]).toDateString();
                               case 'custom':
-                                return options.map((e) => <NextLink href={`${e.link}?sid=${row?.id}`} passHref>{e.btn}</NextLink>);
+                                return options.map((e) => <NextLink href={`${e.link as string}?sid=${row?.id}`} passHref>{e.btn}</NextLink>);
                               default:
                                 return row[id];
                             }
