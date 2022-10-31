@@ -160,59 +160,59 @@ interface EnhancedTableToolbarProps {
   numSelected: number;
 }
 
-const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
-  const { numSelected } = props;
+// const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
+//   const { numSelected } = props;
 
-  return (
-    <Toolbar
-      sx={{
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-        ...(numSelected > 0 && {
-          bgcolor: (theme: {
-            palette: { primary: { main: string; }; action: {
-              activatedOpacity: number;
-            }; }; }) => alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-        }),
-      }}
-    >
-      {numSelected > 0 ? (
-        <Typography
-          sx={{ flex: '1 1 100%' }}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected}
-          {' '}
-          selected
-        </Typography>
-      ) : (
-        <Typography
-          sx={{ flex: '1 1 100%' }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-          Nutrition
-        </Typography>
-      )}
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
-    </Toolbar>
-  );
-};
+//   return (
+//     <Toolbar
+//       sx={{
+//         pl: { sm: 2 },
+//         pr: { xs: 1, sm: 1 },
+//         ...(numSelected > 0 && {
+//           bgcolor: (theme: {
+//             palette: { primary: { main: string; }; action: {
+//               activatedOpacity: number;
+//             }; }; }) => alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
+//         }),
+//       }}
+//     >
+//       {numSelected > 0 ? (
+//         <Typography
+//           sx={{ flex: '1 1 100%' }}
+//           color="inherit"
+//           variant="subtitle1"
+//           component="div"
+//         >
+//           {numSelected}
+//           {' '}
+//           selected
+//         </Typography>
+//       ) : (
+//         <Typography
+//           sx={{ flex: '1 1 100%' }}
+//           variant="h6"
+//           id="tableTitle"
+//           component="div"
+//         >
+//           Nutrition
+//         </Typography>
+//       )}
+//       {numSelected > 0 ? (
+//         <Tooltip title="Delete">
+//           <IconButton>
+//             <DeleteIcon />
+//           </IconButton>
+//         </Tooltip>
+//       ) : (
+//         <Tooltip title="Filter list">
+//           <IconButton>
+//             <FilterListIcon />
+//           </IconButton>
+//         </Tooltip>
+//       )}
+//     </Toolbar>
+//   );
+// };
 
 interface ITableProps<T> {
   headCells: Array<HeadCell<T>>,
@@ -220,7 +220,7 @@ interface ITableProps<T> {
   orderByFieldName: string | number | symbol,
 }
 
-export const EnhancedTable = <T extends {}>(props : ITableProps<T>) => {
+const EnhancedTable = <T extends {}>(props : ITableProps<T>) => {
   const { rows, headCells, orderByFieldName } = props;
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<string | number | symbol>(orderByFieldName);
@@ -289,7 +289,7 @@ export const EnhancedTable = <T extends {}>(props : ITableProps<T>) => {
     <>
       {/* // <Box sx={{ width: '100%' }}>
     //   <Paper sx={{ width: '100%', mb: 2 }}> */}
-      {/* <EnhancedTableToolbar numSelected={selected.length} /> */}
+      {/* <EnhancedTableToolbar numSelected={selected?.length} /> */}
       <TableContainer>
         <Table
           sx={{ minWidth: 750 }}
@@ -297,12 +297,12 @@ export const EnhancedTable = <T extends {}>(props : ITableProps<T>) => {
           size={dense ? 'small' : 'medium'}
         >
           <EnhancedTableHead
-            numSelected={selected.length}
+            numSelected={selected?.length}
             order={order}
             orderBy={orderBy}
             onSelectAllClick={handleSelectAllClick}
             onRequestSort={handleRequestSort}
-            rowCount={rows.length}
+            rowCount={rows?.length}
             headCells={headCells}
           />
           <TableBody>
@@ -370,7 +370,7 @@ export const EnhancedTable = <T extends {}>(props : ITableProps<T>) => {
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
-        count={rows.length}
+        count={rows?.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
@@ -382,3 +382,5 @@ export const EnhancedTable = <T extends {}>(props : ITableProps<T>) => {
     </>
   );
 };
+
+export default EnhancedTable;

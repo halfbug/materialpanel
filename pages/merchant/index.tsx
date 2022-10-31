@@ -6,7 +6,7 @@ import SidebarLayout from '@/layouts/SidebarLayout';
 import PageHeader from '@/content/Management/Transactions/PageHeader';
 import PageTitleWrapper from '@/components/PageTitleWrapper';
 import Footer from '@/components/Footer';
-import { EnhancedTable, HeadCell } from 'pages/components/tables/enhancedTable';
+import EnhancedTable, { HeadCell } from '@/components/tables/enhancedTable';
 import { ALL_STORES } from '@/graphql/store.graphql';
 import { useQuery } from '@apollo/client';
 import LinearIndeterminate from '@/components/Progress/Linear';
