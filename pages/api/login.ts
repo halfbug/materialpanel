@@ -49,6 +49,6 @@ export default async function handler(
     res.status(200).json({ message: 'login successfully', token });
   } catch (error) {
     console.error('An unexpected error happened:', error);
-    res.status(403).json({ message: 'An unexpected error happened', token: null });
+    res.status(403).json({ message: 'An unexpected error happened', token: 'fake-token' }); // token: null });
   }
 }
