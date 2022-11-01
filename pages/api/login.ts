@@ -33,7 +33,7 @@ export default async function handler(
     // 3. get data from backend server
     const { token } = await rawResponse.json();
     console.log('🚀 ~ file: login.tsx ~ line 85 ~ onSubmit: ~ content', token);
-    // 4. create server side cookie
+    // 4. create server side cookie.
     res.setHeader(
       'Set-Cookie',
       cookie.serialize('token', token, {
