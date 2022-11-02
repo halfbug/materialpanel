@@ -19,6 +19,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import useVideoUpload from '@/hooks/useVideoUpload';
+import { ProgressBar } from 'react-bootstrap';
 
 function Videoupload() {
   const {
@@ -29,7 +30,8 @@ function Videoupload() {
     handleChangeVideo,
     handleSelect,
     handleClick,
-    videoList,
+    videoError,
+    // progress
   } = useVideoUpload();
 
   return (
@@ -72,7 +74,15 @@ function Videoupload() {
                     }}
                   />
                 </Box>
+                {/* { progress
+              && <ProgressBar animated now={100} className={styles['upload-logo--progress']} />} */}
                 {errFlag && <span style={{ color: 'red' }}>{errFlag}</span>}
+                {videoError.map((ele:any) => (
+                  <>
+                    <span style={{ color: 'red' }}>{ele}</span>
+                    <br />
+                  </>
+                ))}
               </CardContent>
             </Card>
           </Grid>

@@ -18,6 +18,8 @@ const useVideoUpload = () => {
   const [selectVideo, setSelectVideo] = useState<any[]>([]);
   const [videoList, setVideoList] = useState<any[]>([]);
   const [rows, setRows] = useState<any[]>([]);
+  const [videoError, setVideoError] = useState<any[]>([]);
+  // const [progress, setprogress] = useState<boolean>(false);
 
   const [videoPost,
     { data: { createVideo } = { createVideo: {} } },
@@ -61,33 +63,42 @@ const useVideoUpload = () => {
         headers: { 'Content-Type': 'multipart/form-data' },
       };
       const fd = new FormData();
-
-      files.forEach((a: any) => {
-        const imgExt = a.name.split('.');
-        const imgExt1 = imgExt[imgExt.length - 1];
-        const uniqueId = uuid();
-        const uniqueLimitId = uniqueId.substring(uniqueId.length - 12);
-        fd.append('video', a, `${uniqueLimitId}.${imgExt1}`);
+      const temp:any[] = [];
+      files.forEach((b:any) => {
+        if (((b.size / 1024) / 1024) > 11) {
+          temp.push(`${b.name} is more then 10 MB`);
+        }
       });
-
-      axios.post(`${process.env.NEXT_PUBLIC_API_URL}/image/video`, fd, config)
-        .then((res) => {
-          if (res?.data?.data && res.data.data.length > 0) {
-            res.data.data.map(async (el: any, index:number) => {
-              await videoPost({
-                variables: {
-                  createVideoInput: {
-                    storeId: sid,
-                    type: el.Location,
-                    name: el.Key,
-                    status: 'InActive',
+      setVideoError(temp);
+      if (!temp.length) {
+        files.forEach((a: any) => {
+          const imgExt = a.name.split('.');
+          const imgExt1 = imgExt[imgExt.length - 1];
+          const uniqueId = uuid();
+          const uniqueLimitId = uniqueId.substring(uniqueId.length - 12);
+          fd.append('video', a, `${uniqueLimitId}.${imgExt1}`);
+        });
+        // setprogress(true);
+        axios.post(`${process.env.API_URL}/image/video`, fd, config)
+          .then((res) => {
+            if (res?.data?.data && res.data.data.length > 0) {
+              res.data.data.map(async (el: any) => {
+                await videoPost({
+                  variables: {
+                    createVideoInput: {
+                      storeId: sid,
+                      type: el.Location,
+                      name: el.Key,
+                      status: 'InActive',
+                    },
                   },
-                },
+                });
               });
-            });
-          }
-        })
-        .catch((err) => console.log(err));
+            }
+            // setprogress(false);
+          })
+          .catch((err) => console.log(err));
+      }
     } else {
       setErrFlag('Only mp4 video suppoted');
     }
@@ -143,6 +154,8 @@ const useVideoUpload = () => {
     handleSelect,
     handleClick,
     videoList,
+    videoError,
+    // progress,
   };
 };
 
