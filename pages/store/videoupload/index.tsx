@@ -19,7 +19,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import useVideoUpload from '@/hooks/useVideoUpload';
-import { ProgressBar } from 'react-bootstrap';
+import LinearIndeterminate from '@/components/Progress/Linear';
 
 function Videoupload() {
   const {
@@ -31,7 +31,7 @@ function Videoupload() {
     handleSelect,
     handleClick,
     videoError,
-    // progress
+    isLoading,
   } = useVideoUpload();
 
   return (
@@ -57,6 +57,7 @@ function Videoupload() {
               <CardHeader title="Upload Video" />
               <Divider />
               <CardContent>
+                {isLoading && <LinearIndeterminate />}
                 <Box
                   component="form"
                   sx={{
@@ -72,10 +73,9 @@ function Videoupload() {
                     inputProps={{
                       multiple: true,
                     }}
+                    disabled={isLoading}
                   />
                 </Box>
-                {/* { progress
-              && <ProgressBar animated now={100} className={styles['upload-logo--progress']} />} */}
                 {errFlag && <span style={{ color: 'red' }}>{errFlag}</span>}
                 {videoError.map((ele:any) => (
                   <>
@@ -90,7 +90,7 @@ function Videoupload() {
             <Card>
               <Grid container xs={12} style={{ justifyContent: 'space-between' }}>
                 <CardHeader title="Uploaded video List" />
-                <Button sx={{ margin: 1 }} style={{ right: '10px' }} variant="contained" onClick={() => handleClick()}>Submit</Button>
+                <Button sx={{ margin: 1 }} style={{ right: '10px' }} variant="contained" onClick={() => handleClick()} disabled={isLoading}>Submit</Button>
               </Grid>
               <Divider />
               <CardContent>

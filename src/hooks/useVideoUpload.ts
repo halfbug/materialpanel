@@ -19,13 +19,13 @@ const useVideoUpload = () => {
   const [videoList, setVideoList] = useState<any[]>([]);
   const [rows, setRows] = useState<any[]>([]);
   const [videoError, setVideoError] = useState<any[]>([]);
-  // const [progress, setprogress] = useState<boolean>(false);
+  const [isLoading, setLoading] = useState<boolean>(false);
 
   const [videoPost,
     { data: { createVideo } = { createVideo: {} } },
   ] = useMutation<any | null>(VIDEO_POST);
 
-  const [videoStatusUpdate, { data }] = useMutation<VideoUpdate>(VIDEOS_UPDATE);
+  const [videoStatusUpdate, { data, loading }] = useMutation<VideoUpdate>(VIDEOS_UPDATE);
 
   const [refetch] = useLazyQuery(GET_ALL_VIDEOS, {
     variables: { storeId: sid },
@@ -40,6 +40,10 @@ const useVideoUpload = () => {
       setVideoList(data?.updateVideo);
     }
   }, [data]);
+
+  useEffect(() => {
+    setLoading(loading);
+  }, [loading]);
 
   useEffect(() => {
     if (createVideo && createVideo.status) {
@@ -78,7 +82,7 @@ const useVideoUpload = () => {
           const uniqueLimitId = uniqueId.substring(uniqueId.length - 12);
           fd.append('video', a, `${uniqueLimitId}.${imgExt1}`);
         });
-        // setprogress(true);
+        setLoading(true);
         axios.post(`${process.env.API_URL}/image/video`, fd, config)
           .then((res) => {
             if (res?.data?.data && res.data.data.length > 0) {
@@ -95,9 +99,12 @@ const useVideoUpload = () => {
                 });
               });
             }
-            // setprogress(false);
+            setLoading(false);
           })
-          .catch((err) => console.log(err));
+          .catch((err) => {
+            console.log(err);
+            setLoading(false);
+          });
       }
     } else {
       setErrFlag('Only mp4 video suppoted');
@@ -155,7 +162,7 @@ const useVideoUpload = () => {
     handleClick,
     videoList,
     videoError,
-    // progress,
+    isLoading,
   };
 };
 
