@@ -19,7 +19,9 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import Label from '@/components/Label';
 import { visuallyHidden } from '@mui/utils';
+import _ from 'lodash';
 import NextLink from 'next/link';
 
 // interface Data {
@@ -100,12 +102,16 @@ function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) 
   return stabilizedThis.map((el) => el[0]);
 }
 
+interface statues {
+  error
+}
 export interface HeadCell<T>{
-  disablePadding: boolean;
+  disablePadding?: boolean;
   id: keyof T;
   label: string;
-  type?: 'string' | 'numeric' | 'datetime'| 'custom' | 'timestamp';
+  type?: 'string' | 'numeric' | 'datetime'| 'custom' | 'timestamp' | 'boolean' | 'status';
   options?: any;
+  statusOptions?: any;
 }
 
 interface EnhancedTableProps<T> {
@@ -285,6 +291,21 @@ const EnhancedTable = <T extends {}>(props : ITableProps<T>) => {
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
+  const getStatusLabel = (options, text:string) => {
+    // console.log(options);
+    let color : 'black' | 'primary' | 'secondary' | 'error' | 'warning' | 'success' | 'info';
+    // eslint-disable-next-line no-restricted-syntax
+    for (const key in options) {
+      // console.log('🚀 ~ file: enhancedTable.tsx ~ line 300 ~ getStatusLabel ~ text', text);
+      // console.log('🚀 ~ file: enhancedTable.tsx
+      //  ~ line 300 ~ getStatusLabel ~ options[key]', options[key]);
+      if (options[key].includes(text.toLowerCase())) {
+        color = key as typeof color;
+      }
+    }
+    return <Label color={color}>{text}</Label>;
+  };
+
   return (
     <>
       {/* // <Box sx={{ width: '100%' }}>
@@ -325,7 +346,9 @@ const EnhancedTable = <T extends {}>(props : ITableProps<T>) => {
                     key={row?.id}
                     // selected={isItemSelected}
                   >
-                    {headCells.map(({ id, type, options }) => (
+                    {headCells.map(({
+                      id, type, options, statusOptions,
+                    }) => (
                       <TableCell
                         id={labelId}
                         scope="row"
@@ -333,17 +356,21 @@ const EnhancedTable = <T extends {}>(props : ITableProps<T>) => {
 
                         {// eslint-disable-next-line func-names, consistent-return
                         (function () {
-                          console.log(options);
-                          if (row[id] || type === 'custom') {
+                          // console.log(options);
+                          // console.log('row', row, id);
+                          // console.log('🚀 ~ file: enhancedTable.tsx ~ line 338 ~ .map ~ id', id);
+                          if (_.get(row, id) || type === 'custom') {
                             switch (type) {
                               case 'timestamp':
                                 return new Date(parseInt(row[id]?.toString(), 10)).toDateString();
                               case 'datetime':
                                 return new Date(row[id]).toDateString();
+                              case 'status':
+                                return getStatusLabel(statusOptions, _.get(row, id) as string);
                               case 'custom':
                                 return options.map((e) => <NextLink href={`${e.link as string}?sid=${row?.id}`} passHref>{e.btn}</NextLink>);
                               default:
-                                return row[id];
+                                return _.get(row, id);
                             }
                           }
                         }())

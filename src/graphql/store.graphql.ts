@@ -6,7 +6,11 @@ query stores{
     id
     brandName 
     createdAt
-    planResetDate       
+    planResetDate  
+    status
+    subscription{
+      status
+    }     
   }
 }
 `;

@@ -17,3 +17,13 @@ export interface VideoUpdate {
     // updatedAt?: Date,
     // _id?: string
 }
+
+export interface IStore {
+    id?: string,
+    brandName?: string,
+    status?: string,
+    createdAt: Date,
+    planResetDate: Date,
+    subscription: keyof {status: string},
+
+}

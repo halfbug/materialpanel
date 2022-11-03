@@ -11,6 +11,7 @@ import { ALL_STORES } from '@/graphql/store.graphql';
 import { useQuery } from '@apollo/client';
 import LinearIndeterminate from '@/components/Progress/Linear';
 import { Dashboard, VideoCameraFront } from '@mui/icons-material';
+import { IStore } from 'types/groupshop';
 
 interface THeader {
   id: string;
@@ -18,7 +19,7 @@ interface THeader {
 }
 function StoreList() {
   const {
-    loading, data,
+    loading, data, error,
   } = useQuery(ALL_STORES);
   console.log('🚀 ~ file: index.tsx ~ line 189 ~ SidebarMenu ~ data', data);
   console.log('🚀 ~ file: index.tsx ~ line 189 ~ SidebarMenu ~ loading', loading);
@@ -39,6 +40,20 @@ function StoreList() {
       type: 'datetime',
       disablePadding: false,
       label: 'Plan Reset',
+    },
+    {
+      id: 'status',
+      disablePadding: false,
+      type: 'status',
+      statusOptions: { error: ['uninstalled'], success: ['active'], warning: ['inActive'] },
+      label: 'Status',
+    },
+    {
+      id: 'subscription.status',
+      disablePadding: false,
+      type: 'status',
+      statusOptions: { error: ['declined'], success: ['active', 'zero trial'], warning: ['pending'] },
+      label: 'Billing',
     },
     {
       id: 'options',
@@ -68,6 +83,7 @@ function StoreList() {
 
             <Card sx={{ padding: 3 }}>
               {loading && <LinearIndeterminate />}
+
               <EnhancedTable headCells={headCells} rows={data?.stores ?? []} orderByFieldName="brandName" />
             </Card>
           </Grid>
