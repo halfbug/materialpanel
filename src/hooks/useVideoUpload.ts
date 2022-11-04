@@ -70,7 +70,7 @@ const useVideoUpload = () => {
       const temp:any[] = [];
       files.forEach((b:any) => {
         if (((b.size / 1024) / 1024) > 11) {
-          temp.push(`${b.name} is more then 10 MB`);
+          temp.push(`${b.name} is more than 10 MB`);
         }
       });
       setVideoError(temp);
@@ -107,7 +107,7 @@ const useVideoUpload = () => {
           });
       }
     } else {
-      setErrFlag('Only mp4 video suppoted');
+      setErrFlag(' Please upload the following file types: MP4');
     }
   };
 
