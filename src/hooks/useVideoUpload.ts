@@ -6,10 +6,11 @@ import { GET_ALL_VIDEOS, VIDEOS_UPDATE, VIDEO_POST } from '@/graphql/store.graph
 import { useLazyQuery, useMutation } from '@apollo/client';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { VideoUpdate } from 'types/groupshop';
 import { v4 as uuid } from 'uuid';
 import { GridColDef } from '@mui/x-data-grid';
+import { StoreContext } from 'store/store.context';
 
 const useVideoUpload = () => {
   const router = useRouter();
@@ -21,6 +22,7 @@ const useVideoUpload = () => {
   const [videoError, setVideoError] = useState<any[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
 
+  const { store, dispatch } = useContext(StoreContext);
   const [videoPost,
     { data: { createVideo } = { createVideo: {} } },
   ] = useMutation<any | null>(VIDEO_POST);
@@ -64,7 +66,7 @@ const useVideoUpload = () => {
       setErrFlag('');
       const files: any = Array.from(e.target.files);
       const config = {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: { 'Content-Type': 'video/mp4' },
       };
       const fd = new FormData();
       const temp:any[] = [];
@@ -163,6 +165,7 @@ const useVideoUpload = () => {
     videoList,
     videoError,
     isLoading,
+    store,
   };
 };
 

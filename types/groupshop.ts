@@ -10,12 +10,6 @@ export interface VideoUpdate {
     status?: string,
     data?: string[],
     updateVideo?: any[],
-    // name?: any[],
-    // createdAt?: Date,
-    // status?: string,
-    // type?: string,
-    // updatedAt?: Date,
-    // _id?: string
 }
 
 export interface IStore {
@@ -26,4 +20,7 @@ export interface IStore {
     planResetDate: Date,
     subscription: keyof {status: string},
 
+}
+export interface MStore {
+    brandName?: string,
 }

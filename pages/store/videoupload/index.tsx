@@ -15,7 +15,6 @@ import {
 } from '@mui/material';
 import Footer from '@/components/Footer';
 import { DataGrid } from '@mui/x-data-grid';
-
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import useVideoUpload from '@/hooks/useVideoUpload';
@@ -32,6 +31,7 @@ function Videoupload() {
     handleClick,
     videoError,
     isLoading,
+    store,
   } = useVideoUpload();
 
   return (
@@ -41,7 +41,7 @@ function Videoupload() {
       </Head>
       <PageTitleWrapper>
         <PageTitle
-          heading="Video Upload"
+          heading={store?.brandName ?? ''}
         />
       </PageTitleWrapper>
       <Container maxWidth="lg">

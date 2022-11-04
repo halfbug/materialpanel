@@ -23,6 +23,7 @@ import Label from '@/components/Label';
 import { visuallyHidden } from '@mui/utils';
 import _ from 'lodash';
 import NextLink from 'next/link';
+import { StoreContext } from 'store/store.context';
 
 // interface Data {
 //   calories: number;
@@ -234,6 +235,7 @@ const EnhancedTable = <T extends {}>(props : ITableProps<T>) => {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const { store, dispatch } = React.useContext(StoreContext);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -306,6 +308,10 @@ const EnhancedTable = <T extends {}>(props : ITableProps<T>) => {
     return <Label color={color}>{text}</Label>;
   };
 
+  const handleClik = (data:any) => {
+    dispatch({ type: 'UPDATE_BRANDNAME', payload: { ...store, brandName: data?.brandName } });
+  };
+
   return (
     <>
       {/* // <Box sx={{ width: '100%' }}>
@@ -352,6 +358,7 @@ const EnhancedTable = <T extends {}>(props : ITableProps<T>) => {
                       <TableCell
                         id={labelId}
                         scope="row"
+                        onClick={() => handleClik(row)}
                       >
 
                         {// eslint-disable-next-line func-names, consistent-return

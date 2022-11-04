@@ -16,6 +16,7 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { ApolloProvider } from '@apollo/client';
 import { useApollo } from 'src/hooks/useApollo';
+import { StoreContextProvider } from 'store/store.context';
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -40,23 +41,25 @@ function TokyoApp(props: TokyoAppProps) {
 
   return (
     <ApolloProvider client={apolloClient}>
-      <CacheProvider value={emotionCache}>
-        <Head>
-          <title>GS Admin</title>
-          <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1, shrink-to-fit=no"
-          />
-        </Head>
-        <SidebarProvider>
-          <ThemeProviderWrapper>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <CssBaseline />
-              {getLayout(<Component {...pageProps} />)}
-            </LocalizationProvider>
-          </ThemeProviderWrapper>
-        </SidebarProvider>
-      </CacheProvider>
+      <StoreContextProvider>
+        <CacheProvider value={emotionCache}>
+          <Head>
+            <title>GS Admin</title>
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1, shrink-to-fit=no"
+            />
+          </Head>
+          <SidebarProvider>
+            <ThemeProviderWrapper>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <CssBaseline />
+                {getLayout(<Component {...pageProps} />)}
+              </LocalizationProvider>
+            </ThemeProviderWrapper>
+          </SidebarProvider>
+        </CacheProvider>
+      </StoreContextProvider>
     </ApolloProvider>
   );
 }
