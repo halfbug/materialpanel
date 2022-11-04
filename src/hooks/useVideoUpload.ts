@@ -66,7 +66,7 @@ const useVideoUpload = () => {
       setErrFlag('');
       const files: any = Array.from(e.target.files);
       const config = {
-        headers: { 'Content-Type': 'video/mp4' },
+        headers: { 'Content-Type': 'multipart/form-data;boundary=None' },
       };
       const fd = new FormData();
       const temp:any[] = [];
