@@ -2,8 +2,10 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import { GET_ALL_VIDEOS, VIDEOS_UPDATE, VIDEO_POST } from '@/graphql/store.graphql';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import {
+  ALL_STORES, GET_ALL_VIDEOS, VIDEOS_UPDATE, VIDEO_POST,
+} from '@/graphql/store.graphql';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
@@ -28,6 +30,8 @@ const useVideoUpload = () => {
   ] = useMutation<any | null>(VIDEO_POST);
 
   const [videoStatusUpdate, { data, loading }] = useMutation<VideoUpdate>(VIDEOS_UPDATE);
+  const getAllStore = useQuery(ALL_STORES);
+  console.log('getAllStore', getAllStore);
 
   const [refetch] = useLazyQuery(GET_ALL_VIDEOS, {
     variables: { storeId: sid },
@@ -114,9 +118,9 @@ const useVideoUpload = () => {
   };
 
   const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 230 },
-    { field: 'name', headerName: 'Name', width: 200 },
-    { field: 'type', headerName: 'Video URL', width: 480 },
+    // { field: 'id', headerName: 'ID', width: 230 },
+    { field: 'name', headerName: 'Name', width: 400 },
+    // { field: 'type', headerName: 'Video URL', width: 480 },
     { field: 'status', headerName: 'Status', width: 200 },
   ];
 

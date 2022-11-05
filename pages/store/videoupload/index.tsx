@@ -19,6 +19,8 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import useVideoUpload from '@/hooks/useVideoUpload';
 import LinearIndeterminate from '@/components/Progress/Linear';
+import { ALL_STORES } from '@/graphql/store.graphql';
+import { useQuery } from '@apollo/client';
 
 function Videoupload() {
   const {
@@ -33,6 +35,8 @@ function Videoupload() {
     isLoading,
     store,
   } = useVideoUpload();
+  const getAllStore = useQuery(ALL_STORES);
+  console.log('getAllStore', getAllStore);
 
   return (
     <>
@@ -76,13 +80,26 @@ function Videoupload() {
                     disabled={isLoading}
                   />
                 </Box>
-                {errFlag && <span style={{ color: 'red' }}>{errFlag}</span>}
-                {videoError.map((ele:any) => (
-                  <>
-                    <span style={{ color: 'red' }}>{ele}</span>
-                    <br />
-                  </>
-                ))}
+                <div>
+                  <div>
+                    <div>
+                      {errFlag && <span style={{ marginLeft: '12px', color: 'red' }}>{errFlag}</span>}
+                    </div>
+                    <div>
+                      {videoError.map((ele: any) => (
+                        <>
+                          <span style={{ marginLeft: '12px', color: 'red' }}>{ele}</span>
+                          <br />
+                        </>
+                      ))}
+                    </div>
+                  </div>
+                  <div style={{ marginLeft: '12px', marginTop: '10px' }}>
+                    {selectVideo.length}
+                    {' '}
+                    of 5 Video selected (Max 5)
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </Grid>
@@ -95,12 +112,12 @@ function Videoupload() {
               <Divider />
               <CardContent>
                 {rows.length > 0 && (
-                  <div style={{ height: 400, width: '100%' }}>
+                  <div style={{ height: 630, width: '100%' }}>
                     <DataGrid
                       rows={rows}
                       columns={columns}
-                      pageSize={5}
-                      rowsPerPageOptions={[5]}
+                      pageSize={10}
+                      rowsPerPageOptions={[10]}
                       checkboxSelection
                       onSelectionModelChange={(e: any) => handleSelect(e)}
                       selectionModel={selectVideo}
