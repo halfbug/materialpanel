@@ -121,6 +121,11 @@ function Videoupload() {
                       checkboxSelection
                       onSelectionModelChange={(e: any) => handleSelect(e)}
                       selectionModel={selectVideo}
+                      sx={{
+                        '& .MuiDataGrid-columnHeaderCheckbox .MuiDataGrid-columnHeaderTitleContainer': {
+                          display: 'none',
+                        },
+                      }}
                     />
                   </div>
                 )}
