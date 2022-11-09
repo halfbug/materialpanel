@@ -112,7 +112,7 @@ function Videoupload() {
               <Divider />
               <CardContent>
                 {rows.length > 0 && (
-                  <div style={{ height: 630, width: '100%' }}>
+                  <div style={{ height: '100%', width: '100%' }}>
                     <DataGrid
                       rows={rows}
                       columns={columns}
@@ -126,6 +126,7 @@ function Videoupload() {
                           display: 'none',
                         },
                       }}
+                      autoHeight
                     />
                   </div>
                 )}
