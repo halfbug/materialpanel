@@ -41,7 +41,7 @@ function Videoupload() {
   return (
     <>
       <Head>
-        <title>Forms - Components</title>
+        <title>Video upload</title>
       </Head>
       <PageTitleWrapper>
         <PageTitle
