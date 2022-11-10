@@ -19,8 +19,7 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import useVideoUpload from '@/hooks/useVideoUpload';
 import LinearIndeterminate from '@/components/Progress/Linear';
-import { ALL_STORES } from '@/graphql/store.graphql';
-import { useQuery } from '@apollo/client';
+import Toast from 'react-bootstrap/Toast';
 
 function Videoupload() {
   const {
@@ -33,20 +32,23 @@ function Videoupload() {
     handleClick,
     videoError,
     isLoading,
-    store,
+    brandName,
     fileName,
+    videoUploadSuccess,
+    toastClose,
   } = useVideoUpload();
-  const getAllStore = useQuery(ALL_STORES);
-  console.log('getAllStore', getAllStore);
 
   return (
     <>
+      <Toast onClose={() => toastClose()} show={videoUploadSuccess} delay={3000} className="bg-success position-fixed text-white end-0" autohide>
+        <Toast.Body>Video uploaded successfully!</Toast.Body>
+      </Toast>
       <Head>
         <title>Video upload</title>
       </Head>
       <PageTitleWrapper>
         <PageTitle
-          heading={store?.brandName ?? ''}
+          heading={brandName}
         />
       </PageTitleWrapper>
       <Container maxWidth="lg">
@@ -72,9 +74,9 @@ function Videoupload() {
                   autoComplete="off"
                 >
                   <TextField
+                    onChange={(e) => handleChangeVideo(e)}
                     id="standard-helperText"
                     type="file"
-                    onChange={(e) => handleChangeVideo(e)}
                     inputProps={{
                       multiple: true,
                     }}

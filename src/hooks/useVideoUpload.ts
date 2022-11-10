@@ -8,11 +8,10 @@ import {
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { VideoUpdate } from 'types/groupshop';
 import { v4 as uuid } from 'uuid';
 import { GridColDef } from '@mui/x-data-grid';
-import { StoreContext } from 'store/store.context';
 import moment from 'moment';
 
 const useVideoUpload = () => {
@@ -24,16 +23,16 @@ const useVideoUpload = () => {
   const [rows, setRows] = useState<any[]>([]);
   const [videoError, setVideoError] = useState<any[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
+  const [brandName, setBrandName] = useState('');
   const [fileName, setFileName] = useState<string>('');
+  const [videoUploadSuccess, setVideoUploadSuccess] = useState<boolean>(false);
 
-  const { store, dispatch } = useContext(StoreContext);
   const [videoPost,
     { data: { createVideo } = { createVideo: {} } },
   ] = useMutation<any | null>(VIDEO_POST);
 
   const [videoStatusUpdate, { data, loading }] = useMutation<VideoUpdate>(VIDEOS_UPDATE);
   const getAllStore = useQuery(ALL_STORES);
-  console.log('getAllStore', getAllStore);
 
   const [refetch] = useLazyQuery(GET_ALL_VIDEOS, {
     variables: { storeId: sid },
@@ -42,6 +41,12 @@ const useVideoUpload = () => {
       setVideoList(getVideo?.videos);
     },
   });
+
+  useEffect(() => {
+    if (getAllStore && getAllStore.data && getAllStore.data.stores?.length > 0 && sid) {
+      setBrandName(getAllStore.data.stores.find((ele: any) => ele.id === sid)?.brandName);
+    }
+  }, [getAllStore, sid]);
 
   useEffect(() => {
     if (data) {
@@ -56,6 +61,7 @@ const useVideoUpload = () => {
   useEffect(() => {
     if (createVideo && createVideo.status) {
       refetch();
+      setVideoUploadSuccess(true);
     }
   }, [createVideo]);
 
@@ -76,8 +82,8 @@ const useVideoUpload = () => {
         headers: { 'Content-Type': 'multipart/form-data;boundary=None' },
       };
       const fd = new FormData();
-      const temp:any[] = [];
-      files.forEach((b:any) => {
+      const temp: any[] = [];
+      files.forEach((b: any) => {
         if (((b.size / 1024) / 1024) > 11) {
           temp.push(`${b.name} is more than 10 MB`);
         }
@@ -85,11 +91,11 @@ const useVideoUpload = () => {
       setVideoError(temp);
       if (!temp.length) {
         files.forEach((a: any) => {
-          const imgExt = a.name.split('.');
-          const imgExt1 = imgExt[imgExt.length - 1];
+          const imgName = a.name.split('.');
+          const imgExt = imgName.splice(imgName.length - 1, 1);
           const uniqueId = uuid();
-          const uniqueLimitId = uniqueId.substring(uniqueId.length - 12);
-          fd.append('video', a, `${uniqueLimitId}.${imgExt1}`);
+          const uniqueLimitId = uniqueId.substring(uniqueId.length - 3);
+          fd.append('video', a, `${imgName.join('.')}${uniqueLimitId}.${imgExt}`);
         });
         setLoading(true);
         axios.post(`${process.env.API_URL}/image/video`, fd, config)
@@ -167,6 +173,10 @@ const useVideoUpload = () => {
     });
   };
 
+  const toastClose = () => {
+    setVideoUploadSuccess(false);
+  };
+
   return {
     rows,
     errFlag,
@@ -178,8 +188,10 @@ const useVideoUpload = () => {
     videoList,
     videoError,
     isLoading,
-    store,
+    brandName,
     fileName,
+    videoUploadSuccess,
+    toastClose,
   };
 };
 

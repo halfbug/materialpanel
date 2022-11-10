@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 /* eslint-disable react/jsx-props-no-spreading */
 import type { ReactElement, ReactNode } from 'react';
 
@@ -17,6 +18,7 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { ApolloProvider } from '@apollo/client';
 import { useApollo } from 'src/hooks/useApollo';
 import { StoreContextProvider } from 'store/store.context';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const clientSideEmotionCache = createEmotionCache();
 
