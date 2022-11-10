@@ -24,6 +24,7 @@ const useVideoUpload = () => {
   const [rows, setRows] = useState<any[]>([]);
   const [videoError, setVideoError] = useState<any[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
+  const [fileName, setFileName] = useState<string>('');
 
   const { store, dispatch } = useContext(StoreContext);
   const [videoPost,
@@ -65,6 +66,7 @@ const useVideoUpload = () => {
   }, [sid]);
 
   const handleChangeVideo = (e: any) => {
+    setFileName(e.target.value);
     const videoType = ['video/mp4'];
     if (!(Array.from(e.target.files).map((ele: any) => videoType.includes(ele?.type)))
       .includes(false)) {
@@ -107,10 +109,12 @@ const useVideoUpload = () => {
               });
             }
             setLoading(false);
+            setFileName('');
           })
           .catch((err) => {
             console.log(err);
             setLoading(false);
+            setFileName('');
           });
       }
     } else {
@@ -175,6 +179,7 @@ const useVideoUpload = () => {
     videoError,
     isLoading,
     store,
+    fileName,
   };
 };
 

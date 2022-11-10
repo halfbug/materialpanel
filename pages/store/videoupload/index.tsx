@@ -34,6 +34,7 @@ function Videoupload() {
     videoError,
     isLoading,
     store,
+    fileName,
   } = useVideoUpload();
   const getAllStore = useQuery(ALL_STORES);
   console.log('getAllStore', getAllStore);
@@ -78,6 +79,7 @@ function Videoupload() {
                       multiple: true,
                     }}
                     disabled={isLoading}
+                    value={fileName}
                   />
                 </Box>
                 <div>
