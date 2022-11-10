@@ -38,7 +38,7 @@ function Overview() {
   return (
     <OverviewWrapper>
       <Head>
-        <title>GS Admin</title>
+        <title>GSADMIN</title>
       </Head>
       <HeaderWrapper>
         <Container maxWidth="lg">

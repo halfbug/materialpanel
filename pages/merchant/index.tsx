@@ -66,7 +66,7 @@ function StoreList() {
   return (
     <>
       <Head>
-        <title>Merchants</title>
+        <title>GSADMIN</title>
       </Head>
       <PageTitleWrapper>
         <PageHeader />

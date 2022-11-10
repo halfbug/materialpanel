@@ -44,7 +44,7 @@ function Videoupload() {
         <Toast.Body>Video uploaded successfully!</Toast.Body>
       </Toast>
       <Head>
-        <title>Video upload</title>
+        <title>GSADMIN</title>
       </Head>
       <PageTitleWrapper>
         <PageTitle

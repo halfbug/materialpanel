@@ -99,7 +99,7 @@ function Login() {
   return (
     <>
       <Head>
-        <title>Login</title>
+        <title>GSADMIN</title>
       </Head>
       <MainContent>
         <TopWrapper>
