@@ -13,6 +13,7 @@ import { VideoUpdate } from 'types/groupshop';
 import { v4 as uuid } from 'uuid';
 import { GridColDef } from '@mui/x-data-grid';
 import { StoreContext } from 'store/store.context';
+import moment from 'moment';
 
 const useVideoUpload = () => {
   const router = useRouter();
@@ -118,10 +119,14 @@ const useVideoUpload = () => {
   };
 
   const columns: GridColDef[] = [
-    // { field: 'id', headerName: 'ID', width: 230 },
     { field: 'name', headerName: 'Name', width: 400 },
-    // { field: 'type', headerName: 'Video URL', width: 480 },
     { field: 'status', headerName: 'Status', width: 200 },
+    {
+      field: 'createdAt',
+      headerName: 'Video Uploaded Date',
+      width: 250,
+      valueGetter: ({ value }) => moment(value).format('MMM Do YYYY, HH:mm:ss'),
+    },
   ];
 
   useEffect(() => {
