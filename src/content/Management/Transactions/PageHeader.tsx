@@ -3,7 +3,7 @@ import {
 } from '@mui/material';
 
 interface PageHeaderProps {
-  meta: { billingStatus: boolean },
+  meta?: { billingStatus: boolean },
 }
 function PageHeader({ meta }: PageHeaderProps) {
   const user = {
@@ -12,6 +12,7 @@ function PageHeader({ meta }: PageHeaderProps) {
   };
   return (
     <Grid container justifyContent="space-between" alignItems="center">
+      { meta && (
       <Grid item xs={12}>
         <Alert severity={meta.billingStatus ? 'info' : 'warning'}>
           Billing status is
@@ -20,6 +21,7 @@ function PageHeader({ meta }: PageHeaderProps) {
           !
         </Alert>
       </Grid>
+      )}
       <Grid item>
         <Typography variant="h3" component="h3" gutterBottom>
           Merchant
@@ -43,3 +45,6 @@ function PageHeader({ meta }: PageHeaderProps) {
 }
 
 export default PageHeader;
+PageHeader.PageHeader = {
+  meta: {},
+};
