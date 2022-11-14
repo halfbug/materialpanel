@@ -1,14 +1,25 @@
-import { Typography, Button, Grid } from '@mui/material';
+import {
+  Typography, Button, Grid, Alert,
+} from '@mui/material';
 
-import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
-
-function PageHeader() {
+interface PageHeaderProps {
+  meta: { billingStatus: boolean },
+}
+function PageHeader({ meta }: PageHeaderProps) {
   const user = {
     name: 'Catherine Pike',
     avatar: '/static/images/avatars/1.jpg',
   };
   return (
     <Grid container justifyContent="space-between" alignItems="center">
+      <Grid item xs={12}>
+        <Alert severity={meta.billingStatus ? 'info' : 'warning'}>
+          Billing status is
+          {' '}
+          {meta.billingStatus ? 'true' : 'false'}
+          !
+        </Alert>
+      </Grid>
       <Grid item>
         <Typography variant="h3" component="h3" gutterBottom>
           Merchant

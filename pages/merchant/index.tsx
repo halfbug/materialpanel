@@ -12,17 +12,19 @@ import { useQuery } from '@apollo/client';
 import LinearIndeterminate from '@/components/Progress/Linear';
 import { Dashboard, VideoCameraFront } from '@mui/icons-material';
 import { IStore } from 'types/groupshop';
+import { NextPage } from 'next';
 
 interface THeader {
   id: string;
 
 }
-function StoreList() {
+const StoreList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
   const {
     loading, data, error,
   } = useQuery(ALL_STORES);
   console.log('🚀 ~ file: index.tsx ~ line 189 ~ SidebarMenu ~ data', data);
   console.log('🚀 ~ file: index.tsx ~ line 189 ~ SidebarMenu ~ loading', loading);
+  console.log('🚀 ~ file: index.tsx ~ line 27 ~ meta', meta);
   const headCells: Array<HeadCell<typeof data>> = [
     {
       id: 'brandName',
@@ -69,7 +71,7 @@ function StoreList() {
         <title>GSADMIN</title>
       </Head>
       <PageTitleWrapper>
-        <PageHeader />
+        <PageHeader meta={meta} />
       </PageTitleWrapper>
       <Container maxWidth="lg">
         <Grid
@@ -92,10 +94,29 @@ function StoreList() {
       <Footer />
     </>
   );
-}
+};
 
 StoreList.getLayout = (page) => (
   <SidebarLayout>{page}</SidebarLayout>
 );
 
 export default StoreList;
+export const getServerSideProps = async (context: any) => {
+  const url = `${process.env.API_URL}/billing-status`;
+  const requestOptions = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const res = await fetch(url, requestOptions);
+  const resJson = await res.json();
+  console.log('🚀 ~ file: index.tsx ~ line 116 ~ getServerSideProps ~ resJson', resJson);
+  return {
+    props: {
+      // meta: { billingStatus: false },
+      meta: { billingStatus: resJson.billingStatus !== 'false' },
+    },
+  };
+};
