@@ -24,3 +24,5 @@ export interface IStore {
 export interface MStore {
     brandName?: string,
 }
+
+export interface IUser { firstName: string; lastName: string;}

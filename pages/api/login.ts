@@ -37,7 +37,7 @@ export default async function handler(
     res.setHeader(
       'Set-Cookie',
       cookie.serialize('token', token, {
-        httpOnly: true,
+        httpOnly: false,
         secure: process.env.NODE_ENV !== 'development',
         maxAge: 60 * 60 * 24 * 7, // 1 week
         sameSite: 'strict',

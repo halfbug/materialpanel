@@ -23,7 +23,7 @@ import Label from '@/components/Label';
 import { visuallyHidden } from '@mui/utils';
 import _ from 'lodash';
 import NextLink from 'next/link';
-import { StoreContext } from 'store/store.context';
+import { StoreContext } from '@/store/store.context';
 
 // interface Data {
 //   calories: number;

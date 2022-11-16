@@ -15,9 +15,10 @@ import createEmotionCache from 'src/createEmotionCache';
 import { SidebarProvider } from 'src/contexts/SidebarContext';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import { ApolloProvider } from '@apollo/client';
+// import { ApolloProvider } from '@apollo/client';
 import { useApollo } from 'src/hooks/useApollo';
-import { StoreContextProvider } from 'store/store.context';
+import { StoreContextProvider } from '@/store/store.context';
+import { AuthContextProvider } from '@/contexts/auth.context';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const clientSideEmotionCache = createEmotionCache();
@@ -42,7 +43,8 @@ function TokyoApp(props: TokyoAppProps) {
   const apolloClient = useApollo(pageProps.initialApolloState);
 
   return (
-    <ApolloProvider client={apolloClient}>
+    <AuthContextProvider>
+      {/* <ApolloProvider client={apolloClient}> */}
       <StoreContextProvider>
         <CacheProvider value={emotionCache}>
           <Head>
@@ -62,7 +64,8 @@ function TokyoApp(props: TokyoAppProps) {
           </SidebarProvider>
         </CacheProvider>
       </StoreContextProvider>
-    </ApolloProvider>
+      {/* </ApolloProvider> */}
+    </AuthContextProvider>
   );
 }
 
