@@ -11,7 +11,7 @@ import { ALL_STORES } from '@/graphql/store.graphql';
 import { useQuery } from '@apollo/client';
 import LinearIndeterminate from '@/components/Progress/Linear';
 import { Dashboard, VideoCameraFront } from '@mui/icons-material';
-import { IStore } from 'types/groupshop';
+// import { IStore } from '@/types/groupshop';
 import { NextPage } from 'next';
 
 interface THeader {
