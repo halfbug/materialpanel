@@ -1,4 +1,4 @@
-import { MStore } from 'types/groupshop';
+import { MStore } from '@/types/groupshop';
 
 export interface StoreAction {
   type: 'UPDATE_BRANDNAME';

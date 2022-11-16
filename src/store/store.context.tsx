@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
 import * as React from 'react';
-import { MStore } from 'types/groupshop';
+import { MStore } from '@/types/groupshop';
 import { reducer, StoreAction } from './store.reducer';
 
 interface StoreContextType {

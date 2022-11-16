@@ -11,6 +11,6 @@ export default async (req, res) => {
     res.status(200).json({ token });
   } else {
     res.setHeader('Allow', ['GET']);
-    res.status(405).json({ message: `Method ${req.method} not allowed` });
+    res.status(405).json({ message: `Method ${req.method as string} not allowed` });
   }
 };
