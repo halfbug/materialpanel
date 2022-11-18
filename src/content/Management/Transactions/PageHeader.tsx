@@ -1,3 +1,5 @@
+import React, { useContext } from 'react';
+import { AuthContext } from '@/contexts/auth.context';
 import {
   Typography, Button, Grid, Alert,
 } from '@mui/material';
@@ -6,10 +8,11 @@ interface PageHeaderProps {
   meta?: { billingStatus: boolean },
 }
 function PageHeader({ meta }: PageHeaderProps) {
-  const user = {
-    name: 'Catherine Pike',
-    avatar: '/static/images/avatars/1.jpg',
-  };
+  // const user = {
+  //   name: 'Catherine Pike ss',
+  //   avatar: '/static/images/avatars/1.jpg',
+  // };
+  const { user } = useContext(AuthContext);
   return (
     <Grid container justifyContent="space-between" alignItems="center">
       { meta && (
@@ -26,8 +29,8 @@ function PageHeader({ meta }: PageHeaderProps) {
         <Typography variant="h3" component="h3" gutterBottom>
           Merchant
         </Typography>
-        <Typography variant="subtitle2">
-          {user.name}
+        <Typography variant="subtitle2" className="title_case">
+          {user?.name}
           , these are your recent stores
         </Typography>
       </Grid>

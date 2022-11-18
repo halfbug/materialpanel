@@ -25,4 +25,13 @@ export interface MStore {
     brandName?: string,
 }
 
-export interface IUser { firstName: string; lastName: string;}
+export interface IUser {
+    first_name: string;
+     last_name: string;
+     email: string;
+     id:string;
+     name?: string;
+     roles?: string[]
+     avatar?: string,
+     jobtitle?: string,
+    }

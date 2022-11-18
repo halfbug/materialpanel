@@ -9,6 +9,7 @@ interface AuthContextType {
   user: IUser | undefined;
   error?: string;
   token: string | undefined;
+  signout: () => void;
 //   verify()?: any;
 }
 
@@ -36,17 +37,42 @@ export const AuthContextProvider = ({
   useEffect(() => { verify(); }, []);
   const verify = async () => {
     const res = await fetch('/api/user');
-    const data = await res.json();
+    const data: {user : IUser, token : string} = await res.json();
 
     if (res.ok) {
-      setUser(data.user);
+      setUser({
+        ...data.user,
+        name: `${data.user.first_name} ${data.user.last_name}`,
+        avatar: '/static/images/avatars/1.jpg',
+        jobtitle: 'Groupshop Staff',
+      });
       setToken(data.token);
     } else {
       setUser(undefined);
-    //   await router.push(data.redirectUrl);
+      console.log('🚀 ~ file: auth.context.tsx ~ line 53 ~ verify ~ router', router);
+      if (!['/', '/login'].includes(router.pathname)) { await router.push('/'); }
     }
   };
-  const ctx = useMemo(() => ({ user, error, token }), [error, token, user]);
+
+  const signout = async () => {
+    const rawResponse = await fetch('/api/signout', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify('logout user'),
+    });
+    const data = await rawResponse.json();
+
+    console.log('🚀 ~ file: auth.context.tsx ~ line 65 ~ signout ~ data', data);
+    void router.push('/');
+    return data;
+  };
+
+  const ctx = useMemo(() => ({
+    user, error, token, signout,
+  }), [error, token, user]);
   console.log('🚀 ~ file: auth.context.tsx ~ line 48 ~ ctx', ctx);
 
   return (

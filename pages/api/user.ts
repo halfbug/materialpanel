@@ -35,7 +35,7 @@ export default async (req, res) => {
         }),
       );
       // console.log(user.redirectUrl);
-      res.status(401).json({ message: user.response.error, redirectUrl: user.redirectUrl });
+      res.status(401).json({ error: true, message: user.message });
       // res.redirect(user.redirectUrl);
     }
   } else {

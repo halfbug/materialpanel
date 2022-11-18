@@ -89,7 +89,7 @@ function Login() {
         const { token, message } = await rawResponse.json();
         await formik.setFieldValue('message', message);
         await formik.setFieldValue('token', token);
-        if (token) await router.push('/dashboards/general');
+        if (token) await router.push('/merchant');
       } catch (error) {
         console.error('An unexpected error happened:', error);
       }

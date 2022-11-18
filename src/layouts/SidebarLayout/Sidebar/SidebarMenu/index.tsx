@@ -206,34 +206,34 @@ function SidebarMenu() {
           </List>
         </SubMenuWrapper>
       </List> */}
-      <List
+      {/* <List
         component="div"
         subheader={(
           <ListSubheader component="div" disableSticky>
             Merchant
           </ListSubheader>
         )}
-      >
-        <SubMenuWrapper>
-          <List component="div">
-            <ListItem component="div">
-              <NextLink href="/merchant" passHref>
-                <Button
-                  className={
+      > */}
+      <SubMenuWrapper>
+        <List component="div">
+          <ListItem component="div">
+            <NextLink href="/merchant" passHref>
+              <Button
+                className={
                   //   currentRoute === '/dashboards/crypto' ? 'active' : ''
                   // }
                       currentRoute === '/merchant' ? 'active' : ''
                     }
-                  disableRipple
-                  component="a"
-                  onClick={closeSidebar}
-                  startIcon={<BrightnessLowTwoToneIcon />}
-                >
-                  Dashboard
-                </Button>
-              </NextLink>
-            </ListItem>
-            {/* <ListItem component="div">
+                disableRipple
+                component="a"
+                onClick={closeSidebar}
+                startIcon={<BrightnessLowTwoToneIcon />}
+              >
+                Dashboard
+              </Button>
+            </NextLink>
+          </ListItem>
+          {/* <ListItem component="div">
               <NextLink href="/store/videoupload" passHref>
                 <Button
                   className={
@@ -248,7 +248,7 @@ function SidebarMenu() {
                 </Button>
               </NextLink>
             </ListItem> */}
-            {/* <ListItem component="div">
+          {/* <ListItem component="div">
                 <NextLink href="/applications/messenger" passHref>
                   <Button
                     className={
@@ -263,9 +263,9 @@ function SidebarMenu() {
                   </Button>
                 </NextLink>
               </ListItem> */}
-          </List>
-        </SubMenuWrapper>
-      </List>
+        </List>
+      </SubMenuWrapper>
+      {/* </List> */}
       {/* <List
           component="div"
           subheader={
