@@ -6,7 +6,7 @@ import {
   ALL_STORES, GET_ALL_VIDEOS, VIDEOS_UPDATE, VIDEO_POST,
 } from '@/graphql/store.graphql';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import axios from 'axios'; 
+import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { VideoUpdate } from '@/types/groupshop';

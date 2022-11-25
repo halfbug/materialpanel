@@ -19,7 +19,7 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { useApollo } from 'src/hooks/useApollo';
 import { StoreContextProvider } from '@/store/store.context';
 import { AuthContextProvider } from '@/contexts/auth.context';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import '../styles/app.css';
 import '@/styles/global.css';
 
 const clientSideEmotionCache = createEmotionCache();

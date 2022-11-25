@@ -10,6 +10,13 @@ query stores{
     status
     subscription{
       status
+    }
+    discoveryTool{
+      status
+      matchingBrandName{
+        id
+        brandName
+      }
     }     
   }
 }
@@ -62,6 +69,23 @@ const VIDEOS_UPDATE = gql`
 }
 `;
 
+const DISCOVERYTOOLS_UPDATE = gql`
+  mutation UpdateDiscoveryTools($updateDiscoveryTools: UpdateStoreInput!) {
+    updateDiscoveryTools(UpdateDiscoveryTools: $updateDiscoveryTools) {
+      id
+      status
+      discoveryTool{
+        status
+        matchingBrandName{
+          id
+          brandName
+        }
+      }
+      createdAt
+  }
+}
+`;
+
 export {
-  ALL_STORES, ALL_STORES1, VIDEO_POST, GET_ALL_VIDEOS, VIDEOS_UPDATE,
+  ALL_STORES, ALL_STORES1, VIDEO_POST, GET_ALL_VIDEOS, VIDEOS_UPDATE, DISCOVERYTOOLS_UPDATE,
 };

@@ -25,6 +25,11 @@ export interface MStore {
     brandName?: string,
 }
 
+export interface DiscoveryTools {
+    status?: string,
+    selectBrandName?: string[],
+    discoveryTool?: object,
+}
 export interface IUser {
     first_name: string;
      last_name: string;

@@ -12,6 +12,7 @@ import {
   CardHeader,
   CardContent,
   Divider,
+  Snackbar,
 } from '@mui/material';
 import Footer from '@/components/Footer';
 import { DataGrid } from '@mui/x-data-grid';
@@ -19,7 +20,6 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import useVideoUpload from '@/hooks/useVideoUpload';
 import LinearIndeterminate from '@/components/Progress/Linear';
-import Toast from 'react-bootstrap/Toast';
 
 function Videoupload() {
   const {
@@ -40,9 +40,13 @@ function Videoupload() {
 
   return (
     <>
-      <Toast onClose={() => toastClose()} show={videoUploadSuccess} delay={3000} className="bg-success position-fixed text-white end-0" autohide>
-        <Toast.Body>Video uploaded successfully!</Toast.Body>
-      </Toast>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={videoUploadSuccess}
+        onClose={() => toastClose()}
+        message="I love snacks"
+        autoHideDuration={5000}
+      />
       <Head>
         <title>GSADMIN</title>
       </Head>
