@@ -22,6 +22,7 @@ const StoreList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
   const {
     loading, data, error,
   } = useQuery(ALL_STORES);
+
   console.log('🚀 ~ file: index.tsx ~ line 189 ~ SidebarMenu ~ data', data);
   console.log('🚀 ~ file: index.tsx ~ line 189 ~ SidebarMenu ~ loading', loading);
   console.log('🚀 ~ file: index.tsx ~ line 27 ~ meta', meta);
@@ -62,7 +63,12 @@ const StoreList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
       disablePadding: false,
       type: 'custom',
       label: 'options',
-      options: [{ btn: <IconButton aria-label="delete" color="primary"><Dashboard /></IconButton>, link: '/dashboard' }, { btn: <IconButton aria-label="delete" color="primary"><VideoCameraFront /></IconButton>, link: '/store/videoupload' }, { btn: <IconButton aria-label="delete" color="primary"><RemoveRedEyeOutlined /></IconButton>, link: '/discoverytools' }],
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises, no-return-await
+      options: [
+        { btn: <IconButton aria-label="delete" color="primary"><Dashboard /></IconButton>, link: '/merchant/load-dashboard', target: '_blank' }, // { icon: <Dashboard />, callback: loginStore, perm: 'shop' },
+        { btn: <IconButton aria-label="delete" color="primary"><VideoCameraFront /></IconButton>, link: '/store/videoupload' },
+        { btn: <IconButton aria-label="delete" color="primary"><RemoveRedEyeOutlined /></IconButton>, link: '/discoverytools' },
+      ],
     },
   ];
   return (

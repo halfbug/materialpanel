@@ -6,8 +6,9 @@ import {
 
 interface PageHeaderProps {
   meta?: { billingStatus: boolean },
+  title?: string,
 }
-function PageHeader({ meta }: PageHeaderProps) {
+function PageHeader({ meta, title }: PageHeaderProps) {
   // const user = {
   //   name: 'Catherine Pike ss',
   //   avatar: '/static/images/avatars/1.jpg',
@@ -27,7 +28,7 @@ function PageHeader({ meta }: PageHeaderProps) {
       )}
       <Grid item>
         <Typography variant="h3" component="h3" gutterBottom>
-          Merchant
+          {title ?? 'Dashboard'}
         </Typography>
         <Typography variant="subtitle2" className="title_case">
           {user?.name}

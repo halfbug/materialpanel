@@ -6,6 +6,7 @@ query stores{
     id
     brandName 
     createdAt
+    shop
     planResetDate  
     status
     subscription{

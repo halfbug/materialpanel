@@ -24,6 +24,8 @@ import { visuallyHidden } from '@mui/utils';
 import _ from 'lodash';
 import NextLink from 'next/link';
 import { StoreContext } from '@/store/store.context';
+import Button from '@mui/material/Button/Button';
+import { IconButton } from '@mui/material';
 
 // interface Data {
 //   calories: number;
@@ -364,7 +366,7 @@ const EnhancedTable = <T extends {}>(props : ITableProps<T>) => {
                         {// eslint-disable-next-line func-names, consistent-return
                         (function () {
                           // console.log(options);
-                          // console.log('row', row, id);
+                          // console.log('row', row, row.shop);
                           // console.log('🚀 ~ file: enhancedTable.tsx ~ line 338 ~ .map ~ id', id);
                           if (_.get(row, id) || type === 'custom') {
                             switch (type) {
@@ -375,7 +377,13 @@ const EnhancedTable = <T extends {}>(props : ITableProps<T>) => {
                               case 'status':
                                 return getStatusLabel(statusOptions, _.get(row, id) as string);
                               case 'custom':
-                                return options.map((e) => <NextLink href={`${e.link as string}?sid=${row?.id}`} passHref>{e.btn}</NextLink>);
+                                return options.map(({
+                                  icon, perm, btn, link, callback, ...rest
+                                }) => {
+                                  console.log('🚀 ~ file: enhancedTable.tsx ~ line 384 ~ returnoptions.map ~ e', row[perm]);
+                                  if (icon) { return <IconButton aria-label="icon" color="primary" onClick={() => callback(row[perm])}>{icon}</IconButton>; }
+                                  return <NextLink href={`${link as string}?sid=${row?.id}`} passHref><a {...rest}>{btn}</a></NextLink>;
+                                });
                               default:
                                 return _.get(row, id);
                             }

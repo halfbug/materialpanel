@@ -12,7 +12,7 @@ function SamplePage() {
         <title>Sample Title</title>
       </Head>
       <PageTitleWrapper>
-        <PageHeader />
+        <PageHeader title="sample page" />
       </PageTitleWrapper>
       <Container maxWidth="lg">
         <Grid
