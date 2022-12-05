@@ -28,8 +28,41 @@ import { useRouter } from 'next/router';
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import { DiscoveryTools } from '@/types/groupshop';
+import DraggableList from 'react-draggable-list';
 
-function Discoverytools() {
+const Item : any = ({ item, dragHandleProps } : any) => {
+  const { onMouseDown, onTouchStart } = dragHandleProps;
+
+  return (
+    <div
+      className="disable-select"
+      style={{
+        border: '1px solid black',
+        margin: '4px',
+        padding: '10px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        background: '#fff',
+        userSelect: 'none',
+      }}
+    >
+      {item?.brandName}
+      <MenuTwoToneIcon
+        fontSize="small"
+        className="disable-select dragHandle"
+        onTouchStart={(e) => {
+          e.preventDefault();
+          onTouchStart(e);
+        }}
+        onMouseDown={(e) => {
+          onMouseDown(e);
+        }}
+      />
+    </div>
+  );
+};
+
+const Discoverytools = () => {
   const router = useRouter();
   const { sid } = router.query;
   const [getAllStore, setGetAllStore] = useState<any>();
@@ -45,9 +78,9 @@ function Discoverytools() {
   const [brandName, setBrandName] = useState([]);
   const [matchingBrandName, setMatchingBrandName] = useState<any[]>([]);
   const [selectDiscoverBrandName, setSelectDiscoverBrandName] = useState<any>({});
-  const dragItem = useRef();
-  const dragOverItem = useRef();
   const [status, setStatus] = useState<string>('');
+
+  const containerRef = useRef();
 
   useEffect(() => {
     refetch();
@@ -66,7 +99,7 @@ function Discoverytools() {
     if (selectDiscoverBrandName) {
       if (selectDiscoverBrandName?.discoveryTool?.status === 'Active') {
         setStatus('Active');
-      } else if (selectDiscoverBrandName?.discoveryTool?.status === 'InActive') {
+      } else {
         setStatus('InActive');
       }
     }
@@ -77,32 +110,6 @@ function Discoverytools() {
     setBrandName(brandName.filter((_: any, ind: number) => index !== ind));
     setMatchingBrandName(tempMatchingData);
     temp(tempMatchingData, status);
-  };
-
-  const handleSecond = (data: any, index: number) => {
-    const tempMatchingData: any = matchingBrandName.filter((_: any, ind: number) => index !== ind);
-    setMatchingBrandName(tempMatchingData);
-    setBrandName([...brandName, data]);
-    temp(tempMatchingData, status);
-  };
-
-  const dragStart = (e: any, position: any) => {
-    dragItem.current = position;
-  };
-
-  const dragEnter = (e: any, position: any) => {
-    dragOverItem.current = position;
-  };
-
-  const selectedDrop = () => {
-    const copyListItems = [...matchingBrandName];
-    const dragItemContent = copyListItems[dragItem.current ?? 0];
-    copyListItems.splice(dragItem.current, 1);
-    copyListItems.splice(dragOverItem.current, 0, dragItemContent);
-    dragItem.current = null;
-    dragOverItem.current = null;
-    setMatchingBrandName(copyListItems);
-    temp(copyListItems, status);
   };
 
   const handleChange = (e: any) => {
@@ -127,6 +134,11 @@ function Discoverytools() {
         },
       },
     });
+  };
+
+  const handleRLDDChange = (newItems) => {
+    temp(newItems, status);
+    setMatchingBrandName(newItems);
   };
 
   return (
@@ -193,13 +205,23 @@ function Discoverytools() {
                   >
                     <div style={{ width: '30%' }}>
                       <div style={{ textAlign: 'center' }}>
-                        Matching BrandName
+                        Master BrandName
                       </div>
-                      <div style={{ height: '600px', border: '2px solid black', padding: '12px' }}>
+                      <div style={{
+                        height: '600px', border: '2px solid black', padding: '12px', overflow: 'auto',
+                      }}
+                      >
                         {brandName?.map((ele: any, index: number) => (
                           <div
+                            className="disable-select"
                             style={{
-                              width: '100%', marginTop: '10px', border: '1px solid lightgrey', height: '40px',
+                              border: '1px solid black',
+                              margin: '4px',
+                              padding: '10px',
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              background: '#fff',
+                              userSelect: 'none',
                             }}
                             onClick={() => handleFirst(ele, index)}
                             key={index}
@@ -215,30 +237,24 @@ function Discoverytools() {
                     </svg>
                     <div style={{ width: '30%' }}>
                       <div style={{ textAlign: 'center' }}>
-                        Master BrandName
+                        Matching BrandName
                       </div>
-                      <div style={{ height: '600px', border: '2px solid black', padding: '12px' }}>
-                        {matchingBrandName?.map((ele: any, index: number) => (
-                          <div
-                            style={{
-                              display: 'flex', border: '1px solid lightgrey', height: '40px', justifyContent: 'space-between', width: '100%', marginTop: '10px',
-                            }}
-                            onClick={() => handleSecond(ele, index)}
-                            key={index}
-                          >
-                            <div>
-                              {ele?.brandName ? ele?.brandName : ''}
-                            </div>
-                            <div
-                              onDragStart={(e) => dragStart(e, index)}
-                              onDragEnter={(e) => dragEnter(e, index)}
-                              onDragEnd={() => selectedDrop()}
-                              draggable
-                            >
-                              <MenuTwoToneIcon fontSize="small" />
-                            </div>
-                          </div>
-                        ))}
+                      <div style={{
+                        height: '600px', border: '2px solid black', padding: '12px', overflow: 'auto',
+                      }}
+                      >
+                        <div
+                          ref={containerRef}
+                          style={{ touchAction: 'pan-y' }}
+                        >
+                          <DraggableList
+                            itemKey="id"
+                            list={matchingBrandName}
+                            onMoveEnd={(newList) => handleRLDDChange(newList)}
+                            container={() => containerRef.current}
+                            template={Item}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -251,7 +267,7 @@ function Discoverytools() {
       <Footer />
     </>
   );
-}
+};
 
 Discoverytools.getLayout = (page) => <SidebarLayout>{page}</SidebarLayout>;
 
