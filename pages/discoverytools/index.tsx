@@ -7,7 +7,9 @@
 import Head from 'next/head';
 import SidebarLayout from '@/layouts/SidebarLayout';
 import PageTitle from '@/components/PageTitle';
-import { useState, useEffect, useRef } from 'react';
+import {
+  useState, useEffect, useRef, useContext,
+} from 'react';
 import PageTitleWrapper from '@/components/PageTitleWrapper';
 import {
   Container,
@@ -29,9 +31,17 @@ import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlin
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import { DiscoveryTools } from '@/types/groupshop';
 import DraggableList from 'react-draggable-list';
+import { StoreContext } from '@/store/store.context';
 
-const Item : any = ({ item, dragHandleProps } : any) => {
+const Item: any = ({ item, dragHandleProps }: any) => {
   const { onMouseDown, onTouchStart } = dragHandleProps;
+  const { store, dispatch } = useContext(StoreContext);
+
+  const handleClick = (data) => {
+    if (data) {
+      dispatch({ type: 'UPDATE_CLICK_DISCOVERBRAND', payload: { ...store, matchingBrandNameEvent: data } });
+    }
+  };
 
   return (
     <div
@@ -45,11 +55,13 @@ const Item : any = ({ item, dragHandleProps } : any) => {
         background: '#fff',
         userSelect: 'none',
       }}
+      onMouseDown={(e:any) => handleClick(e.target?.firstChild?.data)}
     >
       {item?.brandName}
       <MenuTwoToneIcon
         fontSize="small"
         className="disable-select dragHandle"
+        style={{ cursor: 'pointer' }}
         onTouchStart={(e) => {
           e.preventDefault();
           onTouchStart(e);
@@ -75,6 +87,7 @@ const Discoverytools = () => {
   const [discoveryToolsUpdate] = useMutation<DiscoveryTools>(
     DISCOVERYTOOLS_UPDATE,
   );
+  const { store, dispatch } = useContext(StoreContext);
   const [brandName, setBrandName] = useState([]);
   const [matchingBrandName, setMatchingBrandName] = useState<any[]>([]);
   const [selectDiscoverBrandName, setSelectDiscoverBrandName] = useState<any>({});
@@ -85,6 +98,21 @@ const Discoverytools = () => {
   useEffect(() => {
     refetch();
   }, []);
+
+  useEffect(() => {
+    if (store?.matchingBrandNameEvent) {
+      const tempMatchingData: any = matchingBrandName.filter(
+        (ele: any) => ele.brandName !== store?.matchingBrandNameEvent,
+      );
+      const tempBrandName: any = matchingBrandName.find(
+        (ele: any) => ele.brandName === store?.matchingBrandNameEvent,
+      );
+      setMatchingBrandName(tempMatchingData);
+      setBrandName([...brandName, tempBrandName]);
+      temp(tempMatchingData, status);
+      dispatch({ type: 'UPDATE_CLICK_DISCOVERBRAND', payload: { ...store, matchingBrandNameEvent: '' } });
+    }
+  }, [store]);
 
   useEffect(() => {
     if (getAllStore?.stores?.length > 0) {

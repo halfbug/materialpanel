@@ -10,6 +10,7 @@ interface StoreContextType {
 
 const initialState: MStore = {
   brandName: '',
+  matchingBrandNameEvent: '',
 };
 
 export const StoreContext = React.createContext<StoreContextType>(

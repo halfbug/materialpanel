@@ -23,6 +23,7 @@ export interface IStore {
 }
 export interface MStore {
     brandName?: string,
+    matchingBrandNameEvent?: string,
 }
 
 export interface DiscoveryTools {
