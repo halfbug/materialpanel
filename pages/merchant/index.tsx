@@ -28,6 +28,11 @@ const StoreList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
   console.log('🚀 ~ file: index.tsx ~ line 27 ~ meta', meta);
   const headCells: Array<HeadCell<typeof data>> = [
     {
+      id: 'shop',
+      disablePadding: false,
+      label: 'Store Name',
+    },
+    {
       id: 'brandName',
       disablePadding: false,
       label: 'brand Name',
