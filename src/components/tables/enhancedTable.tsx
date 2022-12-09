@@ -307,7 +307,7 @@ const EnhancedTable = <T extends {}>(props : ITableProps<T>) => {
         color = key as typeof color;
       }
     }
-    return <Label color={color}>{text}</Label>;
+    return <Label color={color} className="text-capitalize">{text}</Label>;
   };
 
   const handleClik = (data:any) => {
@@ -366,7 +366,7 @@ const EnhancedTable = <T extends {}>(props : ITableProps<T>) => {
                         {// eslint-disable-next-line func-names, consistent-return
                         (function () {
                           // console.log(options);
-                          // console.log('row', row, row.shop);
+                          console.log('row', row, row.shop);
                           // console.log('🚀 ~ file: enhancedTable.tsx ~ line 338 ~ .map ~ id', id);
                           if (_.get(row, id) || type === 'custom') {
                             switch (type) {

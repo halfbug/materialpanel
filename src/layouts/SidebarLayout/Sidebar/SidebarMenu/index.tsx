@@ -24,7 +24,7 @@ import BrightnessLowTwoToneIcon from '@mui/icons-material/BrightnessLowTwoTone';
 // import BallotTwoToneIcon from '@mui/icons-material/BallotTwoTone';
 // import BeachAccessTwoToneIcon from '@mui/icons-material/BeachAccessTwoTone';
 // import EmojiEventsTwoToneIcon from '@mui/icons-material/EmojiEventsTwoTone';
-// import FilterVintageTwoToneIcon from '@mui/icons-material/FilterVintageTwoTone';
+import FilterVintageTwoToneIcon from '@mui/icons-material/FilterVintageTwoTone';
 // import HowToVoteTwoToneIcon from '@mui/icons-material/HowToVoteTwoTone';
 // import LocalPharmacyTwoToneIcon from '@mui/icons-material/LocalPharmacyTwoTone';
 // import RedeemTwoToneIcon from '@mui/icons-material/RedeemTwoTone';
@@ -233,21 +233,21 @@ function SidebarMenu() {
               </Button>
             </NextLink>
           </ListItem>
-          {/* <ListItem component="div">
-              <NextLink href="/store/videoupload" passHref>
-                <Button
-                  className={
-                    currentRoute === '/dashboards/crypto' ? 'active' : ''
+          <ListItem component="div">
+            <NextLink href="/logs" passHref>
+              <Button
+                className={
+                    currentRoute === '/logs' ? 'active' : ''
                   }
-                  disableRipple
-                  component="a"
-                  onClick={closeSidebar}
-                  startIcon={<BrightnessLowTwoToneIcon />}
-                >
-                  Video Upload
-                </Button>
-              </NextLink>
-            </ListItem> */}
+                disableRipple
+                component="a"
+                onClick={closeSidebar}
+                startIcon={<FilterVintageTwoToneIcon />}
+              >
+                Logs
+              </Button>
+            </NextLink>
+          </ListItem>
           {/* <ListItem component="div">
                 <NextLink href="/applications/messenger" passHref>
                   <Button

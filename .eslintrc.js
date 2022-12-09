@@ -49,6 +49,7 @@ module.exports = {
     'react/no-unused-prop-types': 'warn',
     'radix': 'warn',
     '@typescript-eslint/no-floating-promises' : 'warn',
+    '@typescript-eslint/restrict-template-expressions': 'warn',
     // '@typescript-eslint/no-unused-vars': 'warn',
   },
   settings: {

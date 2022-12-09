@@ -7,8 +7,9 @@ import {
 interface PageHeaderProps {
   meta?: { billingStatus: boolean },
   title?: string,
+  subtitle?: string,
 }
-function PageHeader({ meta, title }: PageHeaderProps) {
+function PageHeader({ meta, title, subtitle }: PageHeaderProps) {
   // const user = {
   //   name: 'Catherine Pike ss',
   //   avatar: '/static/images/avatars/1.jpg',
@@ -32,7 +33,9 @@ function PageHeader({ meta, title }: PageHeaderProps) {
         </Typography>
         <Typography variant="subtitle2" className="title_case">
           {user?.name}
-          , these are your recent stores
+          ,
+          {' '}
+          {subtitle || 'these are your recent stores'}
         </Typography>
       </Grid>
       <Grid item>

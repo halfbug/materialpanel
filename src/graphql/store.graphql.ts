@@ -23,11 +23,15 @@ query stores{
 }
 `;
 
-const ALL_STORES1 = gql`
-query stores{
-    stores {
+const ALL_LOGS = gql`
+query apploggers{
+  apploggers{
     id
-    brandName        
+    context
+    level
+    stack
+    message
+    createdAt
   }
 }
 `;
@@ -88,5 +92,5 @@ const DISCOVERYTOOLS_UPDATE = gql`
 `;
 
 export {
-  ALL_STORES, ALL_STORES1, VIDEO_POST, GET_ALL_VIDEOS, VIDEOS_UPDATE, DISCOVERYTOOLS_UPDATE,
+  ALL_STORES, ALL_LOGS, VIDEO_POST, GET_ALL_VIDEOS, VIDEOS_UPDATE, DISCOVERYTOOLS_UPDATE,
 };

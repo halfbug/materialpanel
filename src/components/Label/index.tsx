@@ -73,7 +73,7 @@ const Label: FC<LabelProps> = ({
   children,
   ...rest
 }) => (
-  <LabelWrapper className={`MuiLabel-${color}`} {...rest}>
+  <LabelWrapper className={`MuiLabel-${color} ${className}`} {...rest}>
     {children}
   </LabelWrapper>
 );
