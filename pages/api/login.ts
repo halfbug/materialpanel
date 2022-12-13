@@ -31,24 +31,30 @@ export default async function handler(
     });
 
     // 3. get data from backend server
-    const { token } = await rawResponse.json();
+    const rest = await rawResponse.json();
+    console.log('🚀 ~ file: login.ts:35 ~ await rawResponse.json()', rest);
+    const { token } = rest;
     console.log('🚀 ~ file: login.tsx ~ line 85 ~ onSubmit: ~ content', token);
+    if (token) {
     // 4. create server side cookie.
-    res.setHeader(
-      'Set-Cookie',
-      cookie.serialize('token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV !== 'development',
-        maxAge: 60 * 60 * 24 * 7, // 1 week
-        sameSite: 'strict',
-        path: '/',
-      }),
-    );
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    res.setHeader('Authorization', `Bearer ${token}`);
-    res.status(200).json({ message: 'login successfully', token });
+      res.setHeader(
+        'Set-Cookie',
+        cookie.serialize('token', token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV !== 'development',
+          maxAge: 60 * 60 * 24 * 7, // 1 week
+          sameSite: 'strict',
+          path: '/',
+        }),
+      );
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      res.setHeader('Authorization', `Bearer ${token}`);
+      res.status(200).json({ message: 'login successfully, redirecting ...', token });
+    } else {
+      res.status(403).json({ message: rest.message, token: null });
+    }
   } catch (error) {
     console.error('An unexpected error happened:', error);
-    res.status(403).json({ message: 'An unexpected error happened', token: 'fake-token' }); // token: null });
+    res.status(403).json({ message: 'An unexpected error happened', token: null }); // token: null });
   }
 }
