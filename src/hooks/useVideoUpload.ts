@@ -1,31 +1,73 @@
-/* eslint-disable @typescript-eslint/prefer-optional-chain */
-/* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable radix */
 /* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable @typescript-eslint/prefer-optional-chain */
+
 import {
   ALL_STORES, GET_ALL_VIDEOS, VIDEOS_UPDATE, VIDEO_POST,
 } from '@/graphql/store.graphql';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import {
+  useEffect, useState, useMemo, useCallback,
+} from 'react';
+import * as React from 'react';
 import { VideoUpdate } from '@/types/groupshop';
 import { v4 as uuid } from 'uuid';
-import { GridColDef } from '@mui/x-data-grid';
 import moment from 'moment';
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
 
-const useVideoUpload = () => {
+const useVideoUpload = (gridRef: any) => {
   const router = useRouter();
   const { sid } = router.query;
   const [errFlag, setErrFlag] = useState<string>('');
   const [selectVideo, setSelectVideo] = useState<any[]>([]);
   const [videoList, setVideoList] = useState<any[]>([]);
-  const [rows, setRows] = useState<any[]>([]);
+  const [rows, setRows] = useState<any>([]);
   const [videoError, setVideoError] = useState<any[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [brandName, setBrandName] = useState('');
   const [fileName, setFileName] = useState<string>('');
   const [videoUploadSuccess, setVideoUploadSuccess] = useState<boolean>(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const columnDefs: any = [
+    {
+      field: '',
+      checkboxSelection: (params) => {
+        if (selectVideo.length > 4 && !params.node.selected) {
+          return false;
+        }
+        return true;
+      },
+      showDisabledCheckboxes: true,
+      maxWidth: 100,
+      rowDrag: true,
+    },
+    {
+      field: 'name',
+      maxWidth: 500,
+    },
+    { field: 'status', maxWidth: 200 },
+    {
+      field: 'createdAt',
+      maxWidth: 500,
+      valueGetter: (params) => moment(params.data?.createdAt).format('MMM Do YYYY, HH:mm:ss'),
+    },
+  ];
+
+  const defaultColDef = useMemo(() => ({
+    flex: 1,
+    minWidth: 100,
+    sortable: true,
+  }), []);
+
+  const isRowSelectable = useCallback((params) => !!params.data, []);
 
   const [videoPost,
     { data: { createVideo } = { createVideo: {} } },
@@ -38,9 +80,17 @@ const useVideoUpload = () => {
     variables: { storeId: sid },
     fetchPolicy: 'network-only',
     onCompleted: (getVideo) => {
-      setVideoList(getVideo?.videos);
+      const sortVideoList = SortingVideoOrder(getVideo?.videos);
+      setVideoList(sortVideoList);
     },
   });
+
+  const SortingVideoOrder = (VideoList) => {
+    const VideosOrder0 = VideoList.filter((el) => el.orderId === 0);
+    const videoOrderData = VideoList.filter((el) => el.orderId !== 0)
+      .sort((a, b) => a.orderId - b.orderId);
+    return [...videoOrderData, ...VideosOrder0];
+  };
 
   useEffect(() => {
     if (getAllStore && getAllStore.data && getAllStore.data.stores?.length > 0 && sid) {
@@ -50,7 +100,8 @@ const useVideoUpload = () => {
 
   useEffect(() => {
     if (data) {
-      setVideoList(data?.updateVideo);
+      const sortVideoList = SortingVideoOrder(data?.updateVideo);
+      setVideoList(sortVideoList);
     }
   }, [data]);
 
@@ -109,6 +160,7 @@ const useVideoUpload = () => {
                       type: el.Location,
                       name: el.Key,
                       status: 'InActive',
+                      orderId: 0,
                     },
                   },
                 });
@@ -128,17 +180,6 @@ const useVideoUpload = () => {
     }
   };
 
-  const columns: GridColDef[] = [
-    { field: 'name', headerName: 'Name', width: 400 },
-    { field: 'status', headerName: 'Status', width: 200 },
-    {
-      field: 'createdAt',
-      headerName: 'Video Uploaded Date',
-      width: 250,
-      valueGetter: ({ value }) => moment(value).format('MMM Do YYYY, HH:mm:ss'),
-    },
-  ];
-
   useEffect(() => {
     if (videoList?.length > 0) {
       const temp: any = videoList.map((ite: any) => ({
@@ -156,17 +197,12 @@ const useVideoUpload = () => {
     }
   }, [videoList]);
 
-  const handleSelect = (e: any) => {
-    if (e.length < 6) {
-      setSelectVideo(e);
-    }
-  };
-
   const handleClick = () => {
+    const selectedVideoIds = rows.filter((ele) => selectVideo.includes(ele.id)).map((el) => el.id);
     videoStatusUpdate({
       variables: {
         updateVideoInput: {
-          selectedIds: selectVideo,
+          selectedIds: selectedVideoIds,
           storeId: sid,
         },
       },
@@ -177,21 +213,82 @@ const useVideoUpload = () => {
     setVideoUploadSuccess(false);
   };
 
+  const onFirstDataRendered = useCallback(() => {
+    gridRef.current.api.sizeColumnsToFit();
+    gridRef.current.api.forEachNode((node) => node.setSelected(!!node.data && node.data.status === 'Active'));
+  }, []);
+
+  const onGridSizeChanged = () => {
+    sizeToFit();
+  };
+
+  const sizeToFit = useCallback(() => {
+    if (gridRef?.current !== undefined) {
+      gridRef?.current?.api?.sizeColumnsToFit();
+    }
+  }, []);
+
+  const onRowDragMove = (event) => {
+    const movingNode = event.node;
+    const { overNode } = event;
+    const rowNeedsToMove = movingNode !== overNode;
+    if (rowNeedsToMove) {
+      const movingData = movingNode?.data;
+      const overData = overNode?.data;
+      const fromIndex = rows.indexOf(movingData);
+      const toIndex = rows.indexOf(overData);
+      const newStore = rows.slice();
+      moveInArray(newStore, fromIndex, toIndex);
+      setRows(newStore);
+    }
+    function moveInArray(arr, fromIndex, toIndex) {
+      const element = arr[fromIndex];
+      arr.splice(fromIndex, 1);
+      arr.splice(toIndex, 0, element);
+    }
+  };
+
+  const getRowNodeId = useCallback((params) => params.id, []);
+
+  const onSelectionChanged = () => {
+    const selectedRows = gridRef.current.api.getSelectedRows();
+    setSelectVideo(selectedRows.map((el) => el.id));
+  };
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+    onFirstDataRendered();
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   return {
     rows,
     errFlag,
-    columns,
     selectVideo,
     handleChangeVideo,
-    handleSelect,
     handleClick,
-    videoList,
     videoError,
     isLoading,
     brandName,
     fileName,
     videoUploadSuccess,
     toastClose,
+    columnDefs,
+    defaultColDef,
+    isRowSelectable,
+    onRowDragMove,
+    onFirstDataRendered,
+    onGridSizeChanged,
+    getRowNodeId,
+    onSelectionChanged,
+    handleChangePage,
+    handleChangeRowsPerPage,
+    page,
+    rowsPerPage,
   };
 };
 

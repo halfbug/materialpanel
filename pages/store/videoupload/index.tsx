@@ -2,7 +2,6 @@
 import Head from 'next/head';
 import SidebarLayout from '@/layouts/SidebarLayout';
 import PageTitle from '@/components/PageTitle';
-
 import PageTitleWrapper from '@/components/PageTitleWrapper';
 import {
   Button,
@@ -13,22 +12,27 @@ import {
   CardContent,
   Divider,
   Snackbar,
+  Alert,
 } from '@mui/material';
 import Footer from '@/components/Footer';
-import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import useVideoUpload from '@/hooks/useVideoUpload';
 import LinearIndeterminate from '@/components/Progress/Linear';
+import 'react-data-grid/lib/styles.css';
+import { AgGridReact } from 'ag-grid-react';
+import { useRef } from 'react';
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
+import TablePagination from '@mui/material/TablePagination';
 
 function Videoupload() {
+  const gridRef = useRef();
   const {
     rows,
     errFlag,
-    columns,
     selectVideo,
     handleChangeVideo,
-    handleSelect,
     handleClick,
     videoError,
     isLoading,
@@ -36,7 +40,19 @@ function Videoupload() {
     fileName,
     videoUploadSuccess,
     toastClose,
-  } = useVideoUpload();
+    columnDefs,
+    defaultColDef,
+    isRowSelectable,
+    onRowDragMove,
+    onFirstDataRendered,
+    onGridSizeChanged,
+    getRowNodeId,
+    onSelectionChanged,
+    handleChangePage,
+    handleChangeRowsPerPage,
+    page,
+    rowsPerPage,
+  } = useVideoUpload(gridRef);
 
   return (
     <>
@@ -44,9 +60,27 @@ function Videoupload() {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         open={videoUploadSuccess}
         onClose={() => toastClose()}
-        message="I love snacks"
+        message="Video uploaded successfully!"
         autoHideDuration={5000}
-      />
+        style={{ marginTop: '65px' }}
+      >
+        <Alert
+          onClose={() => toastClose()}
+          sx={{
+            width: '100%',
+            background: '#287431',
+            color: '#FFFFFF',
+            '& .MuiAlert-icon': {
+              display: 'none',
+            },
+            '& .MuiAlert-action': {
+              color: '#FFFFFF',
+            },
+          }}
+        >
+          Video uploaded successfully!
+        </Alert>
+      </Snackbar>
       <Head>
         <title>GSADMIN</title>
       </Head>
@@ -120,21 +154,33 @@ function Videoupload() {
               <Divider />
               <CardContent>
                 {rows.length > 0 && (
-                  <div style={{ height: '100%', width: '100%' }}>
-                    <DataGrid
-                      rows={rows}
-                      columns={columns}
-                      pageSize={10}
-                      rowsPerPageOptions={[10]}
-                      checkboxSelection
-                      onSelectionModelChange={(e: any) => handleSelect(e)}
-                      selectionModel={selectVideo}
-                      sx={{
-                        '& .MuiDataGrid-columnHeaderCheckbox .MuiDataGrid-columnHeaderTitleContainer': {
-                          display: 'none',
-                        },
-                      }}
-                      autoHeight
+                  <div style={{ height: '100%', width: '100%' }} className="ag-theme-alpine">
+                    <AgGridReact
+                      domLayout="autoHeight"
+                      ref={gridRef}
+                      rowData={rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
+                      columnDefs={columnDefs}
+                      defaultColDef={defaultColDef}
+                      immutableData
+                      rowSelection="multiple"
+                      suppressRowClickSelection
+                      isRowSelectable={isRowSelectable}
+                      rowDragManaged
+                      animateRows
+                      onRowDragMove={onRowDragMove}
+                      onFirstDataRendered={onFirstDataRendered}
+                      onGridSizeChanged={onGridSizeChanged}
+                      getRowNodeId={getRowNodeId}
+                      onSelectionChanged={onSelectionChanged}
+                    />
+                    <TablePagination
+                      rowsPerPageOptions={[5, 10, 25]}
+                      component="div"
+                      count={rows?.length}
+                      rowsPerPage={rowsPerPage}
+                      page={page}
+                      onPageChange={handleChangePage}
+                      onRowsPerPageChange={handleChangeRowsPerPage}
                     />
                   </div>
                 )}

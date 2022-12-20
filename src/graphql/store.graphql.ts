@@ -42,6 +42,7 @@ mutation CreateVideo($createVideoInput: CreateVideoInput!) {
       storeId
       name
       status
+      orderId
   }
 }
 `;
@@ -54,6 +55,7 @@ const GET_ALL_VIDEOS = gql`
     type
     status
     storeId
+    orderId
     createdAt
     updatedAt
   }
@@ -68,6 +70,7 @@ const VIDEOS_UPDATE = gql`
       name
       type
       status
+      orderId
       createdAt
       updatedAt
   }
