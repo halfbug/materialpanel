@@ -24,7 +24,6 @@ import { AgGridReact } from 'ag-grid-react';
 import { useRef } from 'react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
-import TablePagination from '@mui/material/TablePagination';
 
 function Videoupload() {
   const gridRef = useRef();
@@ -48,10 +47,6 @@ function Videoupload() {
     onGridSizeChanged,
     getRowNodeId,
     onSelectionChanged,
-    handleChangePage,
-    handleChangeRowsPerPage,
-    page,
-    rowsPerPage,
   } = useVideoUpload(gridRef);
 
   return (
@@ -158,7 +153,7 @@ function Videoupload() {
                     <AgGridReact
                       domLayout="autoHeight"
                       ref={gridRef}
-                      rowData={rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
+                      rowData={rows}
                       columnDefs={columnDefs}
                       defaultColDef={defaultColDef}
                       immutableData
@@ -172,15 +167,6 @@ function Videoupload() {
                       onGridSizeChanged={onGridSizeChanged}
                       getRowNodeId={getRowNodeId}
                       onSelectionChanged={onSelectionChanged}
-                    />
-                    <TablePagination
-                      rowsPerPageOptions={[5, 10, 25]}
-                      component="div"
-                      count={rows?.length}
-                      rowsPerPage={rowsPerPage}
-                      page={page}
-                      onPageChange={handleChangePage}
-                      onRowsPerPageChange={handleChangeRowsPerPage}
                     />
                   </div>
                 )}

@@ -14,7 +14,6 @@ import { useRouter } from 'next/router';
 import {
   useEffect, useState, useMemo, useCallback,
 } from 'react';
-import * as React from 'react';
 import { VideoUpdate } from '@/types/groupshop';
 import { v4 as uuid } from 'uuid';
 import moment from 'moment';
@@ -33,8 +32,6 @@ const useVideoUpload = (gridRef: any) => {
   const [brandName, setBrandName] = useState('');
   const [fileName, setFileName] = useState<string>('');
   const [videoUploadSuccess, setVideoUploadSuccess] = useState<boolean>(false);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const columnDefs: any = [
     {
@@ -255,16 +252,6 @@ const useVideoUpload = (gridRef: any) => {
     setSelectVideo(selectedRows.map((el) => el.id));
   };
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-    onFirstDataRendered();
-  };
-
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
   return {
     rows,
     errFlag,
@@ -285,10 +272,6 @@ const useVideoUpload = (gridRef: any) => {
     onGridSizeChanged,
     getRowNodeId,
     onSelectionChanged,
-    handleChangePage,
-    handleChangeRowsPerPage,
-    page,
-    rowsPerPage,
   };
 };
 
