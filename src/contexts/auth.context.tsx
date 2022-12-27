@@ -64,7 +64,8 @@ export const AuthContextProvider = ({
       body: JSON.stringify('logout user'),
     });
     const data = await rawResponse.json();
-
+    setUser(undefined);
+    setToken(undefined);
     console.log('🚀 ~ file: auth.context.tsx ~ line 65 ~ signout ~ data', data);
     void router.push('/');
     return data;

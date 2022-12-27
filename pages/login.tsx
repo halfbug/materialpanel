@@ -13,11 +13,12 @@ import {
   Alert,
 } from '@mui/material';
 import Head from 'next/head';
-import type { ReactElement } from 'react';
+import { ReactElement, useContext, useEffect } from 'react';
 import BaseLayout from 'src/layouts/BaseLayout';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useRouter } from 'next/router';
+import { AuthContext } from '@/contexts/auth.context';
 
 const MainContent = styled(Box)(
   () => `
@@ -96,6 +97,12 @@ function Login() {
       // alert(JSON.stringify(values, null, 2));
     },
   });
+
+  const { user } = useContext(AuthContext);
+  useEffect(() => {
+    if (user?.first_name) { console.log(user.first_name); void router.push('/merchant'); }
+  }, [router, user]);
+
   return (
     <>
       <Head>
