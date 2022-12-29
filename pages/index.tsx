@@ -8,12 +8,14 @@ import {
 } from '@mui/material';
 import type { ReactElement } from 'react';
 import BaseLayout from 'src/layouts/BaseLayout';
-
+import { useContext, useEffect } from 'react';
 import Link from 'src/components/Link';
 import Head from 'next/head';
 
 import Logo from 'src/components/LogoSign';
 import Hero from 'src/content/Overview/Hero';
+import { AuthContext } from '@/contexts/auth.context';
+import { useRouter } from 'next/router';
 
 const HeaderWrapper = styled(Card)(
   ({ theme }) => `
@@ -35,6 +37,11 @@ const OverviewWrapper = styled(Box)(
 );
 
 function Overview() {
+  const { user } = useContext(AuthContext);
+  const router = useRouter();
+  useEffect(() => {
+    if (user?.first_name) { console.log(user.first_name); void router.push('/merchant'); }
+  }, [router, user]);
   return (
     <OverviewWrapper>
       <Head>
