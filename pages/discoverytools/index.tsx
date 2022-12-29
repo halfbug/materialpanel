@@ -117,7 +117,7 @@ const Discoverytools = () => {
   useEffect(() => {
     if (getAllStore?.stores?.length > 0) {
       const selectedStore: any = getAllStore?.stores?.find((ele: any) => ele.id === sid);
-      setBrandName(getAllStore.stores.filter((ele: any) => ele.status === 'Active' && ele.id !== sid).filter((item: any) => !selectedStore?.discoveryTool?.matchingBrandName?.map((ele: any) => ele?.id).includes(item.id)).map((el1: any) => ({ id: el1.id, brandName: el1.brandName })));
+      setBrandName(getAllStore.stores.filter((ele: any) => ele.status === 'Active' && ele?.subscription?.status?.toUpperCase() === 'ACTIVE' && ele.id !== sid).filter((item: any) => !selectedStore?.discoveryTool?.matchingBrandName?.map((ele: any) => ele?.id).includes(item.id)).map((el1: any) => ({ id: el1.id, brandName: el1.brandName })));
       setMatchingBrandName(selectedStore?.discoveryTool?.matchingBrandName ?? []);
       setSelectDiscoverBrandName(selectedStore);
     }
