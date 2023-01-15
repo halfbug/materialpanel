@@ -6,7 +6,7 @@
 /* eslint-disable @typescript-eslint/prefer-optional-chain */
 
 import {
-  ALL_STORES, GET_ALL_VIDEOS, VIDEOS_UPDATE, VIDEO_POST,
+  ALL_STORES, DROPS_UPDATE, GET_ALL_VIDEOS, VIDEOS_UPDATE, VIDEO_POST,
 } from '@/graphql/store.graphql';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import axios from 'axios';
@@ -32,6 +32,9 @@ const useVideoUpload = (gridRef: any) => {
   const [brandName, setBrandName] = useState('');
   const [fileName, setFileName] = useState<string>('');
   const [videoUploadSuccess, setVideoUploadSuccess] = useState<boolean>(false);
+  const [dropsData, setDropsData] = useState<any>();
+
+  console.log('dropsData🎈', dropsData);
 
   const columnDefs: any = [
     {
@@ -82,7 +85,16 @@ const useVideoUpload = (gridRef: any) => {
     },
   });
 
-  const SortingVideoOrder = (VideoList) => {
+  const [updateStore,
+    { data: dropsUpdateData }] = useMutation<any>(DROPS_UPDATE);
+
+  useEffect(() => {
+    if (dropsUpdateData?.updateStore?.drops) {
+      setDropsData(dropsUpdateData?.updateStore?.drops);
+    }
+  }, [dropsUpdateData]);
+
+  const SortingVideoOrder = (VideoList: any) => {
     const VideosOrder0 = VideoList.filter((el) => el.orderId === 0);
     const videoOrderData = VideoList.filter((el) => el.orderId !== 0)
       .sort((a, b) => a.orderId - b.orderId);
@@ -91,7 +103,9 @@ const useVideoUpload = (gridRef: any) => {
 
   useEffect(() => {
     if (getAllStore && getAllStore.data && getAllStore.data.stores?.length > 0 && sid) {
-      setBrandName(getAllStore.data.stores.find((ele: any) => ele.id === sid)?.brandName);
+      const currentStore = getAllStore.data.stores.find((ele: any) => ele.id === sid);
+      setBrandName(currentStore?.brandName);
+      setDropsData(currentStore.drops);
     }
   }, [getAllStore, sid]);
 
@@ -252,6 +266,21 @@ const useVideoUpload = (gridRef: any) => {
     setSelectVideo(selectedRows.map((el) => el.id));
   };
 
+  const handleChangeDrops = async (e:any) => {
+    console.log('dropsData🎈', dropsData);
+    await updateStore({
+      variables: {
+        updateStoreInput: {
+          id: sid,
+          drops: {
+            ...dropsData,
+            isVideoEnabled: e.target.checked,
+          },
+        },
+      },
+    });
+  };
+
   return {
     rows,
     errFlag,
@@ -272,6 +301,8 @@ const useVideoUpload = (gridRef: any) => {
     onGridSizeChanged,
     getRowNodeId,
     onSelectionChanged,
+    dropsData,
+    handleChangeDrops,
   };
 };
 

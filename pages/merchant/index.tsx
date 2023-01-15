@@ -10,7 +10,9 @@ import EnhancedTable, { HeadCell } from '@/components/tables/enhancedTable';
 import { ALL_STORES } from '@/graphql/store.graphql';
 import { useQuery } from '@apollo/client';
 import LinearIndeterminate from '@/components/Progress/Linear';
-import { Dashboard, RemoveRedEyeOutlined, VideoCameraFront } from '@mui/icons-material';
+import {
+  Dashboard, RemoveRedEyeOutlined, VideoCameraFront, StorefrontOutlined,
+} from '@mui/icons-material';
 // import { IStore } from '@/types/groupshop';
 import { NextPage } from 'next';
 
@@ -73,6 +75,7 @@ const StoreList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
         { btn: <IconButton aria-label="delete" color="primary"><Dashboard /></IconButton>, link: '/merchant/load-dashboard', target: '_blank' }, // { icon: <Dashboard />, callback: loginStore, perm: 'shop' },
         { btn: <IconButton aria-label="delete" color="primary"><VideoCameraFront /></IconButton>, link: '/store/videoupload' },
         { btn: <IconButton aria-label="delete" color="primary"><RemoveRedEyeOutlined /></IconButton>, link: '/discoverytools' },
+        { btn: <IconButton aria-label="delete" color="primary"><StorefrontOutlined /></IconButton>, link: '/drops' },
       ],
     },
   ];

@@ -24,6 +24,8 @@ import { AgGridReact } from 'ag-grid-react';
 import { useRef } from 'react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
+import Switch from '@mui/material/Switch';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 function Videoupload() {
   const gridRef = useRef();
@@ -47,6 +49,8 @@ function Videoupload() {
     onGridSizeChanged,
     getRowNodeId,
     onSelectionChanged,
+    dropsData,
+    handleChangeDrops,
   } = useVideoUpload(gridRef);
 
   return (
@@ -80,9 +84,18 @@ function Videoupload() {
         <title>GSADMIN</title>
       </Head>
       <PageTitleWrapper>
-        <PageTitle
-          heading={brandName}
-        />
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <PageTitle
+            heading={brandName}
+          />
+          <FormControlLabel
+            control={
+              <Switch checked={dropsData?.isVideoEnabled} onChange={(e) => handleChangeDrops(e)} name="gilad" size="medium" />
+          }
+            label="Drop"
+            labelPlacement="start"
+          />
+        </div>
       </PageTitleWrapper>
       <Container maxWidth="lg">
         <Grid

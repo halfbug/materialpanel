@@ -41,3 +41,13 @@ export interface IUser {
      avatar?: string,
      jobtitle?: string,
     }
+export interface DropsForm {
+     M1Discount: string,
+     M2Discount: string,
+     M3Discount: string,
+     spotlightDiscount: string,
+     allProducts: string,
+     latestProducts: string,
+     bestSellers: string,
+     spotlightProducts: string,
+}

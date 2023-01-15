@@ -18,6 +18,22 @@ query stores{
         id
         brandName
       }
+    }
+    drops{
+      isVideoEnabled,
+      allProductsCollectionId,
+      bestSellerCollectionId,
+      latestCollectionId,
+      spotlightColletionId
+      spotlightDiscount{
+        percentage
+      }
+      rewards{
+        baseline
+        average
+        maximum
+      }
+      status
     }     
   }
 }
@@ -94,6 +110,82 @@ const DISCOVERYTOOLS_UPDATE = gql`
 }
 `;
 
+const DROPS_UPDATE = gql`
+  mutation UpdateStore($updateStoreInput: UpdateStoreInput!) {
+    updateStore(updateStoreInput: $updateStoreInput) {
+      id
+      drops{
+        isVideoEnabled
+        spotlightColletionId
+        spotlightDiscount{
+          percentage
+        }
+        latestCollectionId
+        bestSellerCollectionId
+        allProductsCollectionId
+        rewards{
+          baseline
+          average
+          maximum
+        }
+        status
+      }
+  }
+}
+`;
+
+const GET_STORE_DETAILS = gql`
+query store($id: String!) {
+  store(id: $id) {
+    id
+    brandName 
+    createdAt
+    shop
+    planResetDate  
+    status
+    subscription{
+      status
+    }
+    discoveryTool{
+      status
+      matchingBrandName{
+        id
+        brandName
+      }
+    }
+    drops{
+      isVideoEnabled,
+      allProductsCollectionId,
+      bestSellerCollectionId,
+      latestCollectionId,
+      spotlightColletionId
+      spotlightDiscount{
+        percentage
+      }
+      rewards{
+        baseline
+        average
+        maximum
+      }
+      status
+    }
+  }
+}
+`;
+
+const DEFAULT_DISCOUNT = gql`
+query findDrops($type: String!) {
+  findDrops(type: $type) {
+    details{
+      baseline
+      average
+      maximum
+    }
+  }
+}
+`;
+
 export {
   ALL_STORES, ALL_LOGS, VIDEO_POST, GET_ALL_VIDEOS, VIDEOS_UPDATE, DISCOVERYTOOLS_UPDATE,
+  DROPS_UPDATE, GET_STORE_DETAILS, DEFAULT_DISCOUNT,
 };

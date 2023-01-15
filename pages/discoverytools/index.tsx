@@ -172,7 +172,7 @@ const Discoverytools = () => {
   return (
     <>
       <Head>
-        <title>Discovery Tools</title>
+        <title>GSADMIN</title>
       </Head>
       <PageTitleWrapper>
         <div style={{ display: 'flex', gap: '10px' }}>
