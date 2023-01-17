@@ -266,9 +266,8 @@ const useVideoUpload = (gridRef: any) => {
     setSelectVideo(selectedRows.map((el) => el.id));
   };
 
-  const handleChangeDrops = async (e:any) => {
-    console.log('dropsData🎈', dropsData);
-    await updateStore({
+  const handleChangeDrops = (e:any) => {
+    updateStore({
       variables: {
         updateStoreInput: {
           id: sid,

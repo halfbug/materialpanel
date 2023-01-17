@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import Footer from '@/components/Footer';
 import { DEFAULT_DISCOUNT, DROPS_UPDATE, GET_STORE_DETAILS } from '@/graphql/store.graphql';
-import { useMutation, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
@@ -31,11 +31,21 @@ const Drops = () => {
   const router = useRouter();
   const { sid } = router.query;
 
-  const {
-    data,
-  } = useQuery(GET_STORE_DETAILS, {
+  const [storeData, setStoreData] = useState<any>({});
+
+  const [getStore] = useLazyQuery(GET_STORE_DETAILS, {
     variables: { id: sid },
+    fetchPolicy: 'network-only',
+    onCompleted: (getStoreData) => {
+      setStoreData(getStoreData?.store);
+    },
   });
+
+  useEffect(() => {
+    if (sid) {
+      getStore();
+    }
+  }, [sid]);
 
   const { data: findDrops } = useQuery(DEFAULT_DISCOUNT, {
     variables: { type: 'drops' },
@@ -54,12 +64,8 @@ const Drops = () => {
     bestSellers: '',
     spotlightProducts: '',
   });
-  const [storeData, setStoreData] = useState<any>({});
   const [successToast, setSuccessToast] = useState<boolean>(false);
   const [status, setStatus] = useState<string>('');
-
-  console.log('storeData🎈', storeData);
-  console.log('status🎈', status);
 
   const validationSchema = yup.object({
     M1Discount: yup
@@ -131,13 +137,7 @@ const Drops = () => {
   });
 
   useEffect(() => {
-    if (data?.store) {
-      setStoreData(data.store);
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (storeData) {
+    if (storeData && findDrops?.findDrops && sid) {
       setDropsIds({
         M1Discount: storeData.drops?.rewards?.baseline ?? findDrops?.findDrops?.details.baseline,
         M2Discount: storeData.drops?.rewards?.average ?? findDrops?.findDrops?.details.average,
