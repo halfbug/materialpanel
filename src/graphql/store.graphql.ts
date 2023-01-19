@@ -119,6 +119,8 @@ const DROPS_UPDATE = gql`
         spotlightColletionId
         spotlightDiscount{
           percentage
+          title
+          priceRuleId
         }
         latestCollectionId
         bestSellerCollectionId
@@ -161,6 +163,8 @@ query store($id: String!) {
       spotlightColletionId
       spotlightDiscount{
         percentage
+        title
+        priceRuleId
       }
       rewards{
         baseline

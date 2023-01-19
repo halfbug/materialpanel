@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import Footer from '@/components/Footer';
 import { DEFAULT_DISCOUNT, DROPS_UPDATE, GET_STORE_DETAILS } from '@/graphql/store.graphql';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
@@ -31,21 +31,23 @@ const Drops = () => {
   const router = useRouter();
   const { sid } = router.query;
 
+  const dropsUpdatedMessage = 'Drops updated successfully!';
+  const dropsUpdatedError = 'First fill all field';
+
   const [storeData, setStoreData] = useState<any>({});
 
-  const [getStore] = useLazyQuery(GET_STORE_DETAILS, {
+  const {
+    data: getStoreData, refetch,
+  } = useQuery(GET_STORE_DETAILS, {
+    skip: !sid,
     variables: { id: sid },
-    fetchPolicy: 'network-only',
-    onCompleted: (getStoreData) => {
-      setStoreData(getStoreData?.store);
-    },
   });
 
   useEffect(() => {
-    if (sid) {
-      getStore();
+    if (getStoreData?.store) {
+      setStoreData(getStoreData?.store);
     }
-  }, [sid]);
+  }, [getStoreData]);
 
   const { data: findDrops } = useQuery(DEFAULT_DISCOUNT, {
     variables: { type: 'drops' },
@@ -58,13 +60,18 @@ const Drops = () => {
     M1Discount: '',
     M2Discount: '',
     M3Discount: '',
-    spotlightDiscount: '',
+    spotlightDiscountTitle: '',
+    spotlightDiscountPercentage: '',
+    spotlightDiscountPriceRuleId: '',
     allProducts: '',
     latestProducts: '',
     bestSellers: '',
     spotlightProducts: '',
   });
-  const [successToast, setSuccessToast] = useState<boolean>(false);
+  const [successToast, setSuccessToast] = useState<any>({
+    toastTog: false,
+    toastMessage: '',
+  });
   const [status, setStatus] = useState<string>('');
 
   const validationSchema = yup.object({
@@ -80,7 +87,7 @@ const Drops = () => {
       .string()
       .matches(/^[1-9]?[0-9]{1}$|^100$/, 'Please enter between 0 to 100')
       .required('Milestore3 discount is required'),
-    spotlightDiscount: yup
+    spotlightDiscountPercentage: yup
       .string()
       .matches(/^[1-9]?[0-9]{1}$|^100$/, 'Please enter between 0 to 100')
       .required('spotlight discount is required'),
@@ -100,7 +107,7 @@ const Drops = () => {
 
   const {
     handleSubmit, values, handleChange, touched, errors,
-  }:FormikProps<DropsForm> = useFormik<DropsForm>({
+  }: FormikProps<DropsForm> = useFormik<DropsForm>({
     initialValues: dropsIds,
     validationSchema,
     enableReinitialize: true,
@@ -112,14 +119,15 @@ const Drops = () => {
             updateStoreInput: {
               id: sid,
               drops: {
-                ...storeData.drops,
                 status: storeData?.drops?.status ?? status,
                 allProductsCollectionId: value.allProducts,
                 bestSellerCollectionId: value.bestSellers,
                 latestCollectionId: value.latestProducts,
                 spotlightColletionId: value.spotlightProducts,
                 spotlightDiscount: {
-                  percentage: value.spotlightDiscount,
+                  title: value.spotlightDiscountTitle,
+                  percentage: value.spotlightDiscountPercentage,
+                  priceRuleId: value.spotlightDiscountPriceRuleId,
                 },
                 rewards: {
                   baseline: value.M1Discount,
@@ -137,12 +145,14 @@ const Drops = () => {
   });
 
   useEffect(() => {
-    if (storeData && findDrops?.findDrops && sid) {
+    if (storeData && sid) {
       setDropsIds({
         M1Discount: storeData.drops?.rewards?.baseline ?? findDrops?.findDrops?.details.baseline,
         M2Discount: storeData.drops?.rewards?.average ?? findDrops?.findDrops?.details.average,
         M3Discount: storeData.drops?.rewards?.maximum ?? findDrops?.findDrops?.details.maximum,
-        spotlightDiscount: storeData.drops?.spotlightDiscount?.percentage,
+        spotlightDiscountTitle: storeData.drops?.spotlightDiscount?.title,
+        spotlightDiscountPercentage: storeData.drops?.spotlightDiscount?.percentage,
+        spotlightDiscountPriceRuleId: storeData.drops?.spotlightDiscount?.priceRuleId,
         allProducts: storeData.drops?.allProductsCollectionId,
         bestSellers: storeData.drops?.bestSellerCollectionId,
         latestProducts: storeData.drops?.latestCollectionId,
@@ -153,18 +163,23 @@ const Drops = () => {
   }, [storeData, findDrops]);
 
   useEffect(() => {
-    if (dropsUpdateData) {
-      setSuccessToast(true);
+    if (dropsUpdateData?.updateStore?.drops) {
+      refetch();
+      setSuccessToast({ toastTog: true, toastMessage: dropsUpdatedMessage });
     }
   }, [dropsUpdateData]);
 
   const handleChangeStatus = (e: any) => {
-    if (e.target.value === '1') {
-      setStatus('Active');
-      updateStatus('Active');
+    if (storeData.drops) {
+      if (e.target.value === '1') {
+        setStatus('Active');
+        updateStatus('Active');
+      } else {
+        setStatus('InActive');
+        updateStatus('InActive');
+      }
     } else {
-      setStatus('InActive');
-      updateStatus('InActive');
+      setSuccessToast({ toastTog: true, toastMessage: dropsUpdatedError });
     }
   };
 
@@ -186,17 +201,16 @@ const Drops = () => {
     <>
       <Snackbar
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        open={successToast}
-        onClose={() => setSuccessToast(false)}
-        message="Drops updated successfully!"
-        autoHideDuration={5000}
+        open={successToast.toastTog}
+        onClose={() => setSuccessToast({ ...successToast, toastTog: false })}
+        autoHideDuration={3000}
         style={{ marginTop: '65px' }}
       >
         <Alert
-          onClose={() => setSuccessToast(false)}
+          onClose={() => setSuccessToast({ ...successToast, toastTog: false })}
           sx={{
             width: '100%',
-            background: '#287431',
+            background: successToast?.toastMessage === dropsUpdatedError ? '#DC3545' : '#287431',
             color: '#FFFFFF',
             '& .MuiAlert-icon': {
               display: 'none',
@@ -206,7 +220,7 @@ const Drops = () => {
             },
           }}
         >
-          Drops updated successfully!
+          {successToast.toastMessage}
         </Alert>
       </Snackbar>
       <Head>
@@ -297,14 +311,15 @@ const Drops = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <h4 className="lable" style={{ width: '135px' }}>Spotlight Discount</h4>
                   <TextField
-                    id="spotlightDiscount"
-                    name="spotlightDiscount"
+                    id="spotlightDiscountPercentage"
+                    name="spotlightDiscountPercentage"
                     placeholder="Please enter spotlight discount"
-                    value={values.spotlightDiscount}
+                    value={values.spotlightDiscountPercentage}
                     onChange={handleChange}
-                    error={touched.spotlightDiscount
-                      && Boolean(errors.spotlightDiscount)}
-                    helperText={touched.spotlightDiscount && errors.spotlightDiscount}
+                    error={touched.spotlightDiscountPercentage
+                      && Boolean(errors.spotlightDiscountPercentage)}
+                    helperText={touched.spotlightDiscountPercentage
+                      && errors.spotlightDiscountPercentage}
                     style={{ width: '300px' }}
                   />
                 </div>
