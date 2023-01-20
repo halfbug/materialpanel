@@ -119,6 +119,7 @@ const Drops = () => {
             updateStoreInput: {
               id: sid,
               drops: {
+                ...storeData?.drops,
                 status: storeData?.drops?.status ?? status,
                 allProductsCollectionId: value.allProducts,
                 bestSellerCollectionId: value.bestSellers,

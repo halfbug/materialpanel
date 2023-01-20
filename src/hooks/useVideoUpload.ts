@@ -31,7 +31,14 @@ const useVideoUpload = (gridRef: any) => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [storeData, setStoreData] = useState<any>({});
   const [fileName, setFileName] = useState<string>('');
-  const [videoUploadSuccess, setVideoUploadSuccess] = useState<boolean>(false);
+  const [toastData, setToastData] = useState<any>({
+    toastTog: false,
+    toastMessage: '',
+  });
+
+  const VideoSuccessMessage = 'Video uploaded successfully!';
+  const DropsEnabledMessage = 'First of fill all drops filed!';
+  console.log('storeData🎈', storeData);
 
   const columnDefs: any = [
     {
@@ -73,7 +80,7 @@ const useVideoUpload = (gridRef: any) => {
   const [videoStatusUpdate, { data, loading }] = useMutation<VideoUpdate>(VIDEOS_UPDATE);
 
   const {
-    data: getStoreData,
+    data: getStoreData, refetch: getStoreRefetch,
   } = useQuery(GET_STORE_DETAILS, {
     skip: !sid,
     variables: { id: sid },
@@ -93,7 +100,7 @@ const useVideoUpload = (gridRef: any) => {
 
   useEffect(() => {
     if (dropsUpdateData?.updateStore?.drops) {
-      setStoreData({ ...storeData, drops: dropsUpdateData?.updateStore?.drops });
+      getStoreRefetch();
     }
   }, [dropsUpdateData]);
 
@@ -124,7 +131,7 @@ const useVideoUpload = (gridRef: any) => {
   useEffect(() => {
     if (createVideo && createVideo.status) {
       refetch();
-      setVideoUploadSuccess(true);
+      setToastData({ toastTog: true, toastMessage: VideoSuccessMessage });
     }
   }, [createVideo]);
 
@@ -222,7 +229,7 @@ const useVideoUpload = (gridRef: any) => {
   };
 
   const toastClose = () => {
-    setVideoUploadSuccess(false);
+    setToastData({ ...toastData, toastTog: false });
   };
 
   const onFirstDataRendered = useCallback(() => {
@@ -268,17 +275,21 @@ const useVideoUpload = (gridRef: any) => {
   };
 
   const handleChangeDrops = (e:any) => {
-    updateStore({
-      variables: {
-        updateStoreInput: {
-          id: sid,
-          drops: {
-            ...storeData.drops,
-            isVideoEnabled: e.target.checked,
+    if (storeData?.drops) {
+      updateStore({
+        variables: {
+          updateStoreInput: {
+            id: sid,
+            drops: {
+              ...storeData.drops,
+              isVideoEnabled: e.target.checked,
+            },
           },
         },
-      },
-    });
+      });
+    } else {
+      setToastData({ toastTog: true, toastMessage: DropsEnabledMessage });
+    }
   };
 
   return {
@@ -290,7 +301,7 @@ const useVideoUpload = (gridRef: any) => {
     videoError,
     isLoading,
     fileName,
-    videoUploadSuccess,
+    toastData,
     toastClose,
     columnDefs,
     defaultColDef,
@@ -302,6 +313,7 @@ const useVideoUpload = (gridRef: any) => {
     onSelectionChanged,
     storeData,
     handleChangeDrops,
+    DropsEnabledMessage,
   };
 };
 

@@ -38,7 +38,7 @@ function Videoupload() {
     videoError,
     isLoading,
     fileName,
-    videoUploadSuccess,
+    toastData,
     toastClose,
     columnDefs,
     defaultColDef,
@@ -50,15 +50,15 @@ function Videoupload() {
     onSelectionChanged,
     storeData,
     handleChangeDrops,
+    DropsEnabledMessage,
   } = useVideoUpload(gridRef);
 
   return (
     <>
       <Snackbar
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        open={videoUploadSuccess}
+        open={toastData.toastTog}
         onClose={() => toastClose()}
-        message="Video uploaded successfully!"
         autoHideDuration={5000}
         style={{ marginTop: '65px' }}
       >
@@ -66,7 +66,7 @@ function Videoupload() {
           onClose={() => toastClose()}
           sx={{
             width: '100%',
-            background: '#287431',
+            background: toastData.toastMessage === DropsEnabledMessage ? '#DC3545' : '#287431',
             color: '#FFFFFF',
             '& .MuiAlert-icon': {
               display: 'none',
@@ -76,7 +76,7 @@ function Videoupload() {
             },
           }}
         >
-          Video uploaded successfully!
+          {toastData.toastMessage}
         </Alert>
       </Snackbar>
       <Head>
@@ -89,7 +89,7 @@ function Videoupload() {
           />
           <FormControlLabel
             control={
-              <Switch checked={storeData?.drops?.isVideoEnabled} onChange={(e) => handleChangeDrops(e)} name="gilad" size="medium" />
+              <Switch checked={!!storeData?.drops?.isVideoEnabled} onChange={(e) => handleChangeDrops(e)} name="gilad" size="medium" />
           }
             label="Drop"
             labelPlacement="start"
