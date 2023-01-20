@@ -37,7 +37,6 @@ function Videoupload() {
     handleClick,
     videoError,
     isLoading,
-    brandName,
     fileName,
     videoUploadSuccess,
     toastClose,
@@ -49,7 +48,7 @@ function Videoupload() {
     onGridSizeChanged,
     getRowNodeId,
     onSelectionChanged,
-    dropsData,
+    storeData,
     handleChangeDrops,
   } = useVideoUpload(gridRef);
 
@@ -86,11 +85,11 @@ function Videoupload() {
       <PageTitleWrapper>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <PageTitle
-            heading={brandName}
+            heading={storeData?.brandName}
           />
           <FormControlLabel
             control={
-              <Switch checked={dropsData?.isVideoEnabled} onChange={(e) => handleChangeDrops(e)} name="gilad" size="medium" />
+              <Switch checked={storeData?.drops?.isVideoEnabled} onChange={(e) => handleChangeDrops(e)} name="gilad" size="medium" />
           }
             label="Drop"
             labelPlacement="start"

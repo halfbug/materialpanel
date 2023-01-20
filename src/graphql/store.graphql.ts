@@ -27,6 +27,8 @@ query stores{
       spotlightColletionId
       spotlightDiscount{
         percentage
+        title
+        priceRuleId
       }
       rewards{
         baseline

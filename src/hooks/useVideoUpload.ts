@@ -6,7 +6,7 @@
 /* eslint-disable @typescript-eslint/prefer-optional-chain */
 
 import {
-  ALL_STORES, DROPS_UPDATE, GET_ALL_VIDEOS, VIDEOS_UPDATE, VIDEO_POST,
+  DROPS_UPDATE, GET_ALL_VIDEOS, GET_STORE_DETAILS, VIDEOS_UPDATE, VIDEO_POST,
 } from '@/graphql/store.graphql';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import axios from 'axios';
@@ -29,12 +29,9 @@ const useVideoUpload = (gridRef: any) => {
   const [rows, setRows] = useState<any>([]);
   const [videoError, setVideoError] = useState<any[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
-  const [brandName, setBrandName] = useState('');
+  const [storeData, setStoreData] = useState<any>({});
   const [fileName, setFileName] = useState<string>('');
   const [videoUploadSuccess, setVideoUploadSuccess] = useState<boolean>(false);
-  const [dropsData, setDropsData] = useState<any>();
-
-  console.log('dropsData🎈', dropsData);
 
   const columnDefs: any = [
     {
@@ -74,7 +71,13 @@ const useVideoUpload = (gridRef: any) => {
   ] = useMutation<any | null>(VIDEO_POST);
 
   const [videoStatusUpdate, { data, loading }] = useMutation<VideoUpdate>(VIDEOS_UPDATE);
-  const getAllStore = useQuery(ALL_STORES);
+
+  const {
+    data: getStoreData,
+  } = useQuery(GET_STORE_DETAILS, {
+    skip: !sid,
+    variables: { id: sid },
+  });
 
   const [refetch] = useLazyQuery(GET_ALL_VIDEOS, {
     variables: { storeId: sid },
@@ -90,7 +93,7 @@ const useVideoUpload = (gridRef: any) => {
 
   useEffect(() => {
     if (dropsUpdateData?.updateStore?.drops) {
-      setDropsData(dropsUpdateData?.updateStore?.drops);
+      setStoreData({ ...storeData, drops: dropsUpdateData?.updateStore?.drops });
     }
   }, [dropsUpdateData]);
 
@@ -102,12 +105,10 @@ const useVideoUpload = (gridRef: any) => {
   };
 
   useEffect(() => {
-    if (getAllStore && getAllStore.data && getAllStore.data.stores?.length > 0 && sid) {
-      const currentStore = getAllStore.data.stores.find((ele: any) => ele.id === sid);
-      setBrandName(currentStore?.brandName);
-      setDropsData(currentStore.drops);
+    if (getStoreData?.store && sid) {
+      setStoreData(getStoreData?.store);
     }
-  }, [getAllStore, sid]);
+  }, [getStoreData, sid]);
 
   useEffect(() => {
     if (data) {
@@ -272,7 +273,7 @@ const useVideoUpload = (gridRef: any) => {
         updateStoreInput: {
           id: sid,
           drops: {
-            ...dropsData,
+            ...storeData.drops,
             isVideoEnabled: e.target.checked,
           },
         },
@@ -288,7 +289,6 @@ const useVideoUpload = (gridRef: any) => {
     handleClick,
     videoError,
     isLoading,
-    brandName,
     fileName,
     videoUploadSuccess,
     toastClose,
@@ -300,7 +300,7 @@ const useVideoUpload = (gridRef: any) => {
     onGridSizeChanged,
     getRowNodeId,
     onSelectionChanged,
-    dropsData,
+    storeData,
     handleChangeDrops,
   };
 };
