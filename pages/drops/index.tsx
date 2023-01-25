@@ -87,10 +87,10 @@ const Drops = () => {
       .string()
       .matches(/^[1-9]?[0-9]{1}$|^100$/, 'Please enter between 0 to 100')
       .required('Milestore3 discount is required'),
-    spotlightDiscountPercentage: yup
-      .string()
-      .matches(/^[1-9]?[0-9]{1}$|^100$/, 'Please enter between 0 to 100')
-      .required('spotlight discount is required'),
+    // spotlightDiscountPercentage: yup
+    //   .string()
+    //   .matches(/^[1-9]?[0-9]{1}$|^100$/, 'Please enter between 0 to 100')
+    //   .required('spotlight discount is required'),
     allProducts: yup
       .string()
       .required('all products is required'),
@@ -100,9 +100,9 @@ const Drops = () => {
     bestSellers: yup
       .string()
       .required('best sellers is required'),
-    spotlightProducts: yup
-      .string()
-      .required('spotlight products is required'),
+    // spotlightProducts: yup
+    //   .string()
+    //   .required('spotlight products is required'),
   });
 
   const {
@@ -322,6 +322,7 @@ const Drops = () => {
                     helperText={touched.spotlightDiscountPercentage
                       && errors.spotlightDiscountPercentage}
                     style={{ width: '300px' }}
+                    disabled
                   />
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -375,6 +376,7 @@ const Drops = () => {
                       && Boolean(errors.spotlightProducts)}
                     helperText={touched.spotlightProducts && errors.spotlightProducts}
                     style={{ width: '300px' }}
+                    disabled
                   />
                 </div>
                 <Button variant="contained" type="submit" style={{ marginTop: '10px' }}>Save</Button>
