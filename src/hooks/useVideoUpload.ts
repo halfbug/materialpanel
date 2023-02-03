@@ -144,7 +144,60 @@ const useVideoUpload = (gridRef: any) => {
   const handleChangeVideo = (e: any) => {
     setFileName(e.target.value);
     const videoType = ['video/mp4'];
-    if (!(Array.from(e.target.files).map((ele: any) => videoType.includes(ele?.type)))
+    const VideoFile = Array.from(e.target.files).filter((ele:any) => videoType.includes(ele?.type));
+    const anotherExtensionFile = Array.from(e.target.files)
+      .filter((ele:any) => !videoType.includes(ele?.type));
+    if (anotherExtensionFile.length && VideoFile.length) {
+      setErrFlag('');
+      const files: any = VideoFile;
+      const config = {
+        headers: { 'Content-Type': 'multipart/form-data;boundary=None' },
+      };
+      const fd = new FormData();
+      const temp: any[] = [];
+      files.forEach((b: any) => {
+        if (((b.size / 1024) / 1024) > 11) {
+          temp.push(`${b.name} is more than 10 MB`);
+        }
+      });
+      setVideoError(temp);
+      if (!temp.length) {
+        files.forEach((a: any) => {
+          const imgName = a.name.split('.');
+          const imgExt = imgName.splice(imgName.length - 1, 1);
+          const uniqueId = uuid();
+          const uniqueLimitId = uniqueId.substring(uniqueId.length - 3);
+          fd.append('video', a, `${imgName.join('.')}${uniqueLimitId}.${imgExt}`);
+        });
+        setLoading(true);
+        axios.post(`${process.env.API_URL}/image/video`, fd, config)
+          .then((res) => {
+            if (res?.data?.data && res.data.data.length > 0) {
+              res.data.data.map(async (el: any) => {
+                await videoPost({
+                  variables: {
+                    createVideoInput: {
+                      storeId: sid,
+                      type: el.Location,
+                      name: el.Key,
+                      status: 'InActive',
+                      orderId: 0,
+                    },
+                  },
+                });
+              });
+            }
+            setLoading(false);
+            setFileName('');
+          })
+          .catch((err) => {
+            console.log(err);
+            setLoading(false);
+            setFileName('');
+          });
+      }
+      setErrFlag(' Please upload the following file types: MP4');
+    } else if (!(Array.from(e.target.files).map((ele: any) => videoType.includes(ele?.type)))
       .includes(false)) {
       setErrFlag('');
       const files: any = Array.from(e.target.files);
