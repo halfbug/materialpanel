@@ -124,6 +124,7 @@ function Videoupload() {
                     type="file"
                     inputProps={{
                       multiple: true,
+                      accept: 'video/*',
                     }}
                     disabled={isLoading}
                     value={fileName}

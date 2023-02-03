@@ -26,6 +26,7 @@ import NextLink from 'next/link';
 import { StoreContext } from '@/store/store.context';
 import Button from '@mui/material/Button/Button';
 import { IconButton } from '@mui/material';
+import { StorefrontOutlined } from '@mui/icons-material';
 
 // interface Data {
 //   calories: number;
@@ -339,7 +340,7 @@ const EnhancedTable = <T extends {}>(props : ITableProps<T>) => {
               rows.slice().sort(getComparator(order, orderBy)) */}
             {stableSort(rows, getComparator(order, orderBy))
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row, index) => {
+              .map((row:any, index) => {
                 const isItemSelected = isSelected(row?.id?.toString());
                 const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -378,10 +379,11 @@ const EnhancedTable = <T extends {}>(props : ITableProps<T>) => {
                                 return getStatusLabel(statusOptions, _.get(row, id) as string);
                               case 'custom':
                                 return options.map(({
-                                  icon, perm, btn, link, callback, ...rest
+                                  icon, perm, btn, link, callback, changeIcon, ...rest
                                 }) => {
                                   console.log('🚀 ~ file: enhancedTable.tsx ~ line 384 ~ returnoptions.map ~ e', row[perm]);
                                   if (icon) { return <IconButton aria-label="icon" color="primary" onClick={() => callback(row[perm])}>{icon}</IconButton>; }
+                                  if (changeIcon) { return <NextLink href={`${link as string}?sid=${row?.id}`} passHref><a {...rest}><IconButton aria-label="delete" color={row?.drops?.status === 'Active' ? 'success' : 'primary'}><StorefrontOutlined /></IconButton></a></NextLink>; }
                                   return <NextLink href={`${link as string}?sid=${row?.id}`} passHref><a {...rest}>{btn}</a></NextLink>;
                                 });
                               default:

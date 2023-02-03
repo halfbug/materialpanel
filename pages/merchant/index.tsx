@@ -11,10 +11,11 @@ import { ALL_STORES } from '@/graphql/store.graphql';
 import { useQuery } from '@apollo/client';
 import LinearIndeterminate from '@/components/Progress/Linear';
 import {
-  Dashboard, RemoveRedEyeOutlined, VideoCameraFront, StorefrontOutlined,
+  Dashboard, RemoveRedEyeOutlined, VideoCameraFront,
 } from '@mui/icons-material';
 // import { IStore } from '@/types/groupshop';
 import { NextPage } from 'next';
+import { useEffect } from 'react';
 
 interface THeader {
   id: string;
@@ -22,8 +23,12 @@ interface THeader {
 }
 const StoreList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
   const {
-    loading, data, error,
+    loading, data, error, refetch,
   } = useQuery(ALL_STORES);
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   console.log('🚀 ~ file: index.tsx ~ line 189 ~ SidebarMenu ~ data', data);
   console.log('🚀 ~ file: index.tsx ~ line 189 ~ SidebarMenu ~ loading', loading);
@@ -75,7 +80,7 @@ const StoreList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
         { btn: <IconButton aria-label="delete" color="primary"><Dashboard /></IconButton>, link: '/merchant/load-dashboard', target: '_blank' }, // { icon: <Dashboard />, callback: loginStore, perm: 'shop' },
         { btn: <IconButton aria-label="delete" color="primary"><VideoCameraFront /></IconButton>, link: '/store/videoupload' },
         { btn: <IconButton aria-label="delete" color="primary"><RemoveRedEyeOutlined /></IconButton>, link: '/discoverytools' },
-        { btn: <IconButton aria-label="delete" color="primary"><StorefrontOutlined /></IconButton>, link: '/drops' },
+        { btn: '', link: '/drops', changeIcon: true },
       ],
     },
   ];
