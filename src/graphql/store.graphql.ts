@@ -54,6 +54,20 @@ query apploggers{
 }
 `;
 
+const ALL_DROPS = gql`
+query dropsGroupshops{
+  dropsGroupshops{
+    id
+    status
+    shortUrl
+    obSettings{
+      ownerUrl
+    }
+    createdAt
+  }
+}
+`;
+
 const VIDEO_POST = gql`
 mutation CreateVideo($createVideoInput: CreateVideoInput!) {
   createVideo(CreateVideoInput: $createVideoInput) {
@@ -193,5 +207,5 @@ query findDrops($type: String!) {
 
 export {
   ALL_STORES, ALL_LOGS, VIDEO_POST, GET_ALL_VIDEOS, VIDEOS_UPDATE, DISCOVERYTOOLS_UPDATE,
-  DROPS_UPDATE, GET_STORE_DETAILS, DEFAULT_DISCOUNT,
+  DROPS_UPDATE, GET_STORE_DETAILS, DEFAULT_DISCOUNT, ALL_DROPS,
 };

@@ -18,7 +18,7 @@ import { SidebarContext } from 'src/contexts/SidebarContext';
 import DesignServicesTwoToneIcon from '@mui/icons-material/DesignServicesTwoTone';
 import BrightnessLowTwoToneIcon from '@mui/icons-material/BrightnessLowTwoTone';
 
-// import MmsTwoToneIcon from '@mui/icons-material/MmsTwoTone';
+import MmsTwoToneIcon from '@mui/icons-material/MmsTwoTone';
 // import TableChartTwoToneIcon from '@mui/icons-material/TableChartTwoTone';
 // import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone';
 // import BallotTwoToneIcon from '@mui/icons-material/BallotTwoTone';
@@ -248,21 +248,21 @@ function SidebarMenu() {
               </Button>
             </NextLink>
           </ListItem>
-          {/* <ListItem component="div">
-                <NextLink href="/applications/messenger" passHref>
-                  <Button
-                    className={
-                      currentRoute === '/applications/messenger' ? 'active' : ''
+          <ListItem component="div">
+            <NextLink href="/drops/list" passHref>
+              <Button
+                className={
+                      currentRoute === '/drops/list' ? 'active' : ''
                     }
-                    disableRipple
-                    component="a"
-                    onClick={closeSidebar}
-                    startIcon={<MmsTwoToneIcon />}
-                  >
-                    Messenger
-                  </Button>
-                </NextLink>
-              </ListItem> */}
+                disableRipple
+                component="a"
+                onClick={closeSidebar}
+                startIcon={<MmsTwoToneIcon />}
+              >
+                Drops
+              </Button>
+            </NextLink>
+          </ListItem>
         </List>
       </SubMenuWrapper>
       {/* </List> */}

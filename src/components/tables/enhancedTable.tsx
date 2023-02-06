@@ -113,7 +113,7 @@ export interface HeadCell<T>{
   disablePadding?: boolean;
   id: keyof T;
   label: string;
-  type?: 'string' | 'numeric' | 'datetime'| 'custom' | 'timestamp' | 'boolean' | 'status';
+  type?: 'string' | 'numeric' | 'datetime'| 'custom' | 'timestamp' | 'boolean' | 'status'| 'link';
   options?: any;
   statusOptions?: any;
 }
@@ -374,14 +374,14 @@ const EnhancedTable = <T extends {}>(props : ITableProps<T>) => {
                               case 'timestamp':
                                 return new Date(parseInt(row[id]?.toString(), 10)).toDateString();
                               case 'datetime':
-                                return new Date(row[id]).toDateString();
+                                return new Date(row[id]).toLocaleString();
                               case 'status':
                                 return getStatusLabel(statusOptions, _.get(row, id) as string);
+                              case 'link': return <NextLink href={row[id]} passHref><a>{row[id]}</a></NextLink>;
                               case 'custom':
                                 return options.map(({
                                   icon, perm, btn, link, callback, changeIcon, ...rest
                                 }) => {
-                                  console.log('🚀 ~ file: enhancedTable.tsx ~ line 384 ~ returnoptions.map ~ e', row[perm]);
                                   if (icon) { return <IconButton aria-label="icon" color="primary" onClick={() => callback(row[perm])}>{icon}</IconButton>; }
                                   if (changeIcon) { return <NextLink href={`${link as string}?sid=${row?.id}`} passHref><a {...rest}><IconButton aria-label="delete" color={row?.drops?.status === 'Active' ? 'success' : 'primary'}><StorefrontOutlined /></IconButton></a></NextLink>; }
                                   return <NextLink href={`${link as string}?sid=${row?.id}`} passHref><a {...rest}>{btn}</a></NextLink>;
