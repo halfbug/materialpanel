@@ -63,6 +63,13 @@ query dropsGroupshops{
     obSettings{
       ownerUrl
     }
+    customerDetail{
+      firstName
+      lastName
+    }
+    discountCode{
+      title
+    }
     createdAt
   }
 }

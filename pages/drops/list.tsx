@@ -1,44 +1,77 @@
 import Head from 'next/head';
 import { Grid, Container, Card } from '@mui/material';
 import SidebarLayout from '@/layouts/SidebarLayout';
+import Box from '@mui/material/Box';
 import PageHeader from '@/content/Management/Transactions/PageHeader';
 import PageTitleWrapper from '@/components/PageTitleWrapper';
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import {
+  DataGrid, GridColDef, GridRenderCellParams, GridValueGetterParams,
+} from '@mui/x-data-grid';
 import EnhancedTable, { HeadCell } from '@/components/tables/enhancedTable';
 import Footer from '@/components/Footer';
+import NextLink from 'next/link';
 import { useQuery } from '@apollo/client';
 import LinearIndeterminate from '@/components/Progress/Linear';
 import { ALL_DROPS } from '@/graphql/store.graphql';
+import Label from '@/components/Label';
 
 function Logs() {
   const {
     loading, data, error,
   } = useQuery(ALL_DROPS);
-  console.log('🚀 ~ file: list.tsx:17 ~ Logs ~ data', data);
+  const getStatusLabel = (props: GridRenderCellParams<String>) => {
+    // console.log(options);
+    const { hasFocus, value } = props;
+    let color : 'black' | 'primary' | 'secondary' | 'error' | 'warning' | 'success' | 'info';
+    const options = {
+      error: ['revised'], success: ['active'], warning: ['pending'],
+    };
+    // eslint-disable-next-line no-restricted-syntax
+    for (const key in options) {
+      // console.log('🚀 ~ file: enhancedTable.tsx ~ line 300 ~ getStatusLabel ~ text', text);
+      // console.log('🚀 ~ file: enhancedTable.tsx
+      //  ~ line 300 ~ getStatusLabel ~ options[key]', options[key]);
+      if (options[key].includes(value.toLowerCase())) {
+        color = key as typeof color;
+      }
+    }
+    return <Label color={color} className="text-capitalize">{value}</Label>;
+  };
 
-  const headCells: Array<HeadCell<typeof data>> = [
-    {
-      id: 'status',
-      disablePadding: false,
-      type: 'status',
-      statusOptions: {
-        error: ['revised'], success: ['active'], warning: ['pending'],
-      },
-      label: 'Status',
-    },
-    {
-      id: 'shortUrl',
-      type: 'link',
-      disablePadding: false,
-      label: 'Link',
-    },
-    {
-      id: 'createdAt',
-      type: 'datetime',
-      disablePadding: false,
-      label: 'Created At',
-    },
+  const columns: GridColDef[] = [
 
+    {
+      field: 'status',
+      headerName: 'Status',
+      width: 120,
+      renderCell: getStatusLabel,
+    },
+    {
+      field: 'shortUrl',
+      headerName: 'Link',
+      width: 230,
+      renderCell: (params: GridValueGetterParams) => <NextLink href={params.row.shortUrl} passHref target="_blank">{params.row.shortUrl}</NextLink>,
+    },
+    {
+      field: 'customerDetail.firstName',
+      headerName: 'Name',
+      width: 150,
+      valueGetter: (params: GridValueGetterParams) => params.row.customerDetail.firstName,
+    },
+    {
+      field: 'createdAt',
+      headerName: 'Created at',
+      width: 210,
+      valueGetter: (params: GridValueGetterParams) => new Date(
+        params.row.createdAt,
+      ).toLocaleString(),
+    },
+    {
+      field: 'discountCode.title',
+      headerName: 'Discount Code',
+      width: 170,
+      valueGetter: (params: GridValueGetterParams) => params.row.discountCode.title,
+    },
   ];
 
   return (
@@ -59,9 +92,17 @@ function Logs() {
         >
           <Grid item xs={12}>
             <Card sx={{ padding: 3 }}>
-
-              {loading && <LinearIndeterminate />}
-              <EnhancedTable headCells={headCells} rows={data?.dropsGroupshops ?? []} orderByFieldName="createdAt" />
+              <Box sx={{ height: 1150, width: '100%' }}>
+                {loading && <LinearIndeterminate />}
+                <DataGrid
+                  rows={data?.dropsGroupshops ?? []}
+                  columns={columns}
+                  pageSize={20}
+                  rowsPerPageOptions={[5, 10, 25]}
+                  disableSelectionOnClick
+                  experimentalFeatures={{ newEditingApi: true }}
+                />
+              </Box>
             </Card>
           </Grid>
         </Grid>
