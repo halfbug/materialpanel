@@ -70,7 +70,7 @@ function Logs() {
       field: 'discountCode.title',
       headerName: 'Discount Code',
       width: 170,
-      valueGetter: (params: GridValueGetterParams) => params.row.discountCode.title,
+      valueGetter: (params: GridValueGetterParams) => params.row.discountCode?.title || '',
     },
   ];
 
