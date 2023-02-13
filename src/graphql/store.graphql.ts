@@ -64,6 +64,7 @@ query dropsGroupshops{
       ownerUrl
     }
     customerDetail{
+      fullName
       firstName
       lastName
     }
