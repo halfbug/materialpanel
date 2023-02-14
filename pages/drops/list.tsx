@@ -57,7 +57,7 @@ function Logs() {
       headerName: 'Name',
       width: 150,
       // eslint-disable-next-line max-len
-      valueGetter: (params: GridValueGetterParams) => ((params.row.customerDetail.firstName !== null) ? params.row.customerDetail.firstName : params.row.customerDetail.fullName),
+      valueGetter: (params: GridValueGetterParams) => ((params.row.customerDetail.firstName !== null && params.row.customerDetail.firstName !== '') ? params.row.customerDetail.firstName : params.row.customerDetail.fullName),
     },
     {
       field: 'createdAt',
