@@ -16,9 +16,13 @@ import {
   Snackbar,
   Alert,
   TextField,
+  Modal,
+  Box,
 } from '@mui/material';
 import Footer from '@/components/Footer';
-import { DEFAULT_DISCOUNT, DROPS_UPDATE, GET_STORE_DETAILS } from '@/graphql/store.graphql';
+import {
+  DEFAULT_DISCOUNT, DROPS_UPDATE, GET_STORE_DETAILS,
+} from '@/graphql/store.graphql';
 import { useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
@@ -26,6 +30,7 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import { useFormik, FormikProps } from 'formik';
 import * as yup from 'yup';
 import { DropsForm } from '@/types/groupshop';
+import IconButton from '@mui/material/IconButton';
 
 const Drops = () => {
   const router = useRouter();
@@ -56,7 +61,7 @@ const Drops = () => {
   const [updateStore, { data: dropsUpdateData }] = useMutation<any>(
     DROPS_UPDATE,
   );
-  const [dropsIds, setDropsIds] = useState({
+  const [dropsIds, setDropsIds] = useState<any>({
     M1Discount: '',
     M2Discount: '',
     M3Discount: '',
@@ -67,12 +72,15 @@ const Drops = () => {
     latestProducts: '',
     bestSellers: '',
     spotlightProducts: '',
+    collections: [],
   });
   const [successToast, setSuccessToast] = useState<any>({
     toastTog: false,
     toastMessage: '',
   });
   const [status, setStatus] = useState<string>('');
+  const [addFieldPopup, setAddFieldPopup] = useState<boolean>(false);
+  const [addField, setAddField] = useState('');
 
   const validationSchema = yup.object({
     M1Discount: yup
@@ -87,18 +95,29 @@ const Drops = () => {
       .string()
       .matches(/^[1-9]?[0-9]{1}$|^100$/, 'Please enter between 0 to 100')
       .required('Milestore3 discount is required'),
+    collections: yup.array().of(
+      yup.object().shape({
+        shopifyId: yup
+          .string()
+          .matches(/^\d+$/, 'Please enter only numbers')
+          .required('Required shopify collection id'),
+      }),
+    ),
     // spotlightDiscountPercentage: yup
     //   .string()
     //   .matches(/^[1-9]?[0-9]{1}$|^100$/, 'Please enter between 0 to 100')
     //   .required('spotlight discount is required'),
     allProducts: yup
       .string()
+      .matches(/^\d+$/, 'Please enter only numbers')
       .required('all products is required'),
     latestProducts: yup
       .string()
+      .matches(/^\d+$/, 'Please enter only numbers')
       .required('latest products is required'),
     bestSellers: yup
       .string()
+      .matches(/^\d+$/, 'Please enter only numbers')
       .required('best sellers is required'),
     // spotlightProducts: yup
     //   .string()
@@ -106,7 +125,7 @@ const Drops = () => {
   });
 
   const {
-    handleSubmit, values, handleChange, touched, errors,
+    handleSubmit, values, handleChange, touched, errors, setFieldValue,
   }: FormikProps<DropsForm> = useFormik<DropsForm>({
     initialValues: dropsIds,
     validationSchema,
@@ -121,10 +140,16 @@ const Drops = () => {
               drops: {
                 ...storeData?.drops,
                 status: storeData?.drops?.status ?? status,
-                allProductsCollectionId: value.allProducts,
-                bestSellerCollectionId: value.bestSellers,
-                latestCollectionId: value.latestProducts,
-                spotlightColletionId: value.spotlightProducts,
+                collections: [
+                  { name: 'All Products', shopifyId: `gid://shopify/Collection/${value.allProducts}` },
+                  { name: 'Bestsellers', shopifyId: `gid://shopify/Collection/${value.bestSellers}` },
+                  { name: 'Latest Products', shopifyId: `gid://shopify/Collection/${value.latestProducts}` },
+                  ...value.collections.map((col) => ({
+                    ...col,
+                    shopifyId: `gid://shopify/Collection/${col.shopifyId}`,
+                  })),
+                ],
+                spotlightColletionId: value.spotlightProducts ? `gid://shopify/Collection/${value.spotlightProducts}` : '',
                 spotlightDiscount: {
                   title: value.spotlightDiscountTitle,
                   percentage: value.spotlightDiscountPercentage,
@@ -148,16 +173,19 @@ const Drops = () => {
   useEffect(() => {
     if (storeData && sid) {
       setDropsIds({
+        ...dropsIds,
         M1Discount: storeData.drops?.rewards?.baseline ?? findDrops?.findDrops?.details.baseline,
         M2Discount: storeData.drops?.rewards?.average ?? findDrops?.findDrops?.details.average,
         M3Discount: storeData.drops?.rewards?.maximum ?? findDrops?.findDrops?.details.maximum,
         spotlightDiscountTitle: storeData.drops?.spotlightDiscount?.title,
         spotlightDiscountPercentage: storeData.drops?.spotlightDiscount?.percentage,
         spotlightDiscountPriceRuleId: storeData.drops?.spotlightDiscount?.priceRuleId,
-        allProducts: storeData.drops?.allProductsCollectionId,
-        bestSellers: storeData.drops?.bestSellerCollectionId,
-        latestProducts: storeData.drops?.latestCollectionId,
-        spotlightProducts: storeData.drops?.spotlightColletionId,
+        allProducts: storeData.drops?.collections?.find((el: any) => el?.name === 'All Products')?.shopifyId?.split('/')[4],
+        bestSellers: storeData.drops?.collections?.find((el: any) => el?.name === 'Bestsellers')?.shopifyId?.split('/')[4],
+        latestProducts: storeData.drops?.collections?.find((el: any) => el?.name === 'Latest Products')?.shopifyId?.split('/')[4],
+        spotlightProducts: storeData.drops?.spotlightColletionId?.split('/')[4] ?? '',
+        collections: storeData.drops?.collections?.filter((el: any) => el?.name !== 'All Products' && el?.name !== 'Bestsellers' && el?.name !== 'Latest Products')
+          .map((colle: any) => ({ ...colle, shopifyId: colle?.shopifyId?.split('/')[4] })) ?? [],
       });
       setStatus(storeData.drops?.status ? storeData.drops.status : 'InActive');
     }
@@ -195,6 +223,37 @@ const Drops = () => {
           },
         },
       },
+    });
+  };
+
+  const style = {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    // border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
+
+  const handleClose = () => {
+    setAddFieldPopup(false);
+    setAddField('');
+  };
+
+  const handleSave = () => {
+    if (addField) {
+      values?.collections?.push({ name: addField, shopifyId: '' });
+      handleClose();
+    }
+  };
+
+  const handleRemove = (index: number) => {
+    setDropsIds({
+      ...dropsIds,
+      collections: dropsIds.collections.filter((_: any, i: number) => i !== index),
     });
   };
 
@@ -379,13 +438,57 @@ const Drops = () => {
                     disabled
                   />
                 </div>
+                {values?.collections?.length
+                  ? values?.collections.map((item:any, index:number) => {
+                    const errText:any = errors?.collections?.length && errors?.collections[index];
+                    return (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }} key={item.name}>
+                        <h4 className="lable" style={{ width: '135px' }}>{item.name}</h4>
+                        <TextField
+                          id={item.shopifyId}
+                          name={item.shopifyId}
+                          placeholder={`Please enter ${item.name}`}
+                          value={item.shopifyId}
+                          onChange={(e) => setFieldValue(`collections.${index}.shopifyId`, e.target.value)}
+                          error={touched?.collections && touched?.collections[index]
+                          && touched?.collections[index]?.shopifyId
+                          && errors?.collections?.length && errors?.collections[index]
+                          && Boolean(errors?.collections[index])}
+                          helperText={touched?.collections && touched?.collections[index]
+                          && touched?.collections[index]?.shopifyId
+                          && errText?.shopifyId}
+                          style={{ width: '300px' }}
+                        />
+                        <IconButton aria-label="delete" color="error" onClick={() => handleRemove(index)}><CancelOutlinedIcon /></IconButton>
+                      </div>
+                    );
+                  })
+                  : '' }
                 <Button variant="contained" type="submit" style={{ marginTop: '10px' }}>Save</Button>
+                <Button variant="contained" style={{ marginTop: '10px', marginLeft: '50px' }} onClick={() => setAddFieldPopup(true)}>Add Section</Button>
               </Card>
             </form>
           </Grid>
         </Grid>
       </Container>
       <Footer />
+      <Modal
+        open={addFieldPopup}
+        onClose={() => handleClose()}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <TextField
+            name="addField"
+            placeholder="Please enter field name"
+            value={addField}
+            onChange={(e) => setAddField(e.target.value)}
+            style={{ width: '300px' }}
+          />
+          <Button variant="contained" style={{ marginTop: '10px' }} onClick={() => handleSave()}>Save</Button>
+        </Box>
+      </Modal>
     </>
   );
 };

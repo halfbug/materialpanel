@@ -52,4 +52,10 @@ export interface DropsForm {
      latestProducts: string,
      bestSellers: string,
      spotlightProducts: string,
+     collections: Collections[],
+}
+
+export interface Collections {
+    name: string,
+    shopifyId: string,
 }

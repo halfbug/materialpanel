@@ -146,9 +146,10 @@ const DROPS_UPDATE = gql`
           title
           priceRuleId
         }
-        latestCollectionId
-        bestSellerCollectionId
-        allProductsCollectionId
+        collections{
+          name
+          shopifyId
+        }
         rewards{
           baseline
           average
@@ -181,9 +182,10 @@ query store($id: String!) {
     }
     drops{
       isVideoEnabled,
-      allProductsCollectionId,
-      bestSellerCollectionId,
-      latestCollectionId,
+      collections{
+        name
+        shopifyId
+      }
       spotlightColletionId
       spotlightDiscount{
         percentage
