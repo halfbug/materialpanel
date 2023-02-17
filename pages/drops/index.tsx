@@ -141,13 +141,13 @@ const Drops = () => {
                 ...storeData?.drops,
                 status: storeData?.drops?.status ?? status,
                 collections: [
-                  { name: 'All Products', shopifyId: `gid://shopify/Collection/${value.allProducts}` },
-                  { name: 'Bestsellers', shopifyId: `gid://shopify/Collection/${value.bestSellers}` },
                   { name: 'Latest Products', shopifyId: `gid://shopify/Collection/${value.latestProducts}` },
+                  { name: 'Bestsellers', shopifyId: `gid://shopify/Collection/${value.bestSellers}` },
                   ...value.collections.map((col) => ({
                     ...col,
                     shopifyId: `gid://shopify/Collection/${col.shopifyId}`,
                   })),
+                  { name: 'All Products', shopifyId: `gid://shopify/Collection/${value.allProducts}` },
                 ],
                 spotlightColletionId: value.spotlightProducts ? `gid://shopify/Collection/${value.spotlightProducts}` : '',
                 spotlightDiscount: {
