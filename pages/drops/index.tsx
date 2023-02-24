@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import Head from 'next/head';
 import SidebarLayout from '@/layouts/SidebarLayout';
@@ -81,6 +82,10 @@ const Drops = () => {
   const [status, setStatus] = useState<string>('');
   const [addFieldPopup, setAddFieldPopup] = useState<boolean>(false);
   const [addField, setAddField] = useState('');
+  const [addFieldErr, setAddFieldErr] = useState({
+    flag: false,
+    msg: '',
+  });
 
   const validationSchema = yup.object({
     M1Discount: yup
@@ -241,12 +246,17 @@ const Drops = () => {
   const handleClose = () => {
     setAddFieldPopup(false);
     setAddField('');
+    setAddFieldErr({ flag: false, msg: '' });
   };
 
   const handleSave = () => {
-    if (addField) {
-      values?.collections?.push({ name: addField, shopifyId: '' });
+    const tempCollectionIds: string[] = ['all products', 'bestsellers', 'latest products'];
+    if (addField && !values?.collections.find((cole) => cole.name.toLocaleLowerCase() === addField.toLocaleLowerCase()) && !tempCollectionIds.includes(addField.toLocaleLowerCase())) {
+      setAddFieldErr({ flag: false, msg: '' });
+      setDropsIds({ ...dropsIds, collections: [...dropsIds.collections, { name: addField, shopifyId: '' }] });
       handleClose();
+    } else {
+      setAddFieldErr({ flag: true, msg: 'Please Enter valid collection name' });
     }
   };
 
@@ -445,7 +455,7 @@ const Drops = () => {
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }} key={item.name}>
                         <h4 className="lable" style={{ width: '135px' }}>{item.name}</h4>
                         <TextField
-                          id={item.shopifyId}
+                          id={item.name}
                           name={item.shopifyId}
                           placeholder={`Please enter ${item.name}`}
                           value={item.shopifyId}
@@ -485,6 +495,8 @@ const Drops = () => {
             value={addField}
             onChange={(e) => setAddField(e.target.value)}
             style={{ width: '300px' }}
+            error={addFieldErr.flag}
+            helperText={addFieldErr.msg}
           />
           <Button variant="contained" style={{ marginTop: '10px' }} onClick={() => handleSave()}>Save</Button>
         </Box>
