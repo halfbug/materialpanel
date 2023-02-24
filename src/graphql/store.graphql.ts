@@ -156,6 +156,7 @@ const DROPS_UPDATE = gql`
           maximum
         }
         status
+        lastSync
       }
   }
 }
@@ -198,6 +199,7 @@ query store($id: String!) {
         maximum
       }
       status
+      lastSync
     }
   }
 }

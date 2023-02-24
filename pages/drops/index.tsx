@@ -32,6 +32,8 @@ import { useFormik, FormikProps } from 'formik';
 import * as yup from 'yup';
 import { DropsForm } from '@/types/groupshop';
 import IconButton from '@mui/material/IconButton';
+import LinearIndeterminate from '@/components/Progress/Linear';
+import getDMYFormatedDate from '@/utils/getDMYFormatedDate';
 
 const Drops = () => {
   const router = useRouter();
@@ -41,6 +43,7 @@ const Drops = () => {
   const dropsUpdatedError = 'First fill all field';
 
   const [storeData, setStoreData] = useState<any>({});
+  const [lastSync, setlastsync] = useState<any>(null);
 
   const {
     data: getStoreData, refetch,
@@ -51,6 +54,7 @@ const Drops = () => {
 
   useEffect(() => {
     if (getStoreData?.store) {
+      setlastsync(getDMYFormatedDate(getStoreData?.store?.drops?.lastSync));
       setStoreData(getStoreData?.store);
     }
   }, [getStoreData]);
@@ -59,7 +63,7 @@ const Drops = () => {
     variables: { type: 'drops' },
   });
 
-  const [updateStore, { data: dropsUpdateData }] = useMutation<any>(
+  const [updateStore, { data: dropsUpdateData, loading }] = useMutation<any>(
     DROPS_UPDATE,
   );
   const [dropsIds, setDropsIds] = useState<any>({
@@ -199,6 +203,7 @@ const Drops = () => {
   useEffect(() => {
     if (dropsUpdateData?.updateStore?.drops) {
       refetch();
+      setlastsync(getDMYFormatedDate(dropsUpdateData?.updateStore?.drops.lastSync));
       setSuccessToast({ toastTog: true, toastMessage: dropsUpdatedMessage });
     }
   }, [dropsUpdateData]);
@@ -328,6 +333,29 @@ const Drops = () => {
           ) : ''}
         </div>
       </PageTitleWrapper>
+      <Container maxWidth="lg" style={{ marginBottom: '20px' }}>
+        <Grid
+          container
+          direction="row"
+          justifyContent="center"
+          alignItems="stretch"
+          spacing={3}
+        >
+          <Grid item xs={12}>
+            <Card style={{ paddingLeft: '20px', paddingRight: '20px' }}>
+              {loading && <LinearIndeterminate />}
+              <h4 style={{ whiteSpace: 'nowrap' }}>
+                <>
+                  Discount Code Update -
+                  {' '}
+                  {loading ? 'In Progress' : 'Completed '}
+                  {!loading && lastSync ? `(${lastSync})` : ''}
+                </>
+              </h4>
+            </Card>
+          </Grid>
+        </Grid>
+      </Container>
       <Container maxWidth="lg">
         <Grid
           container
