@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import Head from 'next/head';
@@ -34,6 +35,7 @@ import { DropsForm } from '@/types/groupshop';
 import IconButton from '@mui/material/IconButton';
 import LinearIndeterminate from '@/components/Progress/Linear';
 import getDMYFormatedDate from '@/utils/getDMYFormatedDate';
+import DropsCollectionIdsDrag from 'pages/components/modals/DropsCollectionIdsDrag';
 
 const Drops = () => {
   const router = useRouter();
@@ -90,6 +92,8 @@ const Drops = () => {
     flag: false,
     msg: '',
   });
+  const [dragFlag, setDragFlag] = useState(false);
+  const [collectionData, setCollectionData] = useState<any[]>([]);
 
   const validationSchema = yup.object({
     M1Discount: yup
@@ -134,7 +138,7 @@ const Drops = () => {
   });
 
   const {
-    handleSubmit, values, handleChange, touched, errors, setFieldValue,
+    handleSubmit, values, handleChange, touched, errors, setFieldValue, setFieldError, setFieldTouched,
   }: FormikProps<DropsForm> = useFormik<DropsForm>({
     initialValues: dropsIds,
     validationSchema,
@@ -142,37 +146,7 @@ const Drops = () => {
     validateOnChange: true,
     onSubmit: async (value) => {
       try {
-        await updateStore({
-          variables: {
-            updateStoreInput: {
-              id: sid,
-              drops: {
-                ...storeData?.drops,
-                status: storeData?.drops?.status ?? status,
-                collections: [
-                  { name: 'Latest Products', shopifyId: `gid://shopify/Collection/${value.latestProducts}` },
-                  { name: 'Bestsellers', shopifyId: `gid://shopify/Collection/${value.bestSellers}` },
-                  ...value.collections.map((col) => ({
-                    ...col,
-                    shopifyId: `gid://shopify/Collection/${col.shopifyId}`,
-                  })),
-                  { name: 'All Products', shopifyId: `gid://shopify/Collection/${value.allProducts}` },
-                ],
-                spotlightColletionId: value.spotlightProducts ? `gid://shopify/Collection/${value.spotlightProducts}` : '',
-                spotlightDiscount: {
-                  title: value.spotlightDiscountTitle,
-                  percentage: value.spotlightDiscountPercentage,
-                  priceRuleId: value.spotlightDiscountPriceRuleId,
-                },
-                rewards: {
-                  baseline: value.M1Discount,
-                  average: value.M2Discount,
-                  maximum: value.M3Discount,
-                },
-              },
-            },
-          },
-        });
+        handleOrderSave([...collectionData.filter((el) => el.name !== 'All Products'), { name: 'All Products', shopifyId: `gid://shopify/Collection/${value.allProducts}` }]);
       } catch (error) {
         console.error('An unexpected error happened:', error);
       }
@@ -197,6 +171,7 @@ const Drops = () => {
           .map((colle: any) => ({ ...colle, shopifyId: colle?.shopifyId?.split('/')[4] })) ?? [],
       });
       setStatus(storeData.drops?.status ? storeData.drops.status : 'InActive');
+      setCollectionData(storeData.drops?.collections ?? []);
     }
   }, [storeData, findDrops]);
 
@@ -258,18 +233,137 @@ const Drops = () => {
     const tempCollectionIds: string[] = ['all products', 'bestsellers', 'latest products'];
     if (addField && !values?.collections.find((cole) => cole.name.toLocaleLowerCase() === addField.toLocaleLowerCase()) && !tempCollectionIds.includes(addField.toLocaleLowerCase())) {
       setAddFieldErr({ flag: false, msg: '' });
-      setDropsIds({ ...dropsIds, collections: [...dropsIds.collections, { name: addField, shopifyId: '' }] });
+      setDropsIds({ ...values, collections: [...values.collections, { name: addField, shopifyId: '' }] });
+      setCollectionData([...collectionData, { name: addField, shopifyId: '' }]);
       handleClose();
     } else {
       setAddFieldErr({ flag: true, msg: 'Please Enter valid collection name' });
     }
   };
 
-  const handleRemove = (index: number) => {
+  const handleRemove = (index: number, name: string) => {
     setDropsIds({
       ...dropsIds,
       collections: dropsIds.collections.filter((_: any, i: number) => i !== index),
     });
+    setCollectionData(collectionData.filter((cid: any) => cid.name !== name));
+  };
+
+  const handleOrderSave = (orderData: any) => {
+    if (orderData.length) {
+      const tempOrderData = orderData.map((coll: any) => {
+        if (coll.name === 'Latest Products') {
+          return { name: coll.name, shopifyId: `gid://shopify/Collection/${values.latestProducts}` };
+        } if (coll.name === 'Bestsellers') {
+          return { name: coll.name, shopifyId: `gid://shopify/Collection/${values.bestSellers}` };
+        } if (coll.name === 'All Products') {
+          return { name: coll.name, shopifyId: `gid://shopify/Collection/${values.allProducts}` };
+        }
+        const temp = values.collections.find((co) => co.name === coll.name);
+        return { name: temp.name, shopifyId: `gid://shopify/Collection/${temp.shopifyId}` };
+      });
+      setCollectionData(tempOrderData);
+      updateStoreCall(tempOrderData);
+    }
+    setDragFlag(false);
+  };
+
+  const updateStoreCall = async (tempOrderData: any) => {
+    try {
+      await updateStore({
+        variables: {
+          updateStoreInput: {
+            id: sid,
+            drops: {
+              ...storeData?.drops,
+              status: storeData?.drops?.status ?? status,
+              collections: tempOrderData,
+              spotlightColletionId: values.spotlightProducts ? `gid://shopify/Collection/${values.spotlightProducts}` : '',
+              spotlightDiscount: {
+                title: values.spotlightDiscountTitle,
+                percentage: values.spotlightDiscountPercentage,
+                priceRuleId: values.spotlightDiscountPriceRuleId,
+              },
+              rewards: {
+                baseline: values.M1Discount,
+                average: values.M2Discount,
+                maximum: values.M3Discount,
+              },
+            },
+          },
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleChangeCollec = (e: any, index: number) => {
+    setFieldValue(`collections.${index}.shopifyId`, e.target.value);
+    const tempCond = collectionData.map((el:any) => el.name);
+    if (tempCond.includes(e.target.id)) {
+      const tempColl = collectionData.map((cid: any) => {
+        if (cid.name === e.target.id) {
+          return { name: cid.name, shopifyId: e.target.value ? `gid://shopify/Collection/${e.target.value}` : '' };
+        } return cid;
+      });
+      setCollectionData(tempColl);
+    } else {
+      const tempColl = [...collectionData];
+      tempColl.push({ name: e.target.id, shopifyId: e.target.value });
+      setCollectionData(tempColl);
+    }
+  };
+
+  const handleIds = (e: any) => {
+    const { name, value } = e.target;
+    setFieldValue(name, value);
+    const tempNames = collectionData.map((el) => el.name);
+    if (name === 'latestProducts' && !tempNames.includes('Latest Products')) {
+      setCollectionData([...collectionData, { name: 'Latest Products', shopifyId: value }]);
+    } else if (name === 'bestSellers' && !tempNames.includes('Bestsellers')) {
+      setCollectionData([...collectionData, { name: 'Bestsellers', shopifyId: value }]);
+    } else if (name === 'allProducts' && !tempNames.includes('All Products')) {
+      setCollectionData([...collectionData, { name: 'All Products', shopifyId: value }]);
+    }
+  };
+
+  const handleDragColl = () => {
+    const tempData = collectionData.filter((el: any) => !el.shopifyId);
+    if (!tempData.length && values.allProducts && values.bestSellers && values.latestProducts && values.M1Discount && values.M2Discount && values.M3Discount) {
+      setDragFlag(true);
+    } else {
+      if (!values.allProducts) {
+        setFieldTouched('allProducts', true);
+        setFieldError('allProducts', 'all products is required');
+      }
+      if (!values.bestSellers) {
+        setFieldTouched('bestSellers', true);
+        setFieldError('bestSellers', 'best sellers is required');
+      }
+      if (!values.latestProducts) {
+        setFieldTouched('latestProducts', true);
+        setFieldError('latestProducts', 'latest products is required');
+      }
+      if (!values.M1Discount) {
+        setFieldTouched('M1Discount', true);
+        setFieldError('M1Discount', 'Milestore1 discount is required');
+      }
+      if (!values.M2Discount) {
+        setFieldTouched('M2Discount', true);
+        setFieldError('M2Discount', 'Milestore2 discount is required');
+      }
+      if (!values.M3Discount) {
+        setFieldTouched('M3Discount', true);
+        setFieldError('M3Discount', 'Milestore3 discount is required');
+      }
+      for (let i = 0; i < values.collections.length; i++) {
+        if (!values.collections[i].shopifyId) {
+          setFieldTouched(`collections.${i}.shopifyId`, true);
+          setFieldError(`collections.${i}.shopifyId`, 'Required shopify collection id');
+        }
+      }
+    }
   };
 
   return (
@@ -285,7 +379,7 @@ const Drops = () => {
           onClose={() => setSuccessToast({ ...successToast, toastTog: false })}
           sx={{
             width: '100%',
-            background: successToast?.toastMessage === dropsUpdatedError ? '#DC3545' : '#287431',
+            background: successToast?.toastMessage === dropsUpdatedMessage ? '#287431' : '#DC3545',
             color: '#FFFFFF',
             '& .MuiAlert-icon': {
               display: 'none',
@@ -372,6 +466,7 @@ const Drops = () => {
                   <TextField
                     id="M1Discount"
                     name="M1Discount"
+                    type="number"
                     placeholder="Please enter M1 Discount"
                     value={values.M1Discount}
                     onChange={handleChange}
@@ -385,6 +480,7 @@ const Drops = () => {
                   <TextField
                     id="M2Discount"
                     name="M2Discount"
+                    type="number"
                     placeholder="Please enter M2 Discount"
                     value={values.M2Discount}
                     onChange={handleChange}
@@ -398,6 +494,7 @@ const Drops = () => {
                   <TextField
                     id="M3Discount"
                     name="M3Discount"
+                    type="number"
                     placeholder="Please enter M3 Discount"
                     value={values.M3Discount}
                     onChange={handleChange}
@@ -427,9 +524,10 @@ const Drops = () => {
                   <TextField
                     id="allProducts"
                     name="allProducts"
+                    type="number"
                     placeholder="Please enter all productId"
                     value={values.allProducts}
-                    onChange={handleChange}
+                    onChange={(e) => handleIds(e)}
                     error={touched.allProducts && Boolean(errors.allProducts)}
                     helperText={touched.allProducts && errors.allProducts}
                     style={{ width: '300px' }}
@@ -440,9 +538,10 @@ const Drops = () => {
                   <TextField
                     id="latestProducts"
                     name="latestProducts"
+                    type="number"
                     placeholder="Please enter latest productId"
                     value={values.latestProducts}
-                    onChange={handleChange}
+                    onChange={(e) => handleIds(e)}
                     error={touched.latestProducts && Boolean(errors.latestProducts)}
                     helperText={touched.latestProducts && errors.latestProducts}
                     style={{ width: '300px' }}
@@ -453,9 +552,10 @@ const Drops = () => {
                   <TextField
                     id="bestSellers"
                     name="bestSellers"
+                    type="number"
                     placeholder="Please enter best sellerId"
                     value={values.bestSellers}
-                    onChange={handleChange}
+                    onChange={(e) => handleIds(e)}
                     error={touched.bestSellers && Boolean(errors.bestSellers)}
                     helperText={touched.bestSellers && errors.bestSellers}
                     style={{ width: '300px' }}
@@ -468,7 +568,7 @@ const Drops = () => {
                     name="spotlightProducts"
                     placeholder="Please enter spotlight productId"
                     value={values.spotlightProducts}
-                    onChange={handleChange}
+                    onChange={(e) => handleIds(e)}
                     error={touched.spotlightProducts
                       && Boolean(errors.spotlightProducts)}
                     helperText={touched.spotlightProducts && errors.spotlightProducts}
@@ -485,9 +585,10 @@ const Drops = () => {
                         <TextField
                           id={item.name}
                           name={item.shopifyId}
+                          type="number"
                           placeholder={`Please enter ${item.name}`}
                           value={item.shopifyId}
-                          onChange={(e) => setFieldValue(`collections.${index}.shopifyId`, e.target.value)}
+                          onChange={(e) => handleChangeCollec(e, index)}
                           error={touched?.collections && touched?.collections[index]
                           && touched?.collections[index]?.shopifyId
                           && errors?.collections?.length && errors?.collections[index]
@@ -497,13 +598,14 @@ const Drops = () => {
                           && errText?.shopifyId}
                           style={{ width: '300px' }}
                         />
-                        <IconButton aria-label="delete" color="error" onClick={() => handleRemove(index)}><CancelOutlinedIcon /></IconButton>
+                        <IconButton aria-label="delete" color="error" onClick={() => handleRemove(index, item.name)}><CancelOutlinedIcon /></IconButton>
                       </div>
                     );
                   })
                   : '' }
                 <Button variant="contained" type="submit" style={{ marginTop: '10px' }}>Save</Button>
                 <Button variant="contained" style={{ marginTop: '10px', marginLeft: '50px' }} onClick={() => setAddFieldPopup(true)}>Add Section</Button>
+                <Button variant="contained" style={{ marginTop: '10px', marginLeft: '50px' }} onClick={() => handleDragColl()}>Collection Ids Order</Button>
               </Card>
             </form>
           </Grid>
@@ -529,6 +631,7 @@ const Drops = () => {
           <Button variant="contained" style={{ marginTop: '10px' }} onClick={() => handleSave()}>Save</Button>
         </Box>
       </Modal>
+      <DropsCollectionIdsDrag dragFlag={dragFlag} close={(ordData: any) => handleOrderSave(ordData)} dropsIds={collectionData} />
     </>
   );
 };
