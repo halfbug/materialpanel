@@ -23,9 +23,9 @@ import {
 } from '@mui/material';
 import Footer from '@/components/Footer';
 import {
-  DEFAULT_DISCOUNT, DROPS_UPDATE, GET_STORE_DETAILS,
+  DEFAULT_DISCOUNT, DROPS_UPDATE, GET_STORE_DETAILS, GET_UPDATE_CODES_STATUS,
 } from '@/graphql/store.graphql';
-import { useMutation, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
@@ -37,6 +37,13 @@ import LinearIndeterminate from '@/components/Progress/Linear';
 import getDMYFormatedDate from '@/utils/getDMYFormatedDate';
 import DropsCollectionIdsDrag from 'pages/components/modals/DropsCollectionIdsDrag';
 
+// eslint-disable-next-line no-shadow
+export enum CodeUpdateStatusTypeEnum {
+  none = 'none',
+  inprogress = 'inprogress',
+  completed = 'completed',
+}
+
 const Drops = () => {
   const router = useRouter();
   const { sid } = router.query;
@@ -46,6 +53,44 @@ const Drops = () => {
 
   const [storeData, setStoreData] = useState<any>({});
   const [lastSync, setlastsync] = useState<any>(null);
+  const [codeUpdateStatus, setcodeUpdateStatus] = useState<CodeUpdateStatusTypeEnum>(CodeUpdateStatusTypeEnum.none);
+  const [intervalID, setIntervalID] = useState<any>('');
+
+  useEffect(() => {
+    console.log('codeUpdateStatus', codeUpdateStatus);
+  }, [codeUpdateStatus]);
+
+  const [progressStatus, { data: rdata }] = useLazyQuery(GET_UPDATE_CODES_STATUS, {
+    fetchPolicy: 'no-cache',
+    onError() {
+      setcodeUpdateStatus(CodeUpdateStatusTypeEnum.none);
+    },
+  });
+
+  useEffect(() => {
+    if (rdata) {
+      if (rdata?.getUpdateDiscountStatus?.codeUpdateStatus === CodeUpdateStatusTypeEnum.completed) {
+        setcodeUpdateStatus(CodeUpdateStatusTypeEnum.completed);
+        setlastsync(getDMYFormatedDate(rdata?.getUpdateDiscountStatus?.lastSync));
+        clearInterval(intervalID);
+      }
+    }
+  }, [rdata]);
+
+  useEffect(() => {
+    if (codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress) {
+      const myIntervalID = setInterval(progressFunction, 5000);
+      setIntervalID(myIntervalID);
+    }
+  }, [codeUpdateStatus]);
+
+  const progressFunction = () => {
+    progressStatus({
+      variables: {
+        storeId: sid,
+      },
+    });
+  };
 
   const {
     data: getStoreData, refetch,
@@ -57,6 +102,8 @@ const Drops = () => {
   useEffect(() => {
     if (getStoreData?.store) {
       setlastsync(getDMYFormatedDate(getStoreData?.store?.drops?.lastSync));
+      console.log('getStoreData?.store?.drops?.codeUpdateStatus', getStoreData?.store?.drops?.codeUpdateStatus);
+      setcodeUpdateStatus(getStoreData?.store?.drops?.codeUpdateStatus ?? CodeUpdateStatusTypeEnum.none);
       setStoreData(getStoreData?.store);
     }
   }, [getStoreData]);
@@ -178,8 +225,10 @@ const Drops = () => {
   useEffect(() => {
     if (dropsUpdateData?.updateStore?.drops) {
       refetch();
-      setlastsync(getDMYFormatedDate(dropsUpdateData?.updateStore?.drops.lastSync));
       setSuccessToast({ toastTog: true, toastMessage: dropsUpdatedMessage });
+      if (dropsUpdateData?.updateStore?.drops?.codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress) {
+        setcodeUpdateStatus(CodeUpdateStatusTypeEnum.inprogress);
+      }
     }
   }, [dropsUpdateData]);
 
@@ -276,6 +325,7 @@ const Drops = () => {
             id: sid,
             drops: {
               ...storeData?.drops,
+              codeUpdateStatus: storeData?.drops?.codeUpdateStatus ?? 'none',
               status: storeData?.drops?.status ?? status,
               collections: tempOrderData,
               spotlightColletionId: values.spotlightProducts ? `gid://shopify/Collection/${values.spotlightProducts}` : '',
@@ -437,13 +487,13 @@ const Drops = () => {
         >
           <Grid item xs={12}>
             <Card style={{ paddingLeft: '20px', paddingRight: '20px' }}>
-              {loading && <LinearIndeterminate />}
+              {codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress && <LinearIndeterminate />}
               <h4 style={{ whiteSpace: 'nowrap' }}>
                 <>
                   Discount Code Update -
                   {' '}
-                  {loading ? 'In Progress' : 'Completed '}
-                  {!loading && lastSync ? `(${lastSync})` : ''}
+                  {codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress ? 'In Progress' : 'Completed '}
+                  {codeUpdateStatus !== CodeUpdateStatusTypeEnum.inprogress && lastSync ? `(${lastSync})` : ''}
                 </>
               </h4>
             </Card>

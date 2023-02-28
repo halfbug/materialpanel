@@ -157,6 +157,7 @@ const DROPS_UPDATE = gql`
         }
         status
         lastSync
+        codeUpdateStatus
       }
   }
 }
@@ -200,6 +201,7 @@ query store($id: String!) {
       }
       status
       lastSync
+      codeUpdateStatus
     }
   }
 }
@@ -217,7 +219,16 @@ query findDrops($type: String!) {
 }
 `;
 
+const GET_UPDATE_CODES_STATUS = gql`
+query getUpdateDiscountStatus($storeId: String!) {
+  getUpdateDiscountStatus(storeId: $storeId) {
+    lastSync
+    codeUpdateStatus
+  }
+}
+`;
+
 export {
   ALL_STORES, ALL_LOGS, VIDEO_POST, GET_ALL_VIDEOS, VIDEOS_UPDATE, DISCOVERYTOOLS_UPDATE,
-  DROPS_UPDATE, GET_STORE_DETAILS, DEFAULT_DISCOUNT, ALL_DROPS,
+  DROPS_UPDATE, GET_STORE_DETAILS, DEFAULT_DISCOUNT, ALL_DROPS, GET_UPDATE_CODES_STATUS,
 };
