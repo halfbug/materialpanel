@@ -122,9 +122,13 @@ const Drops = () => {
     spotlightDiscountTitle: '',
     spotlightDiscountPercentage: '',
     spotlightDiscountPriceRuleId: '',
+    vaultDiscountTitle: '',
+    vaultDiscountPercentage: '',
+    vaultDiscountPriceRuleId: '',
     allProducts: '',
     latestProducts: '',
     bestSellers: '',
+    vaultProducts: '',
     spotlightProducts: '',
     collections: [],
   });
@@ -155,6 +159,10 @@ const Drops = () => {
       .string()
       .matches(/^[1-9]?[0-9]{1}$|^100$/, 'Please enter between 0 to 100')
       .required('Milestore3 discount is required'),
+    vaultDiscountPercentage: yup
+      .string()
+      .matches(/^[1-9]?[0-9]{1}$|^100$/, 'Please enter between 0 to 100')
+      .required('Vault discount is required'),
     collections: yup.array().of(
       yup.object().shape({
         shopifyId: yup
@@ -163,29 +171,34 @@ const Drops = () => {
           .required('Required shopify collection id'),
       }),
     ),
-    // spotlightDiscountPercentage: yup
-    //   .string()
-    //   .matches(/^[1-9]?[0-9]{1}$|^100$/, 'Please enter between 0 to 100')
-    //   .required('spotlight discount is required'),
+    spotlightDiscountPercentage: yup
+      .string()
+      .matches(/^[1-9]?[0-9]{1}$|^100$/, 'Please enter between 0 to 100')
+      .required('spotlight discount is required'),
     allProducts: yup
       .string()
       .matches(/^\d+$/, 'Please enter only numbers')
-      .required('all products is required'),
+      .required('All products is required'),
     latestProducts: yup
       .string()
       .matches(/^\d+$/, 'Please enter only numbers')
-      .required('latest products is required'),
+      .required('Latest products is required'),
     bestSellers: yup
       .string()
       .matches(/^\d+$/, 'Please enter only numbers')
-      .required('best sellers is required'),
-    // spotlightProducts: yup
-    //   .string()
-    //   .required('spotlight products is required'),
+      .required('Best sellers is required'),
+    vaultProducts: yup
+      .string()
+      .matches(/^\d+$/, 'Please enter only numbers')
+      .required('Vault products is required'),
+    spotlightProducts: yup
+      .string()
+      .matches(/^\d+$/, 'Please enter only numbers')
+      .required('spotlight products is required'),
   });
 
   const {
-    handleSubmit, values, handleChange, touched, errors, setFieldValue, setFieldError, setFieldTouched,
+    handleSubmit, values, handleChange, touched, errors, setFieldValue, setFieldTouched, validateForm,
   }: FormikProps<DropsForm> = useFormik<DropsForm>({
     initialValues: dropsIds,
     validationSchema,
@@ -208,13 +221,17 @@ const Drops = () => {
         M2Discount: storeData.drops?.rewards?.average ?? findDrops?.findDrops?.details.average,
         M3Discount: storeData.drops?.rewards?.maximum ?? findDrops?.findDrops?.details.maximum,
         spotlightDiscountTitle: storeData.drops?.spotlightDiscount?.title,
-        spotlightDiscountPercentage: storeData.drops?.spotlightDiscount?.percentage,
+        spotlightDiscountPercentage: storeData.drops?.spotlightDiscount?.percentage ?? '',
         spotlightDiscountPriceRuleId: storeData.drops?.spotlightDiscount?.priceRuleId,
+        vaultDiscountTitle: storeData.drops?.vaultDiscount?.title,
+        vaultDiscountPercentage: storeData.drops?.vaultDiscount?.percentage ?? '',
+        vaultDiscountPriceRuleId: storeData.drops?.vaultDiscount?.priceRuleId,
         allProducts: storeData.drops?.collections?.find((el: any) => el?.name === 'All Products')?.shopifyId?.split('/')[4],
         bestSellers: storeData.drops?.collections?.find((el: any) => el?.name === 'Bestsellers')?.shopifyId?.split('/')[4],
         latestProducts: storeData.drops?.collections?.find((el: any) => el?.name === 'Latest Products')?.shopifyId?.split('/')[4],
-        spotlightProducts: storeData.drops?.spotlightColletionId?.split('/')[4] ?? '',
-        collections: storeData.drops?.collections?.filter((el: any) => el?.name !== 'All Products' && el?.name !== 'Bestsellers' && el?.name !== 'Latest Products')
+        vaultProducts: storeData.drops?.collections?.find((el: any) => el?.name === 'Vault Products')?.shopifyId?.split('/')[4],
+        spotlightProducts: storeData.drops?.collections?.find((el: any) => el?.name === 'Spotlight Products')?.shopifyId?.split('/')[4],
+        collections: storeData.drops?.collections?.filter((el: any) => el?.name !== 'All Products' && el?.name !== 'Bestsellers' && el?.name !== 'Latest Products' && el?.name !== 'Vault Products' && el?.name !== 'Spotlight Products')
           .map((colle: any) => ({ ...colle, shopifyId: colle?.shopifyId?.split('/')[4] })) ?? [],
       });
       setStatus(storeData.drops?.status ? storeData.drops.status : 'InActive');
@@ -279,7 +296,7 @@ const Drops = () => {
   };
 
   const handleSave = () => {
-    const tempCollectionIds: string[] = ['all products', 'bestsellers', 'latest products'];
+    const tempCollectionIds: string[] = ['all products', 'bestsellers', 'latest products', 'vault products', 'spotlight products'];
     if (addField && !values?.collections.find((cole) => cole.name.toLocaleLowerCase() === addField.toLocaleLowerCase()) && !tempCollectionIds.includes(addField.toLocaleLowerCase())) {
       setAddFieldErr({ flag: false, msg: '' });
       setDropsIds({ ...values, collections: [...values.collections, { name: addField, shopifyId: '' }] });
@@ -307,6 +324,10 @@ const Drops = () => {
           return { name: coll.name, shopifyId: `gid://shopify/Collection/${values.bestSellers}` };
         } if (coll.name === 'All Products') {
           return { name: coll.name, shopifyId: `gid://shopify/Collection/${values.allProducts}` };
+        } if (coll.name === 'Vault Products') {
+          return { name: coll.name, shopifyId: `gid://shopify/Collection/${values.vaultProducts}` };
+        } if (coll.name === 'Spotlight Products') {
+          return { name: coll.name, shopifyId: `gid://shopify/Collection/${values.spotlightProducts}` };
         }
         const temp = values.collections.find((co) => co.name === coll.name);
         return { name: temp.name, shopifyId: `gid://shopify/Collection/${temp.shopifyId}` };
@@ -328,16 +349,20 @@ const Drops = () => {
               codeUpdateStatus: storeData?.drops?.codeUpdateStatus ?? 'none',
               status: storeData?.drops?.status ?? status,
               collections: tempOrderData,
-              spotlightColletionId: values.spotlightProducts ? `gid://shopify/Collection/${values.spotlightProducts}` : '',
               spotlightDiscount: {
                 title: values.spotlightDiscountTitle,
-                percentage: values.spotlightDiscountPercentage,
+                percentage: `${values.spotlightDiscountPercentage}`,
                 priceRuleId: values.spotlightDiscountPriceRuleId,
               },
+              vaultDiscount: {
+                title: values.vaultDiscountTitle,
+                percentage: `${values.vaultDiscountPercentage}`,
+                priceRuleId: values.vaultDiscountPriceRuleId,
+              },
               rewards: {
-                baseline: values.M1Discount,
-                average: values.M2Discount,
-                maximum: values.M3Discount,
+                baseline: `${values.M1Discount}`,
+                average: `${values.M2Discount}`,
+                maximum: `${values.M3Discount}`,
               },
             },
           },
@@ -375,45 +400,33 @@ const Drops = () => {
       setCollectionData([...collectionData, { name: 'Bestsellers', shopifyId: value }]);
     } else if (name === 'allProducts' && !tempNames.includes('All Products')) {
       setCollectionData([...collectionData, { name: 'All Products', shopifyId: value }]);
+    } else if (name === 'vaultProducts' && !tempNames.includes('Vault Products')) {
+      setCollectionData([...collectionData, { name: 'Vault Products', shopifyId: value }]);
+    } else if (name === 'spotlightProducts' && !tempNames.includes('Spotlight Products')) {
+      setCollectionData([...collectionData, { name: 'Spotlight Products', shopifyId: value }]);
     }
   };
 
   const handleDragColl = () => {
-    const tempData = collectionData.filter((el: any) => !el.shopifyId);
-    if (!tempData.length && values.allProducts && values.bestSellers && values.latestProducts && values.M1Discount && values.M2Discount && values.M3Discount) {
-      setDragFlag(true);
-    } else {
-      if (!values.allProducts) {
-        setFieldTouched('allProducts', true);
-        setFieldError('allProducts', 'all products is required');
+    (async () => {
+      const valid: any = await validateForm();
+      const tempData = collectionData.filter((el: any) => !el.shopifyId);
+      if (!tempData.length && !Object.keys(valid).length) {
+        setDragFlag(true);
+      } else {
+        Object.keys(valid).forEach((key: any) => {
+          if (key === 'collections') {
+            for (let i = 0; i < valid.collections.length; i++) {
+              if (valid?.collections[i]?.shopifyId) {
+                setFieldTouched(`collections.${i}.shopifyId`, true);
+              }
+            }
+          } else {
+            setFieldTouched(key, true);
+          }
+        });
       }
-      if (!values.bestSellers) {
-        setFieldTouched('bestSellers', true);
-        setFieldError('bestSellers', 'best sellers is required');
-      }
-      if (!values.latestProducts) {
-        setFieldTouched('latestProducts', true);
-        setFieldError('latestProducts', 'latest products is required');
-      }
-      if (!values.M1Discount) {
-        setFieldTouched('M1Discount', true);
-        setFieldError('M1Discount', 'Milestore1 discount is required');
-      }
-      if (!values.M2Discount) {
-        setFieldTouched('M2Discount', true);
-        setFieldError('M2Discount', 'Milestore2 discount is required');
-      }
-      if (!values.M3Discount) {
-        setFieldTouched('M3Discount', true);
-        setFieldError('M3Discount', 'Milestore3 discount is required');
-      }
-      for (let i = 0; i < values.collections.length; i++) {
-        if (!values.collections[i].shopifyId) {
-          setFieldTouched(`collections.${i}.shopifyId`, true);
-          setFieldError(`collections.${i}.shopifyId`, 'Required shopify collection id');
-        }
-      }
-    }
+    })();
   };
 
   return (
@@ -558,6 +571,7 @@ const Drops = () => {
                   <TextField
                     id="spotlightDiscountPercentage"
                     name="spotlightDiscountPercentage"
+                    type="number"
                     placeholder="Please enter spotlight discount"
                     value={values.spotlightDiscountPercentage}
                     onChange={handleChange}
@@ -566,7 +580,22 @@ const Drops = () => {
                     helperText={touched.spotlightDiscountPercentage
                       && errors.spotlightDiscountPercentage}
                     style={{ width: '300px' }}
-                    disabled
+                  />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <h4 className="lable" style={{ width: '135px' }}>Vault Discount</h4>
+                  <TextField
+                    id="vaultDiscountPercentage"
+                    name="vaultDiscountPercentage"
+                    type="number"
+                    placeholder="Please enter vault discount"
+                    value={values.vaultDiscountPercentage}
+                    onChange={handleChange}
+                    error={touched.vaultDiscountPercentage
+                      && Boolean(errors.vaultDiscountPercentage)}
+                    helperText={touched.vaultDiscountPercentage
+                      && errors.vaultDiscountPercentage}
+                    style={{ width: '300px' }}
                   />
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -612,10 +641,25 @@ const Drops = () => {
                   />
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <h4 className="lable" style={{ width: '135px' }}>Vault Products</h4>
+                  <TextField
+                    id="vaultProducts"
+                    name="vaultProducts"
+                    type="number"
+                    placeholder="Please enter vault products"
+                    value={values.vaultProducts}
+                    onChange={(e) => handleIds(e)}
+                    error={touched.vaultProducts && Boolean(errors.vaultProducts)}
+                    helperText={touched.vaultProducts && errors.vaultProducts}
+                    style={{ width: '300px' }}
+                  />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <h4 className="lable" style={{ width: '135px' }}>Spotlight Products</h4>
                   <TextField
                     id="spotlightProducts"
                     name="spotlightProducts"
+                    type="number"
                     placeholder="Please enter spotlight productId"
                     value={values.spotlightProducts}
                     onChange={(e) => handleIds(e)}
@@ -623,7 +667,6 @@ const Drops = () => {
                       && Boolean(errors.spotlightProducts)}
                     helperText={touched.spotlightProducts && errors.spotlightProducts}
                     style={{ width: '300px' }}
-                    disabled
                   />
                 </div>
                 {values?.collections?.length

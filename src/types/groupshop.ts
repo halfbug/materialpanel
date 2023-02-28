@@ -48,9 +48,13 @@ export interface DropsForm {
      spotlightDiscountTitle : string,
      spotlightDiscountPercentage : string,
      spotlightDiscountPriceRuleId : string,
+     vaultDiscountTitle : string,
+     vaultDiscountPercentage : string,
+     vaultDiscountPriceRuleId : string,
      allProducts: string,
      latestProducts: string,
      bestSellers: string,
+     vaultProducts: string,
      spotlightProducts: string,
      collections: Collections[],
 }

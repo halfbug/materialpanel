@@ -24,8 +24,12 @@ query stores{
       allProductsCollectionId,
       bestSellerCollectionId,
       latestCollectionId,
-      spotlightColletionId
       spotlightDiscount{
+        percentage
+        title
+        priceRuleId
+      }
+      vaultDiscount{
         percentage
         title
         priceRuleId
@@ -140,7 +144,6 @@ const DROPS_UPDATE = gql`
       id
       drops{
         isVideoEnabled
-        spotlightColletionId
         spotlightDiscount{
           percentage
           title
@@ -158,6 +161,11 @@ const DROPS_UPDATE = gql`
         status
         lastSync
         codeUpdateStatus
+        vaultDiscount{
+          percentage
+          title
+          priceRuleId
+        }
       }
   }
 }
@@ -188,8 +196,12 @@ query store($id: String!) {
         name
         shopifyId
       }
-      spotlightColletionId
       spotlightDiscount{
+        percentage
+        title
+        priceRuleId
+      }
+      vaultDiscount{
         percentage
         title
         priceRuleId
@@ -201,7 +213,6 @@ query store($id: String!) {
       }
       status
       lastSync
-      codeUpdateStatus
     }
   }
 }
