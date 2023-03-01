@@ -474,6 +474,7 @@ const Drops = () => {
                 onChange={(e) => handleChangeStatus(e)}
                 aria-label="Platform"
                 style={{ gap: '10px' }}
+                disabled={codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress}
               >
                 <ToggleButton value={1} className={status === 'Active' ? 'enablebtn_active' : 'enablebtn'}>
                   <CheckCircleOutlineRoundedIcon />
@@ -696,9 +697,9 @@ const Drops = () => {
                     );
                   })
                   : '' }
-                <Button variant="contained" type="submit" style={{ marginTop: '10px' }}>Save</Button>
+                <Button variant="contained" type="submit" style={{ marginTop: '10px' }} disabled={codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress}>Save</Button>
                 <Button variant="contained" style={{ marginTop: '10px', marginLeft: '50px' }} onClick={() => setAddFieldPopup(true)}>Add Section</Button>
-                <Button variant="contained" style={{ marginTop: '10px', marginLeft: '50px' }} onClick={() => handleDragColl()}>Collection Ids Order</Button>
+                <Button variant="contained" style={{ marginTop: '10px', marginLeft: '50px' }} onClick={() => handleDragColl()} disabled={codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress}>Collection Ids Order</Button>
               </Card>
             </form>
           </Grid>

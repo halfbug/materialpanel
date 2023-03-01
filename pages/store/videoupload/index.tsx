@@ -26,6 +26,7 @@ import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import { CodeUpdateStatusTypeEnum } from 'pages/drops';
 
 function Videoupload() {
   const gridRef = useRef();
@@ -89,7 +90,7 @@ function Videoupload() {
           />
           <FormControlLabel
             control={
-              <Switch checked={!!storeData?.drops?.isVideoEnabled} onChange={(e) => handleChangeDrops(e)} name="gilad" size="medium" />
+              <Switch checked={!!storeData?.drops?.isVideoEnabled} onChange={(e) => handleChangeDrops(e)} disabled={storeData?.drops?.codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress} name="gilad" size="medium" />
           }
             label="Drop"
             labelPlacement="start"
