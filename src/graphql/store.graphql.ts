@@ -213,6 +213,7 @@ query store($id: String!) {
       }
       status
       lastSync
+      codeUpdateStatus
     }
   }
 }
