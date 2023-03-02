@@ -56,14 +56,14 @@ const Drops = () => {
   const [codeUpdateStatus, setcodeUpdateStatus] = useState<CodeUpdateStatusTypeEnum>(CodeUpdateStatusTypeEnum.none);
   const [intervalID, setIntervalID] = useState<any>('');
 
-  useEffect(() => {
-    console.log('codeUpdateStatus', codeUpdateStatus);
-  }, [codeUpdateStatus]);
-
-  const [progressStatus, { data: rdata }] = useLazyQuery(GET_UPDATE_CODES_STATUS, {
-    fetchPolicy: 'no-cache',
+  const { data: rdata, refetch: progressStatus } = useQuery(GET_UPDATE_CODES_STATUS, {
+    variables: {
+      storeId: sid,
+    },
+    fetchPolicy: 'network-only',
     onError() {
       setcodeUpdateStatus(CodeUpdateStatusTypeEnum.none);
+      clearInterval(intervalID);
     },
   });
 
@@ -75,7 +75,7 @@ const Drops = () => {
         clearInterval(intervalID);
       }
     }
-  }, [rdata]);
+  }, [JSON.stringify(rdata)]);
 
   useEffect(() => {
     if (codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress) {
@@ -85,11 +85,7 @@ const Drops = () => {
   }, [codeUpdateStatus]);
 
   const progressFunction = () => {
-    progressStatus({
-      variables: {
-        storeId: sid,
-      },
-    });
+    progressStatus();
   };
 
   const {
