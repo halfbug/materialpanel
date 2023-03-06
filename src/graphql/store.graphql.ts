@@ -214,6 +214,7 @@ query store($id: String!) {
       status
       lastSync
       codeUpdateStatus
+      dropsCount
     }
   }
 }
@@ -236,6 +237,7 @@ query getUpdateDiscountStatus($storeId: String!) {
   getUpdateDiscountStatus(storeId: $storeId) {
     lastSync
     codeUpdateStatus
+    dropsCount
   }
 }
 `;

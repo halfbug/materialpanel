@@ -55,6 +55,7 @@ const Drops = () => {
   const [lastSync, setlastsync] = useState<any>(null);
   const [codeUpdateStatus, setcodeUpdateStatus] = useState<CodeUpdateStatusTypeEnum>(CodeUpdateStatusTypeEnum.none);
   const [intervalID, setIntervalID] = useState<any>('');
+  const [dropsCount, setdropsCount] = useState<number>(0);
 
   const { data: rdata, refetch: progressStatus } = useQuery(GET_UPDATE_CODES_STATUS, {
     variables: {
@@ -71,6 +72,7 @@ const Drops = () => {
     if (rdata) {
       if (rdata?.getUpdateDiscountStatus?.codeUpdateStatus === CodeUpdateStatusTypeEnum.completed) {
         setcodeUpdateStatus(CodeUpdateStatusTypeEnum.completed);
+        setdropsCount(rdata?.getUpdateDiscountStatus?.dropsCount ?? 0);
         setlastsync(getDMYFormatedDate(rdata?.getUpdateDiscountStatus?.lastSync));
         clearInterval(intervalID);
       }
@@ -98,7 +100,7 @@ const Drops = () => {
   useEffect(() => {
     if (getStoreData?.store) {
       setlastsync(getDMYFormatedDate(getStoreData?.store?.drops?.lastSync));
-      console.log('getStoreData?.store?.drops?.codeUpdateStatus', getStoreData?.store?.drops?.codeUpdateStatus);
+      setdropsCount(getStoreData?.store?.drops?.dropsCount ?? 0);
       setcodeUpdateStatus(getStoreData?.store?.drops?.codeUpdateStatus ?? CodeUpdateStatusTypeEnum.none);
       setStoreData(getStoreData?.store);
     }
@@ -504,6 +506,7 @@ const Drops = () => {
                   {' '}
                   {codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress ? 'In Progress' : 'Completed '}
                   {codeUpdateStatus !== CodeUpdateStatusTypeEnum.inprogress && lastSync ? `(${lastSync})` : ''}
+                  {codeUpdateStatus !== CodeUpdateStatusTypeEnum.inprogress && dropsCount ? `(${dropsCount})` : ''}
                 </>
               </h4>
             </Card>
