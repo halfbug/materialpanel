@@ -57,8 +57,15 @@ export interface DropsForm {
      vaultProducts: string,
      spotlightProducts: string,
      collections: Collections[],
+     publicKey: string,
+     privateKey: string,
+     listId: string,
+     subscriberListId: string,
+     signup1: string,
+     signup2: string,
+     signup3: string,
+     signup4: string,
 }
-
 export interface Collections {
     name: string,
     shopifyId: string,

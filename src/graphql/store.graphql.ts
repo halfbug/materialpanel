@@ -211,6 +211,16 @@ query store($id: String!) {
         average
         maximum
       }
+      klaviyo{
+        publicKey
+        privateKey
+        listId
+        subscriberListId
+        signup1
+        signup2
+        signup3
+        signup4
+      }
       status
       lastSync
       codeUpdateStatus
@@ -242,7 +252,16 @@ query getUpdateDiscountStatus($storeId: String!) {
 }
 `;
 
+const FIND_KLAVIYO_LIST = gql`
+query findKlaviyoList($storeId: String!, $privateKey: String!) {
+  findKlaviyoList(storeId: $storeId, privateKey: $privateKey) {
+    listId    
+  }
+}
+`;
+
 export {
   ALL_STORES, ALL_LOGS, VIDEO_POST, GET_ALL_VIDEOS, VIDEOS_UPDATE, DISCOVERYTOOLS_UPDATE,
   DROPS_UPDATE, GET_STORE_DETAILS, DEFAULT_DISCOUNT, ALL_DROPS, GET_UPDATE_CODES_STATUS,
+  FIND_KLAVIYO_LIST,
 };

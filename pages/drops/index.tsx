@@ -36,6 +36,7 @@ import IconButton from '@mui/material/IconButton';
 import LinearIndeterminate from '@/components/Progress/Linear';
 import getDMYFormatedDate from '@/utils/getDMYFormatedDate';
 import DropsCollectionIdsDrag from 'pages/components/modals/DropsCollectionIdsDrag';
+import DropKlaviyoForm from '../components/forms/klaviyoForm';
 
 // eslint-disable-next-line no-shadow
 export enum CodeUpdateStatusTypeEnum {
@@ -90,6 +91,11 @@ const Drops = () => {
     progressStatus();
   };
 
+  const handleForm = (field: string, value: string) => {
+    setFieldValue(field, value);
+    handleSubmit();
+  };
+
   const {
     data: getStoreData, refetch,
   } = useQuery(GET_STORE_DETAILS, {
@@ -129,6 +135,14 @@ const Drops = () => {
     vaultProducts: '',
     spotlightProducts: '',
     collections: [],
+    publicKey: '',
+    privateKey: '',
+    listId: '',
+    subscriberListId: '',
+    signup1: '',
+    signup2: '',
+    signup3: '',
+    signup4: '',
   });
   const [successToast, setSuccessToast] = useState<any>({
     toastTog: false,
@@ -137,6 +151,7 @@ const Drops = () => {
   const [status, setStatus] = useState<string>('');
   const [addFieldPopup, setAddFieldPopup] = useState<boolean>(false);
   const [addField, setAddField] = useState('');
+  const [subscriberListId, setSubscriberListId] = useState('');
   const [addFieldErr, setAddFieldErr] = useState({
     flag: false,
     msg: '',
@@ -231,6 +246,14 @@ const Drops = () => {
         spotlightProducts: storeData.drops?.collections?.find((el: any) => el?.name === 'Spotlight Products')?.shopifyId?.split('/')[4],
         collections: storeData.drops?.collections?.filter((el: any) => el?.name !== 'All Products' && el?.name !== 'Bestsellers' && el?.name !== 'Latest Products' && el?.name !== 'Vault Products' && el?.name !== 'Spotlight Products')
           .map((colle: any) => ({ ...colle, shopifyId: colle?.shopifyId?.split('/')[4] })) ?? [],
+        publicKey: storeData.drops?.klaviyo?.publicKey,
+        privateKey: storeData.drops?.klaviyo?.privateKey,
+        listId: storeData.drops?.klaviyo?.listId,
+        subscriberListId: storeData.drops?.klaviyo?.subscriberListId ?? subscriberListId,
+        signup1: storeData.drops?.klaviyo?.signup1,
+        signup2: storeData.drops?.klaviyo?.signup2,
+        signup3: storeData.drops?.klaviyo?.signup3,
+        signup4: storeData.drops?.klaviyo?.signup4,
       });
       setStatus(storeData.drops?.status ? storeData.drops.status : 'InActive');
       setCollectionData(storeData.drops?.collections ?? []);
@@ -337,6 +360,7 @@ const Drops = () => {
   };
 
   const updateStoreCall = async (tempOrderData: any) => {
+    console.log('subscriberListId123 ', subscriberListId);
     try {
       await updateStore({
         variables: {
@@ -361,6 +385,16 @@ const Drops = () => {
                 baseline: `${values.M1Discount}`,
                 average: `${values.M2Discount}`,
                 maximum: `${values.M3Discount}`,
+              },
+              klaviyo: {
+                publicKey: values.publicKey,
+                privateKey: values.privateKey,
+                listId: values.listId,
+                subscriberListId,
+                signup1: values.signup1,
+                signup2: values.signup2,
+                signup3: values.signup3,
+                signup4: values.signup4,
               },
             },
           },
@@ -521,7 +555,7 @@ const Drops = () => {
           alignItems="stretch"
           spacing={3}
         >
-          <Grid item xs={12}>
+          <Grid item xs={6}>
             <form noValidate onSubmit={handleSubmit}>
               <Card style={{ padding: '20px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -702,6 +736,16 @@ const Drops = () => {
               </Card>
             </form>
           </Grid>
+
+          <Grid item xs={6}>
+            <DropKlaviyoForm
+              storeData={storeData}
+              setSubscriberListId={setSubscriberListId}
+              setFieldValue={setFieldValue}
+              handleForm={handleForm}
+            />
+          </Grid>
+
         </Grid>
       </Container>
       <Footer />
