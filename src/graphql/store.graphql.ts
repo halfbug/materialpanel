@@ -24,16 +24,6 @@ query stores{
       allProductsCollectionId,
       bestSellerCollectionId,
       latestCollectionId,
-      spotlightDiscount{
-        percentage
-        title
-        priceRuleId
-      }
-      vaultDiscount{
-        percentage
-        title
-        priceRuleId
-      }
       rewards{
         baseline
         average
@@ -144,11 +134,6 @@ const DROPS_UPDATE = gql`
       id
       drops{
         isVideoEnabled
-        spotlightDiscount{
-          percentage
-          title
-          priceRuleId
-        }
         collections{
           name
           shopifyId
@@ -161,11 +146,6 @@ const DROPS_UPDATE = gql`
         status
         lastSync
         codeUpdateStatus
-        vaultDiscount{
-          percentage
-          title
-          priceRuleId
-        }
       }
   }
 }
@@ -195,16 +175,6 @@ query store($id: String!) {
       collections{
         name
         shopifyId
-      }
-      spotlightDiscount{
-        percentage
-        title
-        priceRuleId
-      }
-      vaultDiscount{
-        percentage
-        title
-        priceRuleId
       }
       rewards{
         baseline
