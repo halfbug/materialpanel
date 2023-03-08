@@ -64,6 +64,7 @@ query dropsGroupshops{
     }
     discountCode{
       title
+      priceRuleId
     }
     createdAt
   }

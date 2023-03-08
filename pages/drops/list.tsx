@@ -73,6 +73,12 @@ function Logs() {
       width: 170,
       valueGetter: (params: GridValueGetterParams) => params.row.discountCode?.title || '',
     },
+    {
+      field: 'discountCode.priceRuleId',
+      headerName: 'Price Rule',
+      width: 170,
+      valueGetter: (params: GridValueGetterParams) => params.row.discountCode?.priceRuleId || '',
+    },
   ];
 
   return (
