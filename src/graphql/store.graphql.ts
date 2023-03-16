@@ -112,6 +112,17 @@ const VIDEOS_UPDATE = gql`
 }
 `;
 
+const VIDEOS_REMOVE = gql`
+  mutation removeVideo($id: String!) {
+    removeVideo(id: $id) {
+      status
+      storeId
+      name,
+      type
+  }
+}
+`;
+
 const DISCOVERYTOOLS_UPDATE = gql`
   mutation UpdateDiscoveryTools($updateDiscoveryTools: UpdateStoreInput!) {
     updateDiscoveryTools(UpdateDiscoveryTools: $updateDiscoveryTools) {
@@ -234,5 +245,5 @@ query findKlaviyoList($storeId: String!, $privateKey: String!) {
 export {
   ALL_STORES, ALL_LOGS, VIDEO_POST, GET_ALL_VIDEOS, VIDEOS_UPDATE, DISCOVERYTOOLS_UPDATE,
   DROPS_UPDATE, GET_STORE_DETAILS, DEFAULT_DISCOUNT, ALL_DROPS, GET_UPDATE_CODES_STATUS,
-  FIND_KLAVIYO_LIST,
+  FIND_KLAVIYO_LIST, VIDEOS_REMOVE,
 };

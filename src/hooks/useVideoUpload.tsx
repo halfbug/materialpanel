@@ -1,12 +1,11 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable radix */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/prefer-optional-chain */
-
 import {
-  DROPS_UPDATE, GET_ALL_VIDEOS, GET_STORE_DETAILS, VIDEOS_UPDATE, VIDEO_POST,
+  DROPS_UPDATE, GET_ALL_VIDEOS, GET_STORE_DETAILS, VIDEOS_REMOVE, VIDEOS_UPDATE, VIDEO_POST,
 } from '@/graphql/store.graphql';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import axios from 'axios';
@@ -19,6 +18,8 @@ import { v4 as uuid } from 'uuid';
 import moment from 'moment';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
+import { IconButton } from '@mui/material';
+import { DeleteForeverOutlined } from '@mui/icons-material';
 
 const useVideoUpload = (gridRef: any) => {
   const router = useRouter();
@@ -37,8 +38,8 @@ const useVideoUpload = (gridRef: any) => {
   });
 
   const VideoSuccessMessage = 'Video uploaded successfully!';
+  const VideoRemoveMessage = 'Video removed successfully!';
   const DropsEnabledMessage = 'First of fill all drops filed!';
-  console.log('storeData🎈', storeData);
 
   const columnDefs: any = [
     {
@@ -63,6 +64,12 @@ const useVideoUpload = (gridRef: any) => {
       maxWidth: 500,
       valueGetter: (params) => moment(params.data?.createdAt).format('MMM Do YYYY, HH:mm:ss'),
     },
+    {
+      field: 'id',
+      headerName: 'Remove video',
+      maxWidth: 150,
+      cellRendererFramework: (params) => <IconButton aria-label="delete" color="primary" onClick={() => handleRemoveVideo(params.data)}><DeleteForeverOutlined /></IconButton>,
+    },
   ];
 
   const defaultColDef = useMemo(() => ({
@@ -79,6 +86,10 @@ const useVideoUpload = (gridRef: any) => {
 
   const [videoStatusUpdate, { data, loading }] = useMutation<VideoUpdate>(VIDEOS_UPDATE);
 
+  const [videoRemove,
+    { data: removedVideoData },
+  ] = useMutation<any>(VIDEOS_REMOVE);
+
   const {
     data: getStoreData, refetch: getStoreRefetch,
   } = useQuery(GET_STORE_DETAILS, {
@@ -86,10 +97,18 @@ const useVideoUpload = (gridRef: any) => {
     variables: { id: sid },
   });
 
+  useEffect(() => {
+    if (removedVideoData && removedVideoData.removeVideo && removedVideoData.removeVideo.status) {
+      refetch();
+      setToastData({ toastTog: true, toastMessage: VideoRemoveMessage });
+    }
+  }, [removedVideoData]);
+
   const [refetch] = useLazyQuery(GET_ALL_VIDEOS, {
     variables: { storeId: sid },
     fetchPolicy: 'network-only',
     onCompleted: (getVideo) => {
+      console.log('🚀 ~ file: useVideoUpload.tsx:115 ~ useVideoUpload ~ getVideo:', getVideo);
       const sortVideoList = SortingVideoOrder(getVideo?.videos);
       setVideoList(sortVideoList);
     },
@@ -105,9 +124,9 @@ const useVideoUpload = (gridRef: any) => {
   }, [dropsUpdateData]);
 
   const SortingVideoOrder = (VideoList: any) => {
-    const VideosOrder0 = VideoList.filter((el) => el.orderId === 0);
-    const videoOrderData = VideoList.filter((el) => el.orderId !== 0)
-      .sort((a, b) => a.orderId - b.orderId);
+    const VideosOrder0 = VideoList.filter((el: any) => el.orderId === 0);
+    const videoOrderData = VideoList.filter((el: any) => el.orderId !== 0)
+      .sort((a: any, b: any) => a.orderId - b.orderId);
     return [...videoOrderData, ...VideosOrder0];
   };
 
@@ -144,9 +163,10 @@ const useVideoUpload = (gridRef: any) => {
   const handleChangeVideo = (e: any) => {
     setFileName(e.target.value);
     const videoType = ['video/mp4'];
-    const VideoFile = Array.from(e.target.files).filter((ele:any) => videoType.includes(ele?.type));
+    const VideoFile = Array.from(e.target.files)
+      .filter((ele: any) => videoType.includes(ele?.type));
     const anotherExtensionFile = Array.from(e.target.files)
-      .filter((ele:any) => !videoType.includes(ele?.type));
+      .filter((ele: any) => !videoType.includes(ele?.type));
     if (anotherExtensionFile.length && VideoFile.length) {
       setErrFlag('');
       const files: any = VideoFile;
@@ -252,6 +272,28 @@ const useVideoUpload = (gridRef: any) => {
     }
   };
 
+  const handleRemoveVideo = (selectRowData: any) => {
+    setLoading(true);
+    const config = {
+      headers: { 'Content-Type': 'multipart/form-data;boundary=None' },
+    };
+    axios.delete(`${process.env.API_URL}/image/video?key=${selectRowData.name}`, config)
+      .then(async (res) => {
+        if (res.data.message) {
+          await videoRemove({
+            variables: {
+              id: selectRowData.id,
+            },
+          });
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      });
+  };
+
   useEffect(() => {
     if (videoList?.length > 0) {
       const temp: any = videoList.map((ite: any) => ({
@@ -327,7 +369,7 @@ const useVideoUpload = (gridRef: any) => {
     setSelectVideo(selectedRows.map((el) => el.id));
   };
 
-  const handleChangeDrops = (e:any) => {
+  const handleChangeDrops = (e: any) => {
     if (storeData?.drops) {
       updateStore({
         variables: {
