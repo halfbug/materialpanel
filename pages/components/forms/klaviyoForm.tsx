@@ -114,6 +114,15 @@ export default function DropKlaviyoForm({
     },
   });
 
+  const json = {
+    id: '{{ person.KlaviyoID }}',
+    email: '{{ person.email }}',
+    full_name: "{{ person|lookup:'Full Name'|default:'' }}",
+    first_name: '{{ person.first_name }}',
+    last_name: '{{ person.last_name }}',
+    phone_number: '{{ person.phone_number }}',
+  };
+
   return (
     <div>
       <h2 style={{ alignItems: 'center' }}>Klaviyo Integration</h2>
@@ -213,6 +222,43 @@ export default function DropKlaviyoForm({
           <Button variant="contained" type="submit" style={{ marginTop: '10px' }}>Save</Button>
         </Card>
       </form>
+
+      <h2 style={{ alignItems: 'center' }}>Klaviyo Flow Setup Instruction:</h2>
+      <h4>
+        Step 1
+      </h4>
+      <span>
+        - Create flow on klaviyo
+        <br />
+        - Select Create From Scratch
+      </span>
+      <h4>
+        Step 2
+      </h4>
+      <span>
+        Select the FLOW TRIGGER (Your Drop List)
+      </span>
+      <h4>
+        Step 3
+      </h4>
+      <span>
+        Add Webhook
+      </span>
+      <h4>
+        Step 4
+      </h4>
+      <span>
+        <b>Add the destination URL</b>
+        {' '}
+        : https://api.groupshop.co/webhooks/klaviyo-drops?shop=
+        {storeData?.shop}
+      </span>
+      <h4>
+        Enter your payload information as a JSON block:
+      </h4>
+      <span>
+        <pre>{JSON.stringify(json, null, 2)}</pre>
+      </span>
     </div>
   );
 }
