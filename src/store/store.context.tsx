@@ -11,6 +11,9 @@ interface StoreContextType {
 const initialState: MStore = {
   brandName: '',
   matchingBrandNameEvent: '',
+  collectionIdsData: [],
+  editId: '',
+  removeId: '',
 };
 
 export const StoreContext = React.createContext<StoreContextType>(
@@ -24,6 +27,9 @@ export const StoreContextProvider = ({
 }) => {
   const [store, dispatch] = React.useReducer(reducer, {
     brandName: '',
+    collectionIdsData: [],
+    editId: '',
+    removeId: '',
   });
 
   return (

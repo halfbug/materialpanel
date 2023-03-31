@@ -19,8 +19,9 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { useApollo } from 'src/hooks/useApollo';
 import { StoreContextProvider } from '@/store/store.context';
 import { AuthContextProvider } from '@/contexts/auth.context';
-import '../styles/app.css';
 import '@/styles/global.css';
+import 'react-sortable-tree/style.css';
+import '../styles/app.css';
 
 const clientSideEmotionCache = createEmotionCache();
 

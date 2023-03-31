@@ -146,10 +146,6 @@ const DROPS_UPDATE = gql`
       id
       drops{
         isVideoEnabled
-        collections{
-          name
-          shopifyId
-        }
         rewards{
           baseline
           average
@@ -242,8 +238,53 @@ query findKlaviyoList($storeId: String!, $privateKey: String!) {
 }
 `;
 
+const DROPS_CATEGORY_UPDATE = gql`
+  mutation updateDropsCategory($CreateDropsCategoryForFront: CreateDropsCategoryForFront!) {
+    updateDropsCategory(CreateDropsCategoryForFront: $CreateDropsCategoryForFront) {
+      categoryId
+      storeId
+      title
+      parentId
+      collections{
+        name
+        shopifyId
+        type
+      }
+      sortOrder
+      status
+    }
+  }
+`;
+
+const DROPS_CATEGORY_REMOVE = gql`
+  mutation removeDropsCategory($id: [String!]!) {
+    removeDropsCategory(id: $id) {
+      title
+    }
+  }
+`;
+
+const GET_DROPS_CATEGORY = gql`
+query findByStoreId($storeId: String!) {
+  findByStoreId(storeId: $storeId) {
+    categoryId
+    storeId
+    title
+    parentId
+    collections{
+      name
+      shopifyId
+      type
+    }
+    sortOrder
+    status    
+  }
+}
+`;
+
 export {
   ALL_STORES, ALL_LOGS, VIDEO_POST, GET_ALL_VIDEOS, VIDEOS_UPDATE, DISCOVERYTOOLS_UPDATE,
   DROPS_UPDATE, GET_STORE_DETAILS, DEFAULT_DISCOUNT, ALL_DROPS, GET_UPDATE_CODES_STATUS,
-  FIND_KLAVIYO_LIST, VIDEOS_REMOVE,
+  FIND_KLAVIYO_LIST, VIDEOS_REMOVE, DROPS_CATEGORY_UPDATE, GET_DROPS_CATEGORY,
+  DROPS_CATEGORY_REMOVE,
 };

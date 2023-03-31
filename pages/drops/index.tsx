@@ -1,3 +1,7 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable no-param-reassign */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable no-plusplus */
 /* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-floating-promises */
@@ -18,14 +22,12 @@ import {
   Snackbar,
   Alert,
   TextField,
-  Modal,
-  Box,
 } from '@mui/material';
 import Footer from '@/components/Footer';
 import {
-  DEFAULT_DISCOUNT, DROPS_UPDATE, GET_STORE_DETAILS, GET_UPDATE_CODES_STATUS,
+  DEFAULT_DISCOUNT, DROPS_CATEGORY_REMOVE, DROPS_CATEGORY_UPDATE, DROPS_UPDATE, GET_DROPS_CATEGORY, GET_STORE_DETAILS, GET_UPDATE_CODES_STATUS,
 } from '@/graphql/store.graphql';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
@@ -34,8 +36,13 @@ import * as yup from 'yup';
 import { DropsForm } from '@/types/groupshop';
 import IconButton from '@mui/material/IconButton';
 import LinearIndeterminate from '@/components/Progress/Linear';
+import { CategoryStatus } from 'configs/constant';
 import getDMYFormatedDate from '@/utils/getDMYFormatedDate';
-import DropsCollectionIdsDrag from 'pages/components/modals/DropsCollectionIdsDrag';
+import SortableTree from 'react-sortable-tree';
+import SectionModal from 'pages/components/modals/SectionModal';
+import { v4 as uuid } from 'uuid';
+import CollectionTable from 'pages/components/modals/CollectionTable';
+import RemoveIdsModal from 'pages/components/modals/RemoveIdsModal';
 import DropKlaviyoForm from '../components/forms/klaviyoForm';
 
 // eslint-disable-next-line no-shadow
@@ -57,6 +64,34 @@ const Drops = () => {
   const [codeUpdateStatus, setcodeUpdateStatus] = useState<CodeUpdateStatusTypeEnum>(CodeUpdateStatusTypeEnum.none);
   const [intervalID, setIntervalID] = useState<any>('');
   const [dropsCount, setdropsCount] = useState<number>(0);
+  const [sectionData, setSectionData] = useState<any[]>([]);
+  const [collectionEditData, setCollectionEditData] = useState<any>('');
+  const [sectionModal, setSectionModal] = useState<boolean>(false);
+  const [deleteIdModal, setDeleteIdModal] = useState<boolean>(false);
+  const [removeNavigationMngData, setRemoveNavigationMngData] = useState<any>('');
+  const [setting, setSetting] = useState({
+    flag: false,
+    settingData: '',
+  });
+  const [dropsIds, setDropsIds] = useState<any>({
+    M1Discount: '',
+    M2Discount: '',
+    M3Discount: '',
+    publicKey: '',
+    privateKey: '',
+    listId: '',
+    subscriberListId: '',
+    signup1: '',
+    signup2: '',
+    signup3: '',
+    signup4: '',
+  });
+  const [successToast, setSuccessToast] = useState<any>({
+    toastTog: false,
+    toastMessage: '',
+  });
+  const [status, setStatus] = useState<string>('');
+  const [subscriberListId, setSubscriberListId] = useState('');
 
   const { data: rdata, refetch: progressStatus } = useQuery(GET_UPDATE_CODES_STATUS, {
     skip: !sid,
@@ -69,6 +104,62 @@ const Drops = () => {
       clearInterval(intervalID);
     },
   });
+
+  const {
+    data: getStoreData, refetch,
+  } = useQuery(GET_STORE_DETAILS, {
+    skip: !sid,
+    variables: { id: sid },
+    fetchPolicy: 'network-only',
+  });
+
+  const { data: findDrops } = useQuery(DEFAULT_DISCOUNT, {
+    variables: { type: 'drops' },
+  });
+
+  const [updateStore, { data: dropsUpdateData }] = useMutation<any>(
+    DROPS_UPDATE,
+  );
+
+  const [updateDropsCategory, { data: updatedDropsCategoryData }] = useMutation<any>(
+    DROPS_CATEGORY_UPDATE,
+  );
+
+  const [removeDropsCategory, { data: removedDropsCategoryData }] = useMutation<any>(
+    DROPS_CATEGORY_REMOVE,
+  );
+
+  useEffect(() => {
+    if (removedDropsCategoryData?.removeDropsCategory) {
+      const temp: any = sectionData.filter((el) => el.categoryId !== removeNavigationMngData.categoryId).map((section: any) => ({ ...section, children: section.children.filter((child: any) => child?.categoryId !== removeNavigationMngData.categoryId) }));
+      setSectionData(temp);
+    }
+  }, [removedDropsCategoryData]);
+
+  const {
+    data: getDropsCategoryData, refetch: getDropsCategory,
+  } = useQuery(GET_DROPS_CATEGORY, {
+    skip: !sid,
+    variables: { storeId: sid },
+    fetchPolicy: 'network-only',
+  });
+
+  useEffect(() => {
+    if (getDropsCategoryData?.findByStoreId?.length > 0) {
+      const parentData = getDropsCategoryData.findByStoreId.filter((el: any) => !el.parentId).sort((a: any, b: any) => a.sortOrder - b.sortOrder);
+      setSectionData(parentData.map((ele: any) => ({
+        ...ele,
+        expanded: true,
+        children: getDropsCategoryData.findByStoreId.filter((child: any) => child.parentId === ele.categoryId).sort((a: any, b: any) => a.sortOrder - b.sortOrder),
+      })));
+    }
+  }, [getDropsCategoryData]);
+
+  useEffect(() => {
+    if (updatedDropsCategoryData?.updateDropsCategory?.length > 0) {
+      getDropsCategory();
+    }
+  }, [updatedDropsCategoryData]);
 
   useEffect(() => {
     if (rdata) {
@@ -97,13 +188,6 @@ const Drops = () => {
     handleSubmit();
   };
 
-  const {
-    data: getStoreData, refetch,
-  } = useQuery(GET_STORE_DETAILS, {
-    skip: !sid,
-    variables: { id: sid },
-  });
-
   useEffect(() => {
     if (getStoreData?.store) {
       setlastsync(getDMYFormatedDate(getStoreData?.store?.drops?.lastSync));
@@ -112,47 +196,6 @@ const Drops = () => {
       setStoreData(getStoreData?.store);
     }
   }, [getStoreData]);
-
-  const { data: findDrops } = useQuery(DEFAULT_DISCOUNT, {
-    variables: { type: 'drops' },
-  });
-
-  const [updateStore, { data: dropsUpdateData, loading }] = useMutation<any>(
-    DROPS_UPDATE,
-  );
-  const [dropsIds, setDropsIds] = useState<any>({
-    M1Discount: '',
-    M2Discount: '',
-    M3Discount: '',
-    allProducts: '',
-    latestProducts: '',
-    bestSellers: '',
-    vaultProducts: '',
-    spotlightProducts: '',
-    collections: [],
-    publicKey: '',
-    privateKey: '',
-    listId: '',
-    subscriberListId: '',
-    signup1: '',
-    signup2: '',
-    signup3: '',
-    signup4: '',
-  });
-  const [successToast, setSuccessToast] = useState<any>({
-    toastTog: false,
-    toastMessage: '',
-  });
-  const [status, setStatus] = useState<string>('');
-  const [addFieldPopup, setAddFieldPopup] = useState<boolean>(false);
-  const [addField, setAddField] = useState('');
-  const [subscriberListId, setSubscriberListId] = useState('');
-  const [addFieldErr, setAddFieldErr] = useState({
-    flag: false,
-    msg: '',
-  });
-  const [dragFlag, setDragFlag] = useState(false);
-  const [collectionData, setCollectionData] = useState<any[]>([]);
 
   const validationSchema = yup.object({
     M1Discount: yup
@@ -167,30 +210,10 @@ const Drops = () => {
       .string()
       .matches(/^[1-9]?[0-9]{1}$|^100$/, 'Please enter between 0 to 100')
       .required('Milestore3 discount is required'),
-    collections: yup.array().of(
-      yup.object().shape({
-        shopifyId: yup
-          .string()
-          .matches(/^\d+$/, 'Please enter only numbers')
-          .required('Required shopify collection id'),
-      }),
-    ),
-    allProducts: yup
-      .string()
-      .matches(/^\d+$/, 'Please enter only numbers')
-      .required('All products is required'),
-    latestProducts: yup
-      .string()
-      .matches(/^\d+$/, 'Please enter only numbers')
-      .required('Latest products is required'),
-    bestSellers: yup
-      .string()
-      .matches(/^\d+$/, 'Please enter only numbers')
-      .required('Best sellers is required'),
   });
 
   const {
-    handleSubmit, values, handleChange, touched, errors, setFieldValue, setFieldTouched, validateForm,
+    handleSubmit, values, handleChange, touched, errors, setFieldValue,
   }: FormikProps<DropsForm> = useFormik<DropsForm>({
     initialValues: dropsIds,
     validationSchema,
@@ -198,7 +221,34 @@ const Drops = () => {
     validateOnChange: true,
     onSubmit: async (value) => {
       try {
-        handleOrderSave([...collectionData.filter((el) => el.name !== 'All Products'), { name: 'All Products', shopifyId: `gid://shopify/Collection/${value.allProducts}` }]);
+        handleSectionSave();
+        await updateStore({
+          variables: {
+            updateStoreInput: {
+              id: sid,
+              drops: {
+                ...storeData?.drops,
+                codeUpdateStatus: storeData?.drops?.codeUpdateStatus ?? 'none',
+                status: storeData?.drops?.status ?? status,
+                rewards: {
+                  baseline: `${value.M1Discount}`,
+                  average: `${value.M2Discount}`,
+                  maximum: `${value.M3Discount}`,
+                },
+                klaviyo: {
+                  publicKey: value.publicKey,
+                  privateKey: value.privateKey,
+                  listId: value.listId,
+                  subscriberListId,
+                  signup1: value.signup1,
+                  signup2: value.signup2,
+                  signup3: value.signup3,
+                  signup4: value.signup4,
+                },
+              },
+            },
+          },
+        });
       } catch (error) {
         console.error('An unexpected error happened:', error);
       }
@@ -207,18 +257,12 @@ const Drops = () => {
 
   useEffect(() => {
     if (storeData && sid) {
+      console.log('storeData.drops?.collections🎈', storeData.drops?.collections);
       setDropsIds({
         ...dropsIds,
         M1Discount: storeData.drops?.rewards?.baseline ?? findDrops?.findDrops?.details.baseline,
         M2Discount: storeData.drops?.rewards?.average ?? findDrops?.findDrops?.details.average,
         M3Discount: storeData.drops?.rewards?.maximum ?? findDrops?.findDrops?.details.maximum,
-        allProducts: storeData.drops?.collections?.find((el: any) => el?.name === 'All Products')?.shopifyId?.split('/')[4],
-        bestSellers: storeData.drops?.collections?.find((el: any) => el?.name === 'Bestsellers')?.shopifyId?.split('/')[4],
-        latestProducts: storeData.drops?.collections?.find((el: any) => el?.name === 'Latest Products')?.shopifyId?.split('/')[4],
-        vaultProducts: storeData.drops?.collections?.find((el: any) => el?.name === 'The Vault')?.shopifyId?.split('/')[4] ?? { name: 'The Vault', shopifyId: '' },
-        spotlightProducts: storeData.drops?.collections?.find((el: any) => el?.name === 'Today’s Spotlight')?.shopifyId?.split('/')[4] ?? { name: 'Today’s Spotlight', shopifyId: '' },
-        collections: storeData.drops?.collections?.filter((el: any) => el?.name !== 'All Products' && el?.name !== 'Bestsellers' && el?.name !== 'Latest Products' && el?.name !== 'The Vault' && el?.name !== 'Today’s Spotlight')
-          .map((colle: any) => ({ ...colle, shopifyId: colle?.shopifyId?.split('/')[4] })) ?? [],
         publicKey: storeData.drops?.klaviyo?.publicKey,
         privateKey: storeData.drops?.klaviyo?.privateKey,
         listId: storeData.drops?.klaviyo?.listId,
@@ -229,7 +273,6 @@ const Drops = () => {
         signup4: storeData.drops?.klaviyo?.signup4,
       });
       setStatus(storeData.drops?.status ? storeData.drops.status : 'InActive');
-      setCollectionData(storeData.drops?.collections ?? []);
     }
   }, [storeData, findDrops]);
 
@@ -271,173 +314,110 @@ const Drops = () => {
     });
   };
 
-  const style = {
-    position: 'absolute' as 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    // border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
+  const handleTreeChange = (newTreeData: any) => {
+    setSectionData(newTreeData);
   };
 
-  const handleClose = () => {
-    setAddFieldPopup(false);
-    setAddField('');
-    setAddFieldErr({ flag: false, msg: '' });
-  };
+  useEffect(() => () => {
+    setSectionData([]);
+  }, []);
 
-  const handleSave = () => {
-    const tempCollectionIds: string[] = ['all products', 'bestsellers', 'latest products', 'The Vault', 'Today’s Spotlight'];
-    if (addField && !values?.collections.find((cole) => cole.name.toLocaleLowerCase() === addField.toLocaleLowerCase()) && !tempCollectionIds.includes(addField.toLocaleLowerCase())) {
-      setAddFieldErr({ flag: false, msg: '' });
-      setDropsIds({ ...values, collections: [...values.collections, { name: addField, shopifyId: '' }] });
-      setCollectionData([...collectionData, { name: addField, shopifyId: '' }]);
-      handleClose();
-    } else {
-      setAddFieldErr({ flag: true, msg: 'Please Enter valid collection name' });
+  const handleSectionModal = (data: any) => {
+    if (data) {
+      if (collectionEditData?.title) {
+        const temp: any = sectionData.map((el) => (
+          el.categoryId === collectionEditData.categoryId
+            ? { ...el, title: data }
+            : { ...el, children: el?.children?.map((child: any) => (child?.categoryId === collectionEditData.categoryId ? { ...child, title: data } : child)) ?? [] }
+        ));
+        setSectionData(temp);
+      } else {
+        const uniqueId = uuid();
+        const tempTree = [...sectionData];
+        tempTree.push({
+          title: data,
+          expanded: true,
+          children: [],
+          collections: [],
+          categoryId: uniqueId,
+          storeId: sid,
+          status: CategoryStatus.DRAFT,
+        });
+        setSectionData(tempTree);
+      }
     }
+    setCollectionEditData('');
+    setSectionModal(false);
   };
 
-  const handleRemove = (index: number, name: string) => {
-    setDropsIds({
-      ...dropsIds,
-      collections: dropsIds.collections.filter((_: any, i: number) => i !== index),
-    });
-    setCollectionData(collectionData.filter((cid: any) => cid.name !== name));
+  const handleRemoveNavigation = (data: any) => {
+    setRemoveNavigationMngData(data);
+    setDeleteIdModal(true);
   };
 
-  const handleOrderSave = (orderData: any) => {
-    if (orderData.length) {
-      const tempOrderData = orderData.map((coll: any) => {
-        if (coll.name === 'Latest Products') {
-          return { name: coll.name, shopifyId: `gid://shopify/Collection/${values.latestProducts}` };
-        } if (coll.name === 'Bestsellers') {
-          return { name: coll.name, shopifyId: `gid://shopify/Collection/${values.bestSellers}` };
-        } if (coll.name === 'All Products') {
-          return { name: coll.name, shopifyId: `gid://shopify/Collection/${values.allProducts}` };
-        } if (coll.name === 'The Vault') {
-          return { name: coll.name, shopifyId: values.vaultProducts ? `gid://shopify/Collection/${values.vaultProducts}` : '' };
-        } if (coll.name === 'Today’s Spotlight') {
-          return { name: coll.name, shopifyId: values.spotlightProducts ? `gid://shopify/Collection/${values.spotlightProducts}` : '' };
+  const hanleRemove = (data: any) => {
+    (async () => {
+      if (data === 'delete') {
+        const tempDeleteIds = [];
+        removeNavigationMngData?.children?.length > 0 && removeNavigationMngData.children.forEach((ele: any) => tempDeleteIds.push(ele.categoryId));
+        tempDeleteIds.push(removeNavigationMngData.categoryId);
+        try {
+          await removeDropsCategory({
+            variables: {
+              id: tempDeleteIds,
+            },
+          });
+        } catch (err) {
+          console.log(err);
         }
-        const temp = values.collections.find((co) => co.name === coll.name);
-        return { name: temp.name, shopifyId: `gid://shopify/Collection/${temp.shopifyId}` };
-      }).filter((el: any) => el.shopifyId);
-      setCollectionData(tempOrderData);
-      updateStoreCall(tempOrderData);
-    }
-    setDragFlag(false);
+      }
+      setRemoveNavigationMngData('');
+      setDeleteIdModal(false);
+    })();
   };
 
-  const updateStoreCall = async (tempOrderData: any) => {
-    console.log('subscriberListId123 ', subscriberListId);
-    try {
-      await updateStore({
-        variables: {
-          updateStoreInput: {
-            id: sid,
-            drops: {
-              ...storeData?.drops,
-              codeUpdateStatus: storeData?.drops?.codeUpdateStatus ?? 'none',
-              status: storeData?.drops?.status ?? status,
-              collections: tempOrderData,
-              rewards: {
-                baseline: `${values.M1Discount}`,
-                average: `${values.M2Discount}`,
-                maximum: `${values.M3Discount}`,
-              },
-              klaviyo: {
-                publicKey: values.publicKey,
-                privateKey: values.privateKey,
-                listId: values.listId,
-                subscriberListId,
-                signup1: values.signup1,
-                signup2: values.signup2,
-                signup3: values.signup3,
-                signup4: values.signup4,
-              },
+  const handleSaveCollectionId = (data: any) => {
+    const temp = sectionData.map((el: any) => (el.categoryId === data.categoryId ? data : { ...el, children: el.children.map((ele: any) => (ele.categoryId === data.categoryId ? data : ele)) }));
+    setSectionData(temp);
+    setSetting({ settingData: '', flag: false });
+  };
+
+  const handleSectionSave = () => {
+    (async () => {
+      const tempData = sectionData.map((el: any, i: number) => ({
+        ...el,
+        sortOrder: i + 1,
+        children: el?.children?.length > 0 ? el.children.map((child: any, index: number) => ({
+          ...child,
+          sortOrder: index + 1,
+        })) : [],
+      }));
+      const updatedCategoryData = [];
+      tempData.forEach((item) => {
+        item.children.forEach((ell: any) => {
+          delete ell.children;
+          delete ell.expanded;
+          updatedCategoryData.push({ ...ell, parentId: item.categoryId });
+        });
+        delete item.children;
+        delete item.expanded;
+        updatedCategoryData.push({ ...item, parentId: null });
+      });
+      try {
+        await updateDropsCategory({
+          variables: {
+            CreateDropsCategoryForFront: {
+              id: sid,
+              categoryData: updatedCategoryData,
             },
           },
-        },
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const handleChangeCollec = (e: any, index: number) => {
-    setFieldValue(`collections.${index}.shopifyId`, e.target.value);
-    const tempCond = collectionData.map((el:any) => el.name);
-    if (tempCond.includes(e.target.id)) {
-      const tempColl = collectionData.map((cid: any) => {
-        if (cid.name === e.target.id) {
-          return { name: cid.name, shopifyId: e.target.value ? `gid://shopify/Collection/${e.target.value}` : '' };
-        } return cid;
-      });
-      setCollectionData(tempColl);
-    } else {
-      const tempColl = [...collectionData];
-      tempColl.push({ name: e.target.id, shopifyId: e.target.value });
-      setCollectionData(tempColl);
-    }
-  };
-
-  const handleIds = (e: any) => {
-    const { name, value } = e.target;
-    setFieldValue(name, value);
-    const tempNames = collectionData.map((el) => el.name);
-    if (name === 'latestProducts' && !tempNames.includes('Latest Products')) {
-      setCollectionData([...collectionData, { name: 'Latest Products', shopifyId: value }]);
-    } else if (name === 'bestSellers' && !tempNames.includes('Bestsellers')) {
-      setCollectionData([...collectionData, { name: 'Bestsellers', shopifyId: value }]);
-    } else if (name === 'allProducts' && !tempNames.includes('All Products')) {
-      setCollectionData([...collectionData, { name: 'All Products', shopifyId: value }]);
-    } else if (name === 'vaultProducts') {
-      if (!tempNames.includes('The Vault')) {
-        setCollectionData([...collectionData, { name: 'The Vault', shopifyId: value }]);
-      } else {
-        const tempData = [...collectionData];
-        const temp = collectionData.findIndex((ind) => ind.name === 'The Vault');
-        tempData[temp] = { name: 'The Vault', shopifyId: value };
-        setCollectionData(tempData);
-      }
-    } else if (name === 'spotlightProducts') {
-      if (!tempNames.includes('Today’s Spotlight')) {
-        setCollectionData([...collectionData, { name: 'Today’s Spotlight', shopifyId: value }]);
-      } else {
-        const tempData = [...collectionData];
-        const temp = collectionData.findIndex((ind) => ind.name === 'Today’s Spotlight');
-        tempData[temp] = { name: 'Today’s Spotlight', shopifyId: value };
-        setCollectionData(tempData);
-      }
-    }
-  };
-
-  const handleDragColl = () => {
-    (async () => {
-      const valid: any = await validateForm();
-      const tempData = collectionData.filter((el: any) => !el.shopifyId && el.name !== 'Today’s Spotlight' && el.name !== 'The Vault');
-      if (!tempData.length && !Object.keys(valid).length) {
-        setDragFlag(true);
-      } else {
-        Object.keys(valid).forEach((key: any) => {
-          if (key === 'collections') {
-            for (let i = 0; i < valid.collections.length; i++) {
-              if (valid?.collections[i]?.shopifyId) {
-                setFieldTouched(`collections.${i}.shopifyId`, true);
-              }
-            }
-          } else {
-            setFieldTouched(key, true);
-          }
         });
+      } catch (err) {
+        console.log(err);
       }
     })();
   };
-  console.log('storeDatastoreData ', storeData);
+
   return (
     <>
       <Snackbar
@@ -534,6 +514,7 @@ const Drops = () => {
         >
           <Grid item xs={6}>
             <form noValidate onSubmit={handleSubmit}>
+              <h2 style={{ alignItems: 'center' }}>Drops Milestone Management</h2>
               <Card style={{ padding: '20px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <h4 className="lable" style={{ width: '135px' }}>Milestore1 Discount</h4>
@@ -577,107 +558,35 @@ const Drops = () => {
                     style={{ width: '300px' }}
                   />
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <h4 className="lable" style={{ width: '135px' }}>All Products</h4>
-                  <TextField
-                    id="allProducts"
-                    name="allProducts"
-                    type="number"
-                    placeholder="Please enter all productId"
-                    value={values.allProducts}
-                    onChange={(e) => handleIds(e)}
-                    error={touched.allProducts && Boolean(errors.allProducts)}
-                    helperText={touched.allProducts && errors.allProducts}
-                    style={{ width: '300px' }}
+              </Card>
+              <h2>Drops Navigation Management</h2>
+              <Card style={{ padding: '20px' }}>
+                <div>
+                  <SortableTree
+                    treeData={sectionData}
+                    onChange={handleTreeChange}
+                    isVirtualized={false}
+                    maxDepth={2}
+                    generateNodeProps={({ node }: any) => ({
+                      className: node.status === CategoryStatus.DRAFT ? 'default' : 'success',
+                      buttons: [
+                        <div className="section_navigation" style={{ display: 'flex', alignItems: 'center' }}>
+                          <div tabIndex={0} role="button" onClick={() => setSetting({ flag: true, settingData: node })}>
+                            <IconButton aria-label="delete"><img src="/settings.svg" alt="setting" /></IconButton>
+                          </div>
+                          <div>
+                            <IconButton aria-label="delete" color="error" onClick={() => handleRemoveNavigation(node)}><img src="/close.svg" alt="close" /></IconButton>
+                          </div>
+                          <div>
+                            <IconButton aria-label="delete" onClick={() => { setCollectionEditData(node); setSectionModal(true); }}><img src="/edit.svg" alt="edit" /></IconButton>
+                          </div>
+                        </div>,
+                      ],
+                    })}
                   />
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <h4 className="lable" style={{ width: '135px' }}>Latest Products</h4>
-                  <TextField
-                    id="latestProducts"
-                    name="latestProducts"
-                    type="number"
-                    placeholder="Please enter latest productId"
-                    value={values.latestProducts}
-                    onChange={(e) => handleIds(e)}
-                    error={touched.latestProducts && Boolean(errors.latestProducts)}
-                    helperText={touched.latestProducts && errors.latestProducts}
-                    style={{ width: '300px' }}
-                  />
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <h4 className="lable" style={{ width: '135px' }}>Bestsellers</h4>
-                  <TextField
-                    id="bestSellers"
-                    name="bestSellers"
-                    type="number"
-                    placeholder="Please enter best sellerId"
-                    value={values.bestSellers}
-                    onChange={(e) => handleIds(e)}
-                    error={touched.bestSellers && Boolean(errors.bestSellers)}
-                    helperText={touched.bestSellers && errors.bestSellers}
-                    style={{ width: '300px' }}
-                  />
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <h4 className="lable" style={{ width: '135px' }}>The Vault</h4>
-                  <TextField
-                    id="vaultProducts"
-                    name="vaultProducts"
-                    type="number"
-                    placeholder="Please enter vault products"
-                    value={values.vaultProducts}
-                    onChange={(e) => handleIds(e)}
-                    error={touched.vaultProducts && Boolean(errors.vaultProducts)}
-                    helperText={touched.vaultProducts && errors.vaultProducts}
-                    style={{ width: '300px' }}
-                  />
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <h4 className="lable" style={{ width: '135px' }}>Today’s Spotlight</h4>
-                  <TextField
-                    id="spotlightProducts"
-                    name="spotlightProducts"
-                    type="number"
-                    placeholder="Please enter spotlight productId"
-                    value={values.spotlightProducts}
-                    onChange={(e) => handleIds(e)}
-                    error={touched.spotlightProducts
-                      && Boolean(errors.spotlightProducts)}
-                    helperText={touched.spotlightProducts && errors.spotlightProducts}
-                    style={{ width: '300px' }}
-                  />
-                </div>
-                {values?.collections?.length
-                  ? values?.collections.map((item:any, index:number) => {
-                    const errText:any = errors?.collections?.length && errors?.collections[index];
-                    return (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }} key={item.name}>
-                        <h4 className="lable" style={{ width: '135px' }}>{item.name}</h4>
-                        <TextField
-                          id={item.name}
-                          name={item.shopifyId}
-                          type="number"
-                          placeholder={`Please enter ${item.name}`}
-                          value={item.shopifyId}
-                          onChange={(e) => handleChangeCollec(e, index)}
-                          error={touched?.collections && touched?.collections[index]
-                          && touched?.collections[index]?.shopifyId
-                          && errors?.collections?.length && errors?.collections[index]
-                          && Boolean(errors?.collections[index])}
-                          helperText={touched?.collections && touched?.collections[index]
-                          && touched?.collections[index]?.shopifyId
-                          && errText?.shopifyId}
-                          style={{ width: '300px' }}
-                        />
-                        <IconButton aria-label="delete" color="error" onClick={() => handleRemove(index, item.name)}><CancelOutlinedIcon /></IconButton>
-                      </div>
-                    );
-                  })
-                  : '' }
-                <Button variant="contained" type="submit" style={{ marginTop: '10px' }} disabled={codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress}>Save</Button>
-                <Button variant="contained" style={{ marginTop: '10px', marginLeft: '50px' }} onClick={() => setAddFieldPopup(true)}>Add Section</Button>
-                <Button variant="contained" style={{ marginTop: '10px', marginLeft: '50px' }} onClick={() => handleDragColl()} disabled={codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress}>Collection Ids Order</Button>
+                <Button variant="contained" style={{ marginTop: '10px' }} onClick={() => setSectionModal(true)}>Add Section</Button>
+                {sectionData.length ? <Button variant="contained" style={{ marginTop: '10px', marginLeft: '10px' }} type="submit">Save</Button> : ''}
               </Card>
             </form>
           </Grid>
@@ -689,31 +598,13 @@ const Drops = () => {
               setFieldValue={setFieldValue}
               handleForm={handleForm}
             />
+            { setting.flag ? <CollectionTable settingData={setting.settingData} saveData={(data: any) => handleSaveCollectionId(data)} /> : '' }
           </Grid>
-
         </Grid>
       </Container>
       <Footer />
-      <Modal
-        open={addFieldPopup}
-        onClose={() => handleClose()}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <TextField
-            name="addField"
-            placeholder="Please enter field name"
-            value={addField}
-            onChange={(e) => setAddField(e.target.value)}
-            style={{ width: '300px' }}
-            error={addFieldErr.flag}
-            helperText={addFieldErr.msg}
-          />
-          <Button variant="contained" style={{ marginTop: '10px' }} onClick={() => handleSave()}>Save</Button>
-        </Box>
-      </Modal>
-      <DropsCollectionIdsDrag dragFlag={dragFlag} close={(ordData: any) => handleOrderSave(ordData)} dropsIds={collectionData} />
+      <SectionModal show={sectionModal} close={(data: any) => handleSectionModal(data)} sectionData={sectionData} collectionEditData={collectionEditData.title} />
+      {deleteIdModal ? <RemoveIdsModal show={deleteIdModal} close={(data: any) => hanleRemove(data)} childData={removeNavigationMngData?.children} /> : ''}
     </>
   );
 };

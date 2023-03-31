@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
 .enablebtn {
     color: #A7C737 !important;
     border-color: #A7C737 !important;
@@ -54,12 +56,86 @@
     font-size: 16px !important;
 }
 
-.text-capitalize{
+.text-capitalize {
     text-transform: uppercase;
 }
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.rst__lineBlock,
+.rst__lineChildren::after,
+.rst__collapseButton {
+    display: none !important;
+}
+
+.MuiSwitch-input {
+    width: 100% !important;
+    left: 0% !important;
+}
+
+.rst__rowTitle {
+    /* font-size: 12px !important; */
+    font-weight: 600;
+}
+
+.section_navigation svg {
+    width: 16px !important;
+}
+
+.section_navigation .MuiButtonBase-root {
+    padding: 5px !important;
+}
+
+.rst__rowContents {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 5px 0 5px !important;
+}
+
+.success,
+.default {
+    align-items: center;
+}
+
+.success .rst__moveHandle {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none;
+    border-radius: 5px !important;
+    background-image: url(/success.svg) !important;
+    background-size: 20px;
+    height: 18px;
+    width: 18px;
+    background-position: center;
+    background-repeat: no-repeat;
+    align-items: center;
+}
+
+.default .rst__moveHandle {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none;
+    border-radius: 5px !important;
+    background-image: url(/default.svg) !important;
+    background-size: 20px;
+    width: 18px;
+    height: 18px;
+    background-position: center;
+    background-repeat: no-repeat;
+    align-items: center;
+}
+
+.rst__rowLabel {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px !important;
+    font-weight: 700;
+    line-height: 30px;
+    letter-spacing: 0px;
+    text-align: center;
+    padding-right: 10px !important;
+
 }

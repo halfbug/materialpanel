@@ -24,6 +24,9 @@ export interface IStore {
 export interface MStore {
     brandName?: string,
     matchingBrandNameEvent?: string,
+    collectionIdsData?: any,
+    editId?: any,
+    removeId?: any,
 }
 
 export interface DiscoveryTools {
@@ -68,5 +71,11 @@ export interface DropsForm {
 }
 export interface Collections {
     name: string,
+    shopifyId: string,
+}
+
+export interface CollectionIdForm {
+    name: string,
+    type: string,
     shopifyId: string,
 }
