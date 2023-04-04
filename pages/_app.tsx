@@ -22,6 +22,7 @@ import { AuthContextProvider } from '@/contexts/auth.context';
 import '@/styles/global.css';
 import 'react-sortable-tree/style.css';
 import '../styles/app.css';
+import { PermissionContextProvider } from '@/contexts/permission.context';
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -56,14 +57,16 @@ function TokyoApp(props: TokyoAppProps) {
               content="width=device-width, initial-scale=1, shrink-to-fit=no"
             />
           </Head>
-          <SidebarProvider>
-            <ThemeProviderWrapper>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <CssBaseline />
-                {getLayout(<Component {...pageProps} />)}
-              </LocalizationProvider>
-            </ThemeProviderWrapper>
-          </SidebarProvider>
+          <PermissionContextProvider>
+            <SidebarProvider>
+              <ThemeProviderWrapper>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <CssBaseline />
+                  {getLayout(<Component {...pageProps} />)}
+                </LocalizationProvider>
+              </ThemeProviderWrapper>
+            </SidebarProvider>
+          </PermissionContextProvider>
         </CacheProvider>
       </StoreContextProvider>
       {/* </ApolloProvider> */}

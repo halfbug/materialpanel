@@ -15,13 +15,19 @@ import {
 } from '@mui/icons-material';
 // import { IStore } from '@/types/groupshop';
 import { NextPage } from 'next';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import usePermission from '@/hooks/usePermission';
+import { useRouter } from 'next/router';
 
 interface THeader {
   id: string;
 
 }
 const StoreList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
+  const [columnData, setColumnData] = useState([]);
+  const router = useRouter();
+  const { getPermissions } = usePermission();
+
   const {
     loading, data, error, refetch,
   } = useQuery(ALL_STORES);
@@ -33,6 +39,7 @@ const StoreList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
   console.log('🚀 ~ file: index.tsx ~ line 189 ~ SidebarMenu ~ data', data);
   console.log('🚀 ~ file: index.tsx ~ line 189 ~ SidebarMenu ~ loading', loading);
   console.log('🚀 ~ file: index.tsx ~ line 27 ~ meta', meta);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const headCells: Array<HeadCell<typeof data>> = [
     {
       id: 'shop',
@@ -84,6 +91,31 @@ const StoreList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
       ],
     },
   ];
+
+  useEffect(() => {
+    setColumnData(headCells);
+  }, [getPermissions]);
+
+  useEffect(() => {
+    if (columnData.length > 0 && columnData[6].options.length > 0) {
+      if (!getPermissions().includes('/drops')) {
+        columnData[6].options.splice(3, 1);
+        setColumnData(columnData);
+      }
+      if (!getPermissions().includes('/discoverytools')) {
+        columnData[6].options.splice(2, 1);
+        setColumnData(columnData);
+      }
+      if (!getPermissions().includes('/store/videoupload')) {
+        columnData[6].options.splice(1, 1);
+        setColumnData(columnData);
+      }
+      if (!getPermissions().includes('/merchant/load-dashboard')) {
+        columnData[6].options.splice(0, 1);
+        setColumnData(columnData);
+      }
+    }
+  }, [getPermissions]);
   return (
     <>
       <Head>
@@ -105,7 +137,7 @@ const StoreList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
             <Card sx={{ padding: 3 }}>
               {loading && <LinearIndeterminate />}
 
-              <EnhancedTable headCells={headCells} rows={data?.stores ?? []} orderByFieldName="brandName" />
+              <EnhancedTable headCells={columnData} rows={data?.stores ?? []} orderByFieldName="brandName" />
             </Card>
           </Grid>
         </Grid>

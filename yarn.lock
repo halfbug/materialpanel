@@ -710,9 +710,9 @@
     csstype "^3.0.2"
 
 "@types/react@^17":
-  version "17.0.53"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.53.tgz#10d4d5999b8af3d6bc6a9369d7eb953da82442ab"
-  integrity sha512-1yIpQR2zdYu1Z/dc1OxC+MA6GR240u3gcnP4l6mvj/PJiVaqHsQPmWttsvHsfnhfPbU2FuGmo0wSITPygjBmsw==
+  version "17.0.56"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.56.tgz#16f54a0b0a4820065b8296f1dd6da80791fcf964"
+  integrity sha512-Z13f9Qz7Hg8f2g2NsBjiJSVWmON2b3K8RIqFK8mMKCIgvD0CD0ZChTukz87H3lI28X3ukXoNFGzo3ZW1ICTtPA==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -2482,6 +2482,11 @@ multipipe@^1.0.2:
     duplexer2 "^0.1.2"
     object-assign "^4.1.0"
 
+multiselect-react-dropdown@^2.0.25:
+  version "2.0.25"
+  resolved "https://registry.yarnpkg.com/multiselect-react-dropdown/-/multiselect-react-dropdown-2.0.25.tgz#0c8d16f20d78023d5be2f3af4f15a4a164b6b427"
+  integrity sha512-z8kUSyBNOuV7vn4Dk35snzXWtIfTdSEEXhgDdLMvOmR+xJFx35vc1voUlSuOvrk3khb+hXC219Qs9szOvNm25Q==
+
 nanoclone@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/nanoclone/-/nanoclone-0.2.1.tgz#dd4090f8f1a110d26bb32c49ed2f5b9235209ed4"
@@ -2798,9 +2803,9 @@ react-custom-scrollbars-2@4.4.0:
     raf "^3.1.0"
 
 react-data-grid@^7.0.0-beta.20:
-  version "7.0.0-beta.26"
-  resolved "https://registry.yarnpkg.com/react-data-grid/-/react-data-grid-7.0.0-beta.26.tgz#ee3d96e60521087d7ee30f939598c78b9197d554"
-  integrity sha512-UYYkz5y6RR5IZDu/dMtH2RrOY+7TWun3AzyekrCxenleuWf+X92HUNxi074MEa3ab7E5YW46B6nGpanQGt9I2Q==
+  version "7.0.0-beta.28"
+  resolved "https://registry.yarnpkg.com/react-data-grid/-/react-data-grid-7.0.0-beta.28.tgz#744edf7ae54254ade87d57c928137437f7f9bf69"
+  integrity sha512-lckE2ozj8iZrYYi1ZzKNVaJvxxvxkxJXhjh57BXSoCayj7rg5bBIoLKmb4XGgMF9LNAuNQ71uNQKOYsJaZo11g==
   dependencies:
     clsx "^1.1.1"
 

@@ -316,9 +316,123 @@ query findByStoreId($storeId: String!) {
 }
 `;
 
+const ALL_USERS = gql`
+query getAdminUsers{
+  getAdminUsers{
+    id
+    firstName
+    lastName
+    email
+    status
+    userRole    
+    createdAt
+  }
+}
+`;
+
+const ALL_ADMIN_USERS_ROLES = gql`
+query getAdminRoles{
+  getAdminRoles{
+    id
+    roleName
+    permission{
+      name
+      category
+    }
+    createdAt
+  }
+}
+`;
+
+const GET_USER = gql`
+query getAdminUser($id: String!) {
+  getAdminUser(id: $id) {
+    id
+    firstName
+    lastName
+    email
+    status    
+    createdAt
+  }
+}
+`;
+
+const UPDATE_ADMIN_USER = gql`
+  mutation updateAdminUser($updateAdminUserInput: UpdateAdminUserInput!) {
+    updateAdminUser(updateAdminUserInput: $updateAdminUserInput) {      
+      id
+      firstName
+      lastName
+      status
+      email 
+  }
+}
+`;
+
+const CREATE_ADMIN_USER = gql`
+mutation createAdminUser($createAdminUserInput: CreateAdminUserInput!) {
+  createAdminUser(createAdminUserInput: $createAdminUserInput) {
+    firstName
+    lastName   
+    email 
+    password
+    status
+  }
+}
+`;
+
+const CREATE_ADMIN_USER_ROLE = gql`
+mutation createAdminRole($createAdminRoleInput: CreateAdminRoleInput!) {
+  createAdminRole(createAdminRoleInput: $createAdminRoleInput) {
+    roleName
+    permission{
+      name
+      category
+    }
+  }
+}
+`;
+
+const UPDATE_ADMIN_USER_ROLE = gql`
+  mutation updateAdminRole($updateAdminRoleInput: UpdateAdminRoleInput!) {
+    updateAdminRole(updateAdminRoleInput: $updateAdminRoleInput) {      
+      id
+      roleName
+      permission{
+        name
+        category
+      }
+  }
+}
+`;
+
+const FIND_ADMIN_ROLE_BY_NAME = gql`
+query findRoleByName($userRole: String!) {
+  findRoleByName(userRole: $userRole) {
+    roleName
+      permission{
+        name
+        category
+      }    
+  }
+}
+`;
+
+const FIND_ADMIN_PERMISSION = gql`
+query getAdminPermissions{
+  getAdminPermissions{
+    title
+    route
+    category
+  }
+}
+`;
+
 export {
   ALL_STORES, ALL_LOGS, VIDEO_POST, GET_ALL_VIDEOS, VIDEOS_UPDATE, DISCOVERYTOOLS_UPDATE,
   DROPS_UPDATE, GET_STORE_DETAILS, DEFAULT_DISCOUNT, ALL_DROPS, DROPS_PAGE, GET_UPDATE_CODES_STATUS,
   FIND_KLAVIYO_LIST, VIDEOS_REMOVE, DROPS_CATEGORY_UPDATE, GET_DROPS_CATEGORY,
-  DROPS_CATEGORY_REMOVE,
+  DROPS_CATEGORY_REMOVE, ALL_USERS, GET_USER, UPDATE_ADMIN_USER, CREATE_ADMIN_USER,
+  CREATE_ADMIN_USER_ROLE, ALL_ADMIN_USERS_ROLES, UPDATE_ADMIN_USER_ROLE, FIND_ADMIN_ROLE_BY_NAME,
+  FIND_ADMIN_PERMISSION,
 };

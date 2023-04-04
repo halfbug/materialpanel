@@ -8,8 +8,11 @@ interface PageHeaderProps {
   meta?: { billingStatus: boolean },
   title?: string,
   subtitle?: string,
+  pagetitle?:string,
 }
-function PageHeader({ meta, title, subtitle }: PageHeaderProps) {
+function PageHeader({
+  meta, title, subtitle, pagetitle,
+}: PageHeaderProps) {
   // const user = {
   //   name: 'Catherine Pike ss',
   //   avatar: '/static/images/avatars/1.jpg',
@@ -27,17 +30,28 @@ function PageHeader({ meta, title, subtitle }: PageHeaderProps) {
         </Alert>
       </Grid>
       )}
-      <Grid item>
-        <Typography variant="h3" component="h3" gutterBottom>
-          {title ?? 'Dashboard'}
-        </Typography>
-        <Typography variant="subtitle2" className="title_case">
-          {user?.name}
-          ,
-          {' '}
-          {subtitle || 'these are your recent stores'}
-        </Typography>
-      </Grid>
+
+      { (pagetitle !== '') ? (
+        <Grid item xs={12}>
+          <Typography variant="h3" component="h3" gutterBottom>
+            {pagetitle}
+          </Typography>
+        </Grid>
+      )
+        : (
+          <Grid item>
+            <Typography variant="h3" component="h3" gutterBottom>
+              {title ?? 'Dashboard'}
+            </Typography>
+            <Typography variant="subtitle2" className="title_case">
+              {user?.name}
+              ,
+              {' '}
+              {subtitle || 'these are your recent stores'}
+            </Typography>
+          </Grid>
+        )}
+
       <Grid item>
         {/* <Button
           sx={{ mt: { xs: 2, md: 0 } }}
@@ -54,4 +68,5 @@ function PageHeader({ meta, title, subtitle }: PageHeaderProps) {
 export default PageHeader;
 PageHeader.PageHeader = {
   meta: {},
+  pagetitle: '',
 };

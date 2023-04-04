@@ -40,7 +40,7 @@ export interface IUser {
      email: string;
      id:string;
      name?: string;
-     roles?: string[]
+     userRole?: string;
      avatar?: string,
      jobtitle?: string,
     }
@@ -78,4 +78,40 @@ export interface CollectionIdForm {
     name: string,
     type: string,
     shopifyId: string,
+}
+
+export interface AdminUserUpdate {
+    id?: string,
+    firstName: string,
+    lastName: string,
+    email: string,
+    status : string,
+    userRole : string,
+}
+export interface AdminUser {
+    id?: string,
+    firstName: string,
+    lastName: string,
+    password: string,
+    cpassword: string,
+    email: string,
+    status : string,
+    userRole : string,
+}
+
+export interface Permissions {
+    name?: string,
+    category?: string,
+}
+
+export interface AdminUserRoles {
+    roleName: string,
+    permission?: Permissions[],
+}
+
+export interface AdminUserRolesUpdate {
+    id?: string,
+    roleName: string,
+    permission?: Permissions[],
+
 }

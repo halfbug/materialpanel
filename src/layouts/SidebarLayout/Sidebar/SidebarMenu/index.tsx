@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 import {
@@ -17,6 +17,8 @@ import { SidebarContext } from 'src/contexts/SidebarContext';
 
 import DesignServicesTwoToneIcon from '@mui/icons-material/DesignServicesTwoTone';
 import BrightnessLowTwoToneIcon from '@mui/icons-material/BrightnessLowTwoTone';
+import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 
 import MmsTwoToneIcon from '@mui/icons-material/MmsTwoTone';
 // import TableChartTwoToneIcon from '@mui/icons-material/TableChartTwoTone';
@@ -25,6 +27,7 @@ import MmsTwoToneIcon from '@mui/icons-material/MmsTwoTone';
 // import BeachAccessTwoToneIcon from '@mui/icons-material/BeachAccessTwoTone';
 // import EmojiEventsTwoToneIcon from '@mui/icons-material/EmojiEventsTwoTone';
 import FilterVintageTwoToneIcon from '@mui/icons-material/FilterVintageTwoTone';
+import usePermission from '@/hooks/usePermission';
 // import HowToVoteTwoToneIcon from '@mui/icons-material/HowToVoteTwoTone';
 // import LocalPharmacyTwoToneIcon from '@mui/icons-material/LocalPharmacyTwoTone';
 // import RedeemTwoToneIcon from '@mui/icons-material/RedeemTwoTone';
@@ -181,9 +184,18 @@ const SubMenuWrapper = styled(Box)(
 function SidebarMenu() {
   const { closeSidebar } = useContext(SidebarContext);
   const router = useRouter();
+  const { getPermissions } = usePermission();
   const currentRoute = router.pathname;
 
   console.log('currentRoute', currentRoute);
+  console.log('getPermissions', getPermissions());
+  useEffect(() => {
+    if (!getPermissions().includes(router.pathname)) {
+      if (getPermissions().length > 0) {
+        router.push('/access-denied');
+      }
+    }
+  }, [getPermissions, router, router.pathname]);
 
   return (
     <MenuWrapper>
@@ -216,6 +228,7 @@ function SidebarMenu() {
       > */}
       <SubMenuWrapper>
         <List component="div">
+          {((getPermissions().includes('/merchant'))) && (
           <ListItem component="div">
             <NextLink href="/merchant" passHref>
               <Button
@@ -233,6 +246,42 @@ function SidebarMenu() {
               </Button>
             </NextLink>
           </ListItem>
+          )}
+          {((getPermissions().includes('/users'))) && (
+          <ListItem component="div">
+            <NextLink href="/users" passHref>
+              <Button
+                className={
+                      currentRoute === '/users' ? 'active' : ''
+                    }
+                disableRipple
+                component="a"
+                onClick={closeSidebar}
+                startIcon={<PeopleOutlineIcon />}
+              >
+                User Management
+              </Button>
+            </NextLink>
+          </ListItem>
+          )}
+          {((getPermissions().includes('/roles'))) && (
+          <ListItem component="div">
+            <NextLink href="/roles" passHref>
+              <Button
+                className={
+                      currentRoute === '/roles' ? 'active' : ''
+                    }
+                disableRipple
+                component="a"
+                onClick={closeSidebar}
+                startIcon={<ManageAccountsIcon />}
+              >
+                Role Management
+              </Button>
+            </NextLink>
+          </ListItem>
+          )}
+          {((getPermissions().includes('/logs'))) && (
           <ListItem component="div">
             <NextLink href="/logs" passHref>
               <Button
@@ -248,6 +297,8 @@ function SidebarMenu() {
               </Button>
             </NextLink>
           </ListItem>
+          )}
+          {((getPermissions().includes('/drops/list'))) && (
           <ListItem component="div">
             <NextLink href="/drops/list" passHref>
               <Button
@@ -263,6 +314,7 @@ function SidebarMenu() {
               </Button>
             </NextLink>
           </ListItem>
+          )}
         </List>
       </SubMenuWrapper>
       {/* </List> */}
