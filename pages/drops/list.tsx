@@ -1,126 +1,53 @@
-import Head from 'next/head';
-import { Grid, Container, Card } from '@mui/material';
 import SidebarLayout from '@/layouts/SidebarLayout';
-import Box from '@mui/material/Box';
-import PageHeader from '@/content/Management/Transactions/PageHeader';
-import PageTitleWrapper from '@/components/PageTitleWrapper';
-import {
-  DataGrid, GridColDef, GridRenderCellParams, GridValueGetterParams,
-} from '@mui/x-data-grid';
-import EnhancedTable, { HeadCell } from '@/components/tables/enhancedTable';
-import Footer from '@/components/Footer';
-import NextLink from 'next/link';
 import { useQuery } from '@apollo/client';
-import LinearIndeterminate from '@/components/Progress/Linear';
-import { ALL_DROPS } from '@/graphql/store.graphql';
-import Label from '@/components/Label';
+import { DROPS_PAGE } from '@/graphql/store.graphql';
+import { useState } from 'react';
+import DropsList from '@/components/Grids/droplist';
+import useDropsQuery from '@/hooks/useDropsQuery';
 
-function Logs() {
+function Drops() {
+  const [pagination, setPagination] = useState<{skip: number, take:number}>({ skip: 0, take: 25 });
+  const [pageSize, setPageSize] = useState<number>(25);
+  const [filters, setFilters] = useState<any[]>([]);
+  const [sorting, setSorting] = useState<any[]>([]);
+
   const {
-    loading, data, error,
-  } = useQuery(ALL_DROPS);
-  const getStatusLabel = (props: GridRenderCellParams<String>) => {
-    // console.log(options);
-    const { hasFocus, value } = props;
-    let color : 'black' | 'primary' | 'secondary' | 'error' | 'warning' | 'success' | 'info';
-    const options = {
-      error: ['revised'], success: ['active'], warning: ['pending'],
-    };
-    // eslint-disable-next-line no-restricted-syntax
-    for (const key in options) {
-      // console.log('🚀 ~ file: enhancedTable.tsx ~ line 300 ~ getStatusLabel ~ text', text);
-      // console.log('🚀 ~ file: enhancedTable.tsx
-      //  ~ line 300 ~ getStatusLabel ~ options[key]', options[key]);
-      if (options[key].includes(value.toLowerCase())) {
-        color = key as typeof color;
-      }
-    }
-    return <Label color={color} className="text-capitalize">{value}</Label>;
+    drops, pageInfo, loading, error,
+  } = useDropsQuery(pagination, filters, sorting);
+
+  const handlePageChange = (page) => {
+    setPagination({ skip: page * pageSize, take: pageSize });
   };
 
-  const columns: GridColDef[] = [
+  const handlePageSize = (pgsize) => {
+    setPageSize(pgsize);
+    setPagination({ skip: 0, take: pgsize });
+  };
 
-    {
-      field: 'status',
-      headerName: 'Status',
-      width: 120,
-      renderCell: getStatusLabel,
-    },
-    {
-      field: 'shortUrl',
-      headerName: 'Link',
-      width: 230,
-      renderCell: (params: GridValueGetterParams) => <NextLink href={params.row.shortUrl} passHref target="_blank">{params.row.shortUrl}</NextLink>,
-    },
-    {
-      field: 'customerDetail.firstName',
-      headerName: 'Name',
-      width: 150,
-      // eslint-disable-next-line max-len
-      valueGetter: (params: GridValueGetterParams) => ((params.row.customerDetail.firstName !== null && params.row.customerDetail.firstName !== '') ? params.row.customerDetail.firstName : params.row.customerDetail.fullName),
-    },
-    {
-      field: 'createdAt',
-      headerName: 'Created at',
-      width: 210,
-      valueGetter: (params: GridValueGetterParams) => new Date(
-        params.row.createdAt,
-      ).toLocaleString(),
-    },
-    {
-      field: 'discountCode.title',
-      headerName: 'Discount Code',
-      width: 170,
-      valueGetter: (params: GridValueGetterParams) => params.row.discountCode?.title || '',
-    },
-    {
-      field: 'discountCode.priceRuleId',
-      headerName: 'Price Rule',
-      width: 170,
-      valueGetter: (params: GridValueGetterParams) => params.row.discountCode?.priceRuleId || '',
-    },
-  ];
+  const handleFilterModelChange = (mode) => {
+    console.log('handleFilterModelChange', mode);
+    setFilters(mode.items);
+  };
+
+  const handleSortModelChange = (mode) => {
+    console.log('handleSortModelChange', mode);
+    setSorting(mode);
+  };
 
   return (
-    <>
-      <Head>
-        <title>Drops</title>
-      </Head>
-      <PageTitleWrapper>
-        <PageHeader title="Drops List" />
-      </PageTitleWrapper>
-      <Container maxWidth="lg">
-        <Grid
-          container
-          direction="row"
-          justifyContent="center"
-          alignItems="stretch"
-          spacing={3}
-        >
-          <Grid item xs={12}>
-            <Card sx={{ padding: 3 }}>
-              <Box sx={{ height: 1150, width: '100%' }}>
-                {loading && <LinearIndeterminate />}
-                <DataGrid
-                  rows={data?.dropsGroupshops ?? []}
-                  columns={columns}
-                  pageSize={20}
-                  rowsPerPageOptions={[5, 10, 25]}
-                  disableSelectionOnClick
-                  experimentalFeatures={{ newEditingApi: true }}
-                />
-              </Box>
-            </Card>
-          </Grid>
-        </Grid>
-      </Container>
-      <Footer />
-    </>
+    <SidebarLayout>
+      <DropsList
+        pagination={pagination}
+        onPageChange={handlePageChange}
+        loading={loading}
+        drops={drops}
+        pageInfo={pageInfo}
+        onPageSizeChange={handlePageSize}
+        onFilterModelChange={handleFilterModelChange}
+        onSortModelChange={handleSortModelChange}
+      />
+    </SidebarLayout>
   );
 }
 
-Logs.getLayout = (page) => (
-  <SidebarLayout>{page}</SidebarLayout>
-);
-
-export default Logs;
+export default Drops;

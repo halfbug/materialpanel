@@ -71,6 +71,40 @@ query dropsGroupshops{
 }
 `;
 
+const DROPS_PAGE = gql`
+query getDrops($gridargs:GridArgs! ){
+  getDrops(gridArgs:$gridargs){
+     pageInfo {
+          total
+          count
+          currentPage
+          lastPage
+          hasNextPage
+          hasPreviousPage
+        }
+    result{
+       
+    id
+    status
+    shortUrl
+    obSettings{
+      ownerUrl
+    }
+    customerDetail{
+      fullName
+      firstName
+      lastName
+    }
+    discountCode{
+      title
+    }
+    createdAt
+ 
+    }
+  }
+}
+`;
+
 const VIDEO_POST = gql`
 mutation CreateVideo($createVideoInput: CreateVideoInput!) {
   createVideo(CreateVideoInput: $createVideoInput) {
@@ -284,7 +318,7 @@ query findByStoreId($storeId: String!) {
 
 export {
   ALL_STORES, ALL_LOGS, VIDEO_POST, GET_ALL_VIDEOS, VIDEOS_UPDATE, DISCOVERYTOOLS_UPDATE,
-  DROPS_UPDATE, GET_STORE_DETAILS, DEFAULT_DISCOUNT, ALL_DROPS, GET_UPDATE_CODES_STATUS,
+  DROPS_UPDATE, GET_STORE_DETAILS, DEFAULT_DISCOUNT, ALL_DROPS, DROPS_PAGE, GET_UPDATE_CODES_STATUS,
   FIND_KLAVIYO_LIST, VIDEOS_REMOVE, DROPS_CATEGORY_UPDATE, GET_DROPS_CATEGORY,
   DROPS_CATEGORY_REMOVE,
 };
