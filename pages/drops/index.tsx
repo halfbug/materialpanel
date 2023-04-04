@@ -58,6 +58,14 @@ const Drops = () => {
 
   const dropsUpdatedMessage = 'Drops updated successfully!';
   const dropsUpdatedError = 'First fill all field';
+  const addSectionMessage = 'Section added successfully';
+  const updateSectionMessage = 'Section updated successfully';
+  const removeSectionMessage = 'Section removed successfully';
+  const sectionOrderMessage = 'Section sorting order updated successfully';
+  const addCollectionMessage = 'Collection added successfully';
+  const editCollectionMessage = 'Collection updated successfully';
+  const removeCollectionMessage = 'Collection removed successfully';
+  const collectionOrderMessage = 'Collection sorting order updated successfully';
 
   const [storeData, setStoreData] = useState<any>({});
   const [lastSync, setlastsync] = useState<any>(null);
@@ -89,6 +97,7 @@ const Drops = () => {
   const [successToast, setSuccessToast] = useState<any>({
     toastTog: false,
     toastMessage: '',
+    toastColor: '',
   });
   const [status, setStatus] = useState<string>('');
   const [subscriberListId, setSubscriberListId] = useState('');
@@ -117,9 +126,9 @@ const Drops = () => {
     variables: { type: 'drops' },
   });
 
-  const [updateStore, { data: dropsUpdateData }] = useMutation<any>(
-    DROPS_UPDATE,
-  );
+  const [updateStore, { data: dropsUpdateData }] = useMutation<any>(DROPS_UPDATE, {
+    fetchPolicy: 'network-only',
+  });
 
   const [updateDropsCategory, { data: updatedDropsCategoryData }] = useMutation<any>(
     DROPS_CATEGORY_UPDATE,
@@ -129,13 +138,6 @@ const Drops = () => {
     DROPS_CATEGORY_REMOVE,
   );
 
-  useEffect(() => {
-    if (removedDropsCategoryData?.removeDropsCategory) {
-      const temp: any = sectionData.filter((el) => el.categoryId !== removeNavigationMngData.categoryId).map((section: any) => ({ ...section, children: section.children.filter((child: any) => child?.categoryId !== removeNavigationMngData.categoryId) }));
-      setSectionData(temp);
-    }
-  }, [removedDropsCategoryData]);
-
   const {
     data: getDropsCategoryData, refetch: getDropsCategory,
   } = useQuery(GET_DROPS_CATEGORY, {
@@ -143,6 +145,14 @@ const Drops = () => {
     variables: { storeId: sid },
     fetchPolicy: 'network-only',
   });
+
+  useEffect(() => {
+    if (removedDropsCategoryData?.removeDropsCategory) {
+      const temp: any = sectionData.filter((el) => el.categoryId !== removeNavigationMngData.categoryId).map((section: any) => ({ ...section, children: section?.children?.filter((child: any) => child?.categoryId !== removeNavigationMngData.categoryId) }));
+      setSectionData(temp);
+      setSuccessToast({ toastTog: true, toastMessage: removeSectionMessage, toastColor: 'success' });
+    }
+  }, [removedDropsCategoryData]);
 
   useEffect(() => {
     if (getDropsCategoryData?.findByStoreId?.length > 0) {
@@ -157,6 +167,7 @@ const Drops = () => {
 
   useEffect(() => {
     if (updatedDropsCategoryData?.updateDropsCategory?.length > 0) {
+      setSuccessToast({ toastTog: true, toastMessage: sectionOrderMessage, toastColor: 'success' });
       getDropsCategory();
     }
   }, [updatedDropsCategoryData]);
@@ -185,7 +196,7 @@ const Drops = () => {
 
   const handleForm = (field: string, value: string) => {
     setFieldValue(field, value);
-    handleSubmit();
+    updateStoreCall();
   };
 
   useEffect(() => {
@@ -221,7 +232,6 @@ const Drops = () => {
     validateOnChange: true,
     onSubmit: async (value) => {
       try {
-        handleSectionSave();
         await updateStore({
           variables: {
             updateStoreInput: {
@@ -235,16 +245,6 @@ const Drops = () => {
                   average: `${value.M2Discount}`,
                   maximum: `${value.M3Discount}`,
                 },
-                klaviyo: {
-                  publicKey: value.publicKey,
-                  privateKey: value.privateKey,
-                  listId: value.listId,
-                  subscriberListId,
-                  signup1: value.signup1,
-                  signup2: value.signup2,
-                  signup3: value.signup3,
-                  signup4: value.signup4,
-                },
               },
             },
           },
@@ -255,9 +255,31 @@ const Drops = () => {
     },
   });
 
+  const updateStoreCall = async () => {
+    await updateStore({
+      variables: {
+        updateStoreInput: {
+          id: sid,
+          drops: {
+            ...storeData?.drops,
+            klaviyo: {
+              publicKey: values.publicKey,
+              privateKey: values.privateKey,
+              listId: values.listId,
+              subscriberListId,
+              signup1: values.signup1,
+              signup2: values.signup2,
+              signup3: values.signup3,
+              signup4: values.signup4,
+            },
+          },
+        },
+      },
+    });
+  };
+
   useEffect(() => {
     if (storeData && sid) {
-      console.log('storeData.drops?.collections🎈', storeData.drops?.collections);
       setDropsIds({
         ...dropsIds,
         M1Discount: storeData.drops?.rewards?.baseline ?? findDrops?.findDrops?.details.baseline,
@@ -279,7 +301,7 @@ const Drops = () => {
   useEffect(() => {
     if (dropsUpdateData?.updateStore?.drops) {
       refetch();
-      setSuccessToast({ toastTog: true, toastMessage: dropsUpdatedMessage });
+      setSuccessToast({ toastTog: true, toastMessage: dropsUpdatedMessage, toastColor: 'success' });
       if (dropsUpdateData?.updateStore?.drops?.codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress) {
         setcodeUpdateStatus(CodeUpdateStatusTypeEnum.inprogress);
       }
@@ -287,7 +309,7 @@ const Drops = () => {
   }, [dropsUpdateData]);
 
   const handleChangeStatus = (e: any) => {
-    if (storeData.drops) {
+    if (getDropsCategoryData?.findByStoreId.find((ele: any) => ele.status === CategoryStatus.ACTIVE)) {
       if (e.target.value === '1') {
         setStatus('Active');
         updateStatus('Active');
@@ -296,7 +318,7 @@ const Drops = () => {
         updateStatus('InActive');
       }
     } else {
-      setSuccessToast({ toastTog: true, toastMessage: dropsUpdatedError });
+      setSuccessToast({ toastTog: true, toastMessage: dropsUpdatedError, toastColor: 'error' });
     }
   };
 
@@ -324,27 +346,12 @@ const Drops = () => {
 
   const handleSectionModal = (data: any) => {
     if (data) {
-      if (collectionEditData?.title) {
-        const temp: any = sectionData.map((el) => (
-          el.categoryId === collectionEditData.categoryId
-            ? { ...el, title: data }
-            : { ...el, children: el?.children?.map((child: any) => (child?.categoryId === collectionEditData.categoryId ? { ...child, title: data } : child)) ?? [] }
-        ));
-        setSectionData(temp);
-      } else {
-        const uniqueId = uuid();
-        const tempTree = [...sectionData];
-        tempTree.push({
-          title: data,
-          expanded: true,
-          children: [],
-          collections: [],
-          categoryId: uniqueId,
-          storeId: sid,
-          status: CategoryStatus.DRAFT,
-        });
-        setSectionData(tempTree);
+      if (data === 'Add') {
+        setSuccessToast({ toastTog: true, toastMessage: addSectionMessage, toastColor: 'success' });
+      } else if (data === 'Edit') {
+        setSuccessToast({ toastTog: true, toastMessage: updateSectionMessage, toastColor: 'success' });
       }
+      getDropsCategory();
     }
     setCollectionEditData('');
     setSectionModal(false);
@@ -376,10 +383,17 @@ const Drops = () => {
     })();
   };
 
-  const handleSaveCollectionId = (data: any) => {
-    const temp = sectionData.map((el: any) => (el.categoryId === data.categoryId ? data : { ...el, children: el.children.map((ele: any) => (ele.categoryId === data.categoryId ? data : ele)) }));
-    setSectionData(temp);
-    setSetting({ settingData: '', flag: false });
+  const handleSaveCollectionId = (data: string) => {
+    if (data === 'edit') {
+      setSuccessToast({ toastTog: true, toastMessage: editCollectionMessage, toastColor: 'success' });
+    } else if (data === 'delete') {
+      setSuccessToast({ toastTog: true, toastMessage: removeCollectionMessage, toastColor: 'success' });
+    } else if (data === 'add') {
+      setSuccessToast({ toastTog: true, toastMessage: addCollectionMessage, toastColor: 'success' });
+    } else if (data === 'updateOrder') {
+      setSuccessToast({ toastTog: true, toastMessage: collectionOrderMessage, toastColor: 'success' });
+    }
+    getDropsCategory();
   };
 
   const handleSectionSave = () => {
@@ -431,7 +445,7 @@ const Drops = () => {
           onClose={() => setSuccessToast({ ...successToast, toastTog: false })}
           sx={{
             width: '100%',
-            background: successToast?.toastMessage === dropsUpdatedMessage ? '#287431' : '#DC3545',
+            background: successToast?.toastColor === 'success' ? '#287431' : '#DC3545',
             color: '#FFFFFF',
             '& .MuiAlert-icon': {
               display: 'none',
@@ -558,10 +572,11 @@ const Drops = () => {
                     style={{ width: '300px' }}
                   />
                 </div>
+                <Button variant="contained" style={{ marginTop: '10px' }} onClick={() => handleSubmit()}>Save</Button>
               </Card>
               <h2>Drops Navigation Management</h2>
               <Card style={{ padding: '20px' }}>
-                <div>
+                <div style={{ display: 'flex', maxHeight: '550px', overflow: 'auto' }}>
                   <SortableTree
                     treeData={sectionData}
                     onChange={handleTreeChange}
@@ -586,7 +601,7 @@ const Drops = () => {
                   />
                 </div>
                 <Button variant="contained" style={{ marginTop: '10px' }} onClick={() => setSectionModal(true)}>Add Section</Button>
-                {sectionData.length ? <Button variant="contained" style={{ marginTop: '10px', marginLeft: '10px' }} type="submit">Save</Button> : ''}
+                {sectionData.length ? <Button variant="contained" style={{ marginTop: '10px', marginLeft: '10px' }} onClick={() => handleSectionSave()}>Update Sorting Order</Button> : ''}
               </Card>
             </form>
           </Grid>
@@ -598,12 +613,12 @@ const Drops = () => {
               setFieldValue={setFieldValue}
               handleForm={handleForm}
             />
-            { setting.flag ? <CollectionTable settingData={setting.settingData} saveData={(data: any) => handleSaveCollectionId(data)} /> : '' }
+            { setting.flag ? <CollectionTable settingData={setting.settingData} saveData={(data: string) => handleSaveCollectionId(data)} /> : '' }
           </Grid>
         </Grid>
       </Container>
       <Footer />
-      <SectionModal show={sectionModal} close={(data: any) => handleSectionModal(data)} sectionData={sectionData} collectionEditData={collectionEditData.title} />
+      <SectionModal show={sectionModal} close={(data: any) => handleSectionModal(data)} sectionData={sectionData} collectionEditData={collectionEditData} />
       {deleteIdModal ? <RemoveIdsModal show={deleteIdModal} close={(data: any) => hanleRemove(data)} childData={removeNavigationMngData?.children} /> : ''}
     </>
   );

@@ -10,6 +10,8 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DraggableList from 'react-draggable-list';
 import MenuTwoToneIcon from '@mui/icons-material/MenuTwoTone';
 import { StoreContext } from '@/store/store.context';
+import { DROPS_CATEGORY_UPDATE } from '@/graphql/store.graphql';
+import { useMutation } from '@apollo/client';
 import AddCollectionIdModal from './AddCollectionIdModal';
 import RemoveIdsModal from './RemoveIdsModal';
 
@@ -32,7 +34,7 @@ const Item: any = ({
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-        {item.type.toLowerCase() !== CollectionType.ALLPRODUCT.toLowerCase() ? (
+        {item.type !== CollectionType.ALLPRODUCT ? (
           <MenuTwoToneIcon
             fontSize="small"
             className="disable-select dragHandle"
@@ -67,7 +69,12 @@ const CollectionTable = ({ settingData, saveData }: any) => {
   const [editData, setEditData] = useState<any>('');
   const [editId, setEditId] = useState<any>('');
   const [deleteIdModal, setDeleteIdModal] = useState<boolean>(false);
+  const [updateOrder, setUpdateOrder] = useState<boolean>(false);
   const { store, dispatch } = useContext(StoreContext);
+
+  const [updateDropsCategory, { data: updatedDropsCategoryData }] = useMutation<any>(
+    DROPS_CATEGORY_UPDATE,
+  );
 
   useEffect(() => {
     if (settingData?.collections?.length) {
@@ -89,56 +96,142 @@ const CollectionTable = ({ settingData, saveData }: any) => {
 
   const handleAddCollectionModal = (data: any) => {
     if (data) {
+      let FinalCollectionData = [];
       if (editData?.shopifyId) {
-        if (data.type.toLowerCase() === CollectionType.ALLPRODUCT
+        let tempColle = [];
+        if (data.type === CollectionType.ALLPRODUCT
           && collection.length - 1 !== editId) {
-          setCollection([
+          tempColle = [
             ...collection.filter((_: any, index: number) => index !== editId),
             data,
-          ]);
+          ];
+          setCollection(tempColle);
         } else {
-          setCollection(
-            collection.map((ele: any, index: number) => (index === editId ? data : ele)),
-          );
+          tempColle = collection.map((ele: any, index: number) => (index === editId ? data : ele));
+          setCollection(tempColle);
         }
-      } else if (
-        !collection.filter((x: any) => x.type.toLowerCase() === CollectionType.ALLPRODUCT).length
-        || data.type.toLowerCase() === CollectionType.ALLPRODUCT) {
-        collection.push(data);
+        FinalCollectionData = tempColle.map((coll: any) => ({ ...coll, shopifyId: `gid://shopify/Collection/${coll.shopifyId}` }));
       } else {
-        collection.splice(collection.length - 1, 0, data);
+        if (
+          !collection.filter((x: any) => x.type === CollectionType.ALLPRODUCT).length
+        || data.type === CollectionType.ALLPRODUCT) {
+          collection.push(data);
+        } else {
+          collection.splice(collection.length - 1, 0, data);
+        }
+        FinalCollectionData = collection.map((coll: any) => ({ ...coll, shopifyId: `gid://shopify/Collection/${coll.shopifyId}` }));
       }
+      updateDropsCategory({
+        variables: {
+          CreateDropsCategoryForFront: {
+            id: settingData.storeId,
+            categoryData: [{
+              categoryId: settingData.categoryId,
+              collections: FinalCollectionData,
+              parentId: settingData.parentId,
+              sortOrder: settingData.sortOrder,
+              status: CategoryStatus.ACTIVE,
+              storeId: settingData.storeId,
+              title: settingData.title,
+            }],
+            isCollectionUpdate: true,
+          },
+        },
+      }).then(() => {}).catch((err) => {
+        console.log(err);
+      });
+    } else {
+      dispatch({ type: 'UPDATE_EDITID', payload: undefined });
+      setEditData('');
+      setEditId('');
+      setAddCollectionIdsModal(false);
     }
-    dispatch({ type: 'UPDATE_EDITID', payload: undefined });
-    setEditData('');
-    setEditId('');
-    setAddCollectionIdsModal(false);
   };
+
+  useEffect(() => {
+    if (updatedDropsCategoryData?.updateDropsCategory.length > 0) {
+      if (editData?.shopifyId) {
+        dispatch({ type: 'UPDATE_EDITID', payload: undefined });
+        setEditData('');
+        setEditId('');
+        saveData('edit');
+      } else if (deleteIdModal) {
+        dispatch({ type: 'UPDATE_REMOVEID', payload: undefined });
+        setDeleteIdModal(false);
+        saveData('delete');
+      } else if (updateOrder) {
+        setUpdateOrder(false);
+        saveData('updateOrder');
+      } else {
+        saveData('add');
+      }
+      setAddCollectionIdsModal(false);
+    }
+  }, [updatedDropsCategoryData]);
 
   const remove = (data: any) => {
     if (data === 'delete') {
-      setCollection(collection.filter((el: any) => el.name !== store?.removeId?.name));
+      const UpdatedData = collection.filter((el: any) => el.name !== store?.removeId?.name);
+      setCollection(UpdatedData);
+      updateDropsCategory({
+        variables: {
+          CreateDropsCategoryForFront: {
+            id: settingData.storeId,
+            categoryData: [{
+              categoryId: settingData.categoryId,
+              collections: UpdatedData.length ? UpdatedData.map((coll: any) => ({ ...coll, shopifyId: `gid://shopify/Collection/${coll.shopifyId}` })) : [],
+              parentId: settingData.parentId,
+              sortOrder: settingData.sortOrder,
+              status: UpdatedData.length ? CategoryStatus.ACTIVE : CategoryStatus.DRAFT,
+              storeId: settingData.storeId,
+              title: settingData.title,
+            }],
+            isCollectionUpdate: true,
+          },
+        },
+      }).then(() => {}).catch((err) => {
+        console.log(err);
+      });
+    } else {
+      dispatch({ type: 'UPDATE_REMOVEID', payload: undefined });
+      setDeleteIdModal(false);
     }
-    dispatch({ type: 'UPDATE_REMOVEID', payload: undefined });
-    setDeleteIdModal(false);
   };
 
   const hanldeSave = () => {
-    saveData({
-      ...settingData,
-      collections: collection.map((ele) => ({ ...ele, shopifyId: `gid://shopify/Collection/${ele.shopifyId}` })),
-      status: CategoryStatus.ACTIVE,
+    setUpdateOrder(true);
+    updateDropsCategory({
+      variables: {
+        CreateDropsCategoryForFront: {
+          id: settingData.storeId,
+          categoryData: [{
+            categoryId: settingData.categoryId,
+            collections: collection.map((coll: any) => ({ ...coll, shopifyId: `gid://shopify/Collection/${coll.shopifyId}` })),
+            parentId: settingData.parentId,
+            sortOrder: settingData.sortOrder,
+            status: CategoryStatus.ACTIVE,
+            storeId: settingData.storeId,
+            title: settingData.title,
+          }],
+          isCollectionUpdate: false,
+        },
+      },
+    }).then(() => {}).catch((err) => {
+      console.log(err);
     });
   };
 
   const handleRLDDChange = (newList: any) => {
-    setCollection([
-      ...newList.filter(
-        (ele: any) => ele.type.toLowerCase() !== CollectionType.ALLPRODUCT.toLowerCase(),
-      ),
-      newList.find(
-        (data: any) => data.type.toLowerCase() === CollectionType.ALLPRODUCT.toLowerCase(),
-      )]);
+    const newOrderData = newList.filter(
+      (ele: any) => ele.type !== CollectionType.ALLPRODUCT,
+    );
+    const tempAllProductData = newList.find(
+      (data: any) => data.type === CollectionType.ALLPRODUCT,
+    );
+    if (tempAllProductData) {
+      newOrderData.push(tempAllProductData);
+    }
+    setCollection(newOrderData);
   };
 
   return (
@@ -181,7 +274,7 @@ const CollectionTable = ({ settingData, saveData }: any) => {
           />
         </div>
         <Button variant="contained" style={{ marginTop: '10px' }} onClick={() => setAddCollectionIdsModal(true)}>Add Collection</Button>
-        {collection.length > 0 ? <Button variant="contained" style={{ marginTop: '10px', marginLeft: '10px' }} onClick={() => hanldeSave()}>Save</Button> : ''}
+        {collection.length > 0 ? <Button variant="contained" style={{ marginTop: '10px', marginLeft: '10px' }} onClick={() => hanldeSave()}>Update Sorting Order</Button> : ''}
         {addCollectionIdsModal ? (
           <AddCollectionIdModal
             show={addCollectionIdsModal}

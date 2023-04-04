@@ -1,11 +1,20 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable @typescript-eslint/restrict-plus-operands */
+import { DROPS_CATEGORY_UPDATE } from '@/graphql/store.graphql';
+import { useMutation } from '@apollo/client';
 import {
   Box, Button, Modal, TextField, InputLabel,
 } from '@mui/material';
+import { CategoryStatus } from 'configs/constant';
+import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
+import { v4 as uuid } from 'uuid';
 
 const SectionModal = ({
   show, close, sectionData, collectionEditData,
 }: any) => {
+  const router = useRouter();
+  const { sid } = router.query;
   const [sectionName, setSectionName] = useState('');
   const [sectionNameData, setSectionNameData] = useState([]);
   const [validationError, setValidationError] = useState({
@@ -13,9 +22,13 @@ const SectionModal = ({
     msg: '',
   });
 
+  const [updateDropsCategory, { data: updatedDropsCategoryData }] = useMutation<any>(
+    DROPS_CATEGORY_UPDATE,
+  );
+
   useEffect(() => {
     if (collectionEditData) {
-      setSectionName(collectionEditData);
+      setSectionName(collectionEditData.title);
     }
   }, [collectionEditData]);
 
@@ -36,11 +49,60 @@ const SectionModal = ({
 
   const handleClick = () => {
     if (sectionName && !sectionNameData.includes(sectionName.toLocaleLowerCase())) {
-      close(sectionName);
-      setSectionName('');
-      setValidationError({
-        flag: false,
-        msg: '',
+      const updatedCategoryData = [];
+      if (collectionEditData) {
+        const updateSecData = sectionData.map((el: any) => (
+          el.categoryId === collectionEditData.categoryId
+            ? { ...el, title: sectionName }
+            : {
+              ...el,
+              children: el?.children?.map((child: any) => (
+                child?.categoryId === collectionEditData.categoryId
+                  ? { ...child, title: sectionName }
+                  : child)) ?? [],
+            }
+        ));
+        updateSecData.forEach((item: any) => {
+          item?.children?.forEach((ell: any) => {
+            delete ell?.children;
+            delete ell?.expanded;
+            updatedCategoryData.push(ell);
+          });
+          delete item.children;
+          delete item.expanded;
+          updatedCategoryData.push({ ...item, parentId: null });
+        });
+      } else {
+        const uniqueId = uuid();
+        sectionData.push({
+          title: sectionName,
+          collections: [],
+          categoryId: uniqueId,
+          storeId: sid,
+          sortOrder: sectionData.length + 1,
+          status: CategoryStatus.DRAFT,
+        });
+        sectionData.forEach((item: any) => {
+          item?.children?.forEach((ell: any) => {
+            delete ell?.children;
+            delete ell?.expanded;
+            updatedCategoryData.push(ell);
+          });
+          delete item.children;
+          delete item.expanded;
+          updatedCategoryData.push({ ...item, parentId: null });
+        });
+      }
+      updateDropsCategory({
+        variables: {
+          CreateDropsCategoryForFront: {
+            id: sid,
+            categoryData: updatedCategoryData,
+            isCollectionUpdate: false,
+          },
+        },
+      }).then(() => {}).catch((err) => {
+        console.log(err);
       });
     } else {
       setValidationError({
@@ -48,7 +110,24 @@ const SectionModal = ({
         msg: 'Please enter valid section name',
       });
     }
+    return false;
   };
+
+  useEffect(() => {
+    if (updatedDropsCategoryData?.updateDropsCategory.length > 0) {
+      setSectionName('');
+      setValidationError({
+        flag: false,
+        msg: '',
+      });
+      if (collectionEditData?.title) {
+        close('Edit');
+      } else {
+        close('Add');
+      }
+    }
+  }, [updatedDropsCategoryData]);
+
   return (
     <Modal
       open={show}
@@ -80,7 +159,7 @@ const SectionModal = ({
           helperText={validationError.msg}
         />
         <div style={{ textAlign: 'end' }}>
-          <Button variant="contained" style={{ marginTop: '10px' }} onClick={() => handleClick()}>{collectionEditData ? 'Save' : 'Create'}</Button>
+          <Button variant="contained" disabled={collectionEditData.title === sectionName} style={{ marginTop: '10px' }} onClick={() => handleClick()}>{collectionEditData.title ? 'Save' : 'Create'}</Button>
         </div>
       </Box>
     </Modal>

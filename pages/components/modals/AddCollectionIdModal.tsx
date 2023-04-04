@@ -25,7 +25,7 @@ const AddCollectionIdModal = ({
     if (collectionData.length) {
       setAddedCollection({
         name: collectionData.map((ele: any) => ele.name.toLocaleLowerCase()),
-        type: collectionData.filter((ele: any) => ele.type.toLocaleLowerCase() !== CollectionType.REGULAR).map((el: any) => el.type),
+        type: collectionData.filter((ele: any) => ele.type !== CollectionType.REGULAR).map((el: any) => el.type),
       });
     }
   }, [collectionData]);
