@@ -3,7 +3,9 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 
-const RemoveIdsModal = ({ show, close, childData }: any) => {
+const RemoveIdsModal = ({
+  show, close, childData, removedDropsCategoryLoading,
+}: any) => {
   const [child, setChild] = useState<any[]>([]);
 
   useEffect(() => {
@@ -44,7 +46,7 @@ const RemoveIdsModal = ({ show, close, childData }: any) => {
         ) : ''}
         <div style={{ textAlign: 'end' }}>
           <Button variant="contained" style={{ height: '30px', marginTop: '20px' }} onClick={() => close('')}>Cancel</Button>
-          <Button variant="contained" style={{ height: '30px', marginTop: '20px', marginLeft: '10px' }} onClick={() => close('delete')}>Delete</Button>
+          <Button variant="contained" disabled={removedDropsCategoryLoading} style={{ height: '30px', marginTop: '20px', marginLeft: '10px' }} onClick={() => close('delete')}>Delete</Button>
         </div>
       </Box>
     </Modal>

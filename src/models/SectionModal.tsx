@@ -22,7 +22,10 @@ const SectionModal = ({
     msg: '',
   });
 
-  const [updateDropsCategory, { data: updatedDropsCategoryData }] = useMutation<any>(
+  const [updateDropsCategory, {
+    data: updatedDropsCategoryData,
+    loading: updatedDropsCategoryLoading,
+  }] = useMutation<any>(
     DROPS_CATEGORY_UPDATE,
   );
 
@@ -159,7 +162,7 @@ const SectionModal = ({
           helperText={validationError.msg}
         />
         <div style={{ textAlign: 'end' }}>
-          <Button variant="contained" disabled={collectionEditData.title === sectionName} style={{ marginTop: '10px' }} onClick={() => handleClick()}>{collectionEditData.title ? 'Save' : 'Create'}</Button>
+          <Button variant="contained" disabled={collectionEditData.title === sectionName || updatedDropsCategoryLoading} style={{ marginTop: '10px' }} onClick={() => handleClick()}>{collectionEditData.title ? 'Save' : 'Create'}</Button>
         </div>
       </Box>
     </Modal>

@@ -39,10 +39,10 @@ import LinearIndeterminate from '@/components/Progress/Linear';
 import { CategoryStatus } from 'configs/constant';
 import getDMYFormatedDate from '@/utils/getDMYFormatedDate';
 import SortableTree from 'react-sortable-tree';
-import SectionModal from 'pages/components/modals/SectionModal';
+import SectionModal from '@/models/SectionModal';
 import { v4 as uuid } from 'uuid';
-import CollectionTable from 'pages/components/modals/CollectionTable';
-import RemoveIdsModal from 'pages/components/modals/RemoveIdsModal';
+import CollectionTable from '@/models/CollectionTable';
+import RemoveIdsModal from '@/models/RemoveIdsModal';
 import DropKlaviyoForm from '../components/forms/klaviyoForm';
 
 // eslint-disable-next-line no-shadow
@@ -134,7 +134,7 @@ const Drops = () => {
     DROPS_CATEGORY_UPDATE,
   );
 
-  const [removeDropsCategory, { data: removedDropsCategoryData }] = useMutation<any>(
+  const [removeDropsCategory, { data: removedDropsCategoryData, loading: removedDropsCategoryLoading }] = useMutation<any>(
     DROPS_CATEGORY_REMOVE,
   );
 
@@ -619,7 +619,7 @@ const Drops = () => {
       </Container>
       <Footer />
       <SectionModal show={sectionModal} close={(data: any) => handleSectionModal(data)} sectionData={sectionData} collectionEditData={collectionEditData} />
-      {deleteIdModal ? <RemoveIdsModal show={deleteIdModal} close={(data: any) => hanleRemove(data)} childData={removeNavigationMngData?.children} /> : ''}
+      {deleteIdModal ? <RemoveIdsModal show={deleteIdModal} close={(data: any) => hanleRemove(data)} childData={removeNavigationMngData?.children} removedDropsCategoryLoading={removedDropsCategoryLoading} /> : ''}
     </>
   );
 };

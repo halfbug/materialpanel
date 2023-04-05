@@ -72,7 +72,10 @@ const CollectionTable = ({ settingData, saveData }: any) => {
   const [updateOrder, setUpdateOrder] = useState<boolean>(false);
   const { store, dispatch } = useContext(StoreContext);
 
-  const [updateDropsCategory, { data: updatedDropsCategoryData }] = useMutation<any>(
+  const [updateDropsCategory, {
+    data: updatedDropsCategoryData,
+    loading: updatedDropsCategoryLoading,
+  }] = useMutation<any>(
     DROPS_CATEGORY_UPDATE,
   );
 
@@ -281,9 +284,10 @@ const CollectionTable = ({ settingData, saveData }: any) => {
             close={(data: any) => handleAddCollectionModal(data)}
             collectionData={collection}
             editData={editData}
+            updatedDropsCategoryLoading={updatedDropsCategoryLoading}
           />
         ) : ''}
-        {deleteIdModal ? <RemoveIdsModal show={deleteIdModal} close={(data: any) => remove(data)} /> : ''}
+        {deleteIdModal ? <RemoveIdsModal show={deleteIdModal} close={(data: any) => remove(data)} removedDropsCategoryLoading={updatedDropsCategoryLoading} /> : ''}
       </Card>
     </div>
   );

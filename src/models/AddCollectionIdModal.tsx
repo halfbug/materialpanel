@@ -9,7 +9,7 @@ import * as yup from 'yup';
 import { CollectionIdForm } from '@/types/groupshop';
 
 const AddCollectionIdModal = ({
-  show, close, collectionData, editData,
+  show, close, collectionData, editData, updatedDropsCategoryLoading,
 }: any) => {
   const [collection, setCollection] = useState({
     name: '',
@@ -136,7 +136,7 @@ const AddCollectionIdModal = ({
             />
           </div>
           <div style={{ textAlign: 'end' }}>
-            <Button variant="contained" type="submit" style={{ marginTop: '10px' }}>{editData?.shopifyId ? 'Save' : 'Create'}</Button>
+            <Button variant="contained" type="submit" disabled={updatedDropsCategoryLoading} style={{ marginTop: '10px' }}>{editData?.shopifyId ? 'Save' : 'Create'}</Button>
           </div>
         </form>
       </Box>
