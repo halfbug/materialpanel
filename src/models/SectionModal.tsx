@@ -52,49 +52,28 @@ const SectionModal = ({
 
   const handleClick = () => {
     if (sectionName && !sectionNameData.includes(sectionName.toLocaleLowerCase())) {
-      const updatedCategoryData = [];
+      let updatedCategoryData = [];
       if (collectionEditData) {
-        const updateSecData = sectionData.map((el: any) => (
-          el.categoryId === collectionEditData.categoryId
-            ? { ...el, title: sectionName }
-            : {
-              ...el,
-              children: el?.children?.map((child: any) => (
-                child?.categoryId === collectionEditData.categoryId
-                  ? { ...child, title: sectionName }
-                  : child)) ?? [],
-            }
-        ));
-        updateSecData.forEach((item: any) => {
-          item?.children?.forEach((ell: any) => {
-            delete ell?.children;
-            delete ell?.expanded;
-            updatedCategoryData.push(ell);
-          });
-          delete item.children;
-          delete item.expanded;
-          updatedCategoryData.push({ ...item, parentId: null });
-        });
+        updatedCategoryData = [{
+          title: sectionName,
+          collections: collectionEditData.collections,
+          categoryId: collectionEditData.categoryId,
+          storeId: collectionEditData.collections,
+          sortOrder: collectionEditData.sortOrder,
+          status: collectionEditData.status,
+          parentId: collectionEditData.parentId,
+        }];
       } else {
         const uniqueId = uuid();
-        sectionData.push({
+        updatedCategoryData = [{
           title: sectionName,
           collections: [],
           categoryId: uniqueId,
           storeId: sid,
           sortOrder: sectionData.length + 1,
           status: CategoryStatus.DRAFT,
-        });
-        sectionData.forEach((item: any) => {
-          item?.children?.forEach((ell: any) => {
-            delete ell?.children;
-            delete ell?.expanded;
-            updatedCategoryData.push(ell);
-          });
-          delete item.children;
-          delete item.expanded;
-          updatedCategoryData.push({ ...item, parentId: null });
-        });
+          parentId: null,
+        }];
       }
       updateDropsCategory({
         variables: {

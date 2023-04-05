@@ -77,7 +77,7 @@ const Drops = () => {
   const [sectionModal, setSectionModal] = useState<boolean>(false);
   const [deleteIdModal, setDeleteIdModal] = useState<boolean>(false);
   const [removeNavigationMngData, setRemoveNavigationMngData] = useState<any>('');
-  const [setting, setSetting] = useState({
+  const [setting, setSetting] = useState<any>({
     flag: false,
     settingData: '',
   });
@@ -162,6 +162,9 @@ const Drops = () => {
         expanded: true,
         children: getDropsCategoryData.findByStoreId.filter((child: any) => child.parentId === ele.categoryId).sort((a: any, b: any) => a.sortOrder - b.sortOrder),
       })));
+      if (setting.flag) {
+        setSetting({ ...setting, settingData: getDropsCategoryData?.findByStoreId?.find((ele: any) => ele?.categoryId === setting?.settingData?.categoryId) });
+      }
     }
   }, [getDropsCategoryData]);
 
