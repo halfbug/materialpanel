@@ -9,11 +9,14 @@ import { FIND_ADMIN_ROLE_BY_NAME } from '@/graphql/store.graphql';
 import { AuthContext } from './auth.context';
 
 interface PermissionContextType {
-  userPermission: AdminUserRoles | undefined;
+  userPermissions: string[] | undefined;
+  generalPermissions: AdminUserRoles | undefined;
 }
 
-const initialState: {userPermission: AdminUserRoles | undefined} = {
-  userPermission: undefined,
+// eslint-disable-next-line max-len
+const initialState: {userPermissions: string[] | undefined, generalPermissions: AdminUserRoles | undefined} = {
+  userPermissions: undefined,
+  generalPermissions: undefined,
 
 };
 
@@ -22,28 +25,46 @@ export const PermissionContext = React.createContext<PermissionContextType>(
 );
 
 const PermissionContextProvider = ({ children }) => {
-  const [userPermission, setUserPermission] = useState<AdminUserRoles| undefined>(undefined);
+  const [userPermissions, setUserPermission] = useState<string[] | undefined>(undefined);
+  const [generalPermissions, setGeneralPermission] = useState<AdminUserRoles| undefined>(undefined);
 
   const router = useRouter();
   //   console.log('🚀 ~ file: permission.context.tsx ~ line 30 ~ router', router);
   const { user } = useContext(AuthContext);
 
+  const getPermissionRoute = (pname: any, allPermissions: any) => {
+    const route = allPermissions.filter((item:any) => item.title === pname);
+    return route;
+  };
+
   const [getPermission, { data }] = useLazyQuery(FIND_ADMIN_ROLE_BY_NAME, {
     onCompleted: (res) => {
-      setUserPermission(res?.findRoleByName);
+      const adminPermission = [];
+      const genPermission = [];
+      res?.findUserPermissions?.permission.forEach((per: any) => {
+        const getRoute = getPermissionRoute(per.name, res?.findUserPermissions?.generalPermission);
+        if (getRoute?.[0]) {
+          adminPermission.push(getRoute[0].route);
+        }
+      });
+      res?.findUserPermissions?.generalPermission.forEach((gen: any) => {
+        genPermission.push(({ name: gen.title, category: gen.category }));
+      });
+      setUserPermission(adminPermission);
+      setGeneralPermission({ permission: genPermission });
     },
-    onError() { console.log('Error in finding Droplist!'); },
+    onError() { console.log('Error in finding Permissions!'); },
   });
 
   useEffect(() => {
     if (user?.userRole) {
       getPermission({ variables: { userRole: user?.userRole } });
     }
-  }, [router.pathname, user, userPermission]);
+  }, [router.pathname, user]);
 
   const ctx = useMemo(() => ({
-    userPermission,
-  }), [userPermission]);
+    userPermissions, generalPermissions,
+  }), [userPermissions, generalPermissions]);
   console.log('🚀 ~ file: permission.context.tsx ~ line 49 ~ ctx', ctx);
 
   return (

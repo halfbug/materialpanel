@@ -407,13 +407,18 @@ const UPDATE_ADMIN_USER_ROLE = gql`
 `;
 
 const FIND_ADMIN_ROLE_BY_NAME = gql`
-query findRoleByName($userRole: String!) {
-  findRoleByName(userRole: $userRole) {
+query findUserPermissions($userRole: String!) {
+  findUserPermissions(userRole: $userRole) {
     roleName
       permission{
         name
         category
-      }    
+      }
+      generalPermission{
+        title
+        route
+        category
+      }     
   }
 }
 `;

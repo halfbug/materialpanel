@@ -46,6 +46,7 @@ const AddUser = () => {
   } = useQuery(ALL_ADMIN_USERS_ROLES);
 
   useEffect(() => {
+    setUserAdminRole(usersRoles?.getAdminRoles[0]?.roleName);
     setAdminUserRoles(usersRoles?.getAdminRoles);
   }, [usersRoles]);
 
@@ -245,6 +246,7 @@ const AddUser = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <h4 className="lable" style={{ width: '135px' }}>Role</h4>
                   <Select
+                    displayEmpty
                     value={userAdminRole}
                     onChange={(e) => setUserAdminRole(e.target.value)}
                     label="userRole"

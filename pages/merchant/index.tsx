@@ -24,10 +24,8 @@ interface THeader {
 
 }
 const StoreList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
-  const [columnData, setColumnData] = useState([]);
-  const router = useRouter();
-  const { getPermissions } = usePermission();
-
+  const { userPermissions } = usePermission();
+  // console.log('merchant', userPermission);
   const {
     loading, data, error, refetch,
   } = useQuery(ALL_STORES);
@@ -91,31 +89,34 @@ const StoreList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
       ],
     },
   ];
+  const [columnData, setColumnData] = useState(headCells);
 
   useEffect(() => {
     setColumnData(headCells);
-  }, [getPermissions]);
+  }, [userPermissions]);
 
   useEffect(() => {
-    if (columnData.length > 0 && columnData[6].options.length > 0) {
-      if (!getPermissions().includes('/drops')) {
-        columnData[6].options.splice(3, 1);
-        setColumnData(columnData);
+    if (columnData.length > 0 && !!userPermissions) {
+      const optionHead = headCells[6].options;
+      if (!userPermissions.includes('/drops')) {
+        optionHead.splice(3, 1);
       }
-      if (!getPermissions().includes('/discoverytools')) {
-        columnData[6].options.splice(2, 1);
-        setColumnData(columnData);
+      if (!userPermissions.includes('/discoverytools')) {
+        optionHead.splice(2, 1);
       }
-      if (!getPermissions().includes('/store/videoupload')) {
-        columnData[6].options.splice(1, 1);
-        setColumnData(columnData);
+      if (!userPermissions.includes('/store/videoupload')) {
+        optionHead.splice(1, 1);
       }
-      if (!getPermissions().includes('/merchant/load-dashboard')) {
-        columnData[6].options.splice(0, 1);
-        setColumnData(columnData);
+      if (!userPermissions.includes('/merchant/load-dashboard')) {
+        optionHead.splice(0, 1);
+      }
+      if (columnData[6].options.length < 1) {
+        columnData[6].options = optionHead;
+        setColumnData([...columnData]);
       }
     }
-  }, [getPermissions]);
+  }, [columnData, userPermissions]);
+
   return (
     <>
       <Head>
@@ -137,7 +138,7 @@ const StoreList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
             <Card sx={{ padding: 3 }}>
               {loading && <LinearIndeterminate />}
 
-              <EnhancedTable headCells={columnData} rows={data?.stores ?? []} orderByFieldName="brandName" />
+              <EnhancedTable headCells={columnData ?? []} rows={data?.stores ?? []} orderByFieldName="brandName" />
             </Card>
           </Grid>
         </Grid>

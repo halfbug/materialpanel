@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import {
@@ -182,20 +182,21 @@ const SubMenuWrapper = styled(Box)(
 );
 
 function SidebarMenu() {
+  const [adminMenu, setAdminMenu] = useState([]);
   const { closeSidebar } = useContext(SidebarContext);
   const router = useRouter();
-  const { getPermissions } = usePermission();
+  const { userPermissions } = usePermission();
   const currentRoute = router.pathname;
 
   console.log('currentRoute', currentRoute);
-  console.log('getPermissions', getPermissions());
   useEffect(() => {
-    if (!getPermissions().includes(router.pathname)) {
-      if (getPermissions().length > 0) {
+    if (userPermissions?.length > 0) {
+      if (!userPermissions.includes(router.pathname)) {
         router.push('/access-denied');
       }
+      setAdminMenu(userPermissions);
     }
-  }, [getPermissions, router, router.pathname]);
+  }, [userPermissions, router.pathname]);
 
   return (
     <MenuWrapper>
@@ -228,7 +229,7 @@ function SidebarMenu() {
       > */}
       <SubMenuWrapper>
         <List component="div">
-          {((getPermissions().includes('/merchant'))) && (
+          {((adminMenu.includes('/merchant'))) && (
           <ListItem component="div">
             <NextLink href="/merchant" passHref>
               <Button
@@ -247,7 +248,7 @@ function SidebarMenu() {
             </NextLink>
           </ListItem>
           )}
-          {((getPermissions().includes('/users'))) && (
+          {((adminMenu.includes('/users'))) && (
           <ListItem component="div">
             <NextLink href="/users" passHref>
               <Button
@@ -264,7 +265,7 @@ function SidebarMenu() {
             </NextLink>
           </ListItem>
           )}
-          {((getPermissions().includes('/roles'))) && (
+          {((adminMenu.includes('/roles'))) && (
           <ListItem component="div">
             <NextLink href="/roles" passHref>
               <Button
@@ -281,7 +282,7 @@ function SidebarMenu() {
             </NextLink>
           </ListItem>
           )}
-          {((getPermissions().includes('/logs'))) && (
+          {((adminMenu.includes('/logs'))) && (
           <ListItem component="div">
             <NextLink href="/logs" passHref>
               <Button
@@ -298,7 +299,7 @@ function SidebarMenu() {
             </NextLink>
           </ListItem>
           )}
-          {((getPermissions().includes('/drops/list'))) && (
+          {((adminMenu.includes('/drops/list'))) && (
           <ListItem component="div">
             <NextLink href="/drops/list" passHref>
               <Button

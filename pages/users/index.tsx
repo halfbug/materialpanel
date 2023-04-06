@@ -23,7 +23,7 @@ import { useRouter } from 'next/router';
 const UserList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
   const [columnData, setColumnData] = useState([]);
   const router = useRouter();
-  const { getPermissions } = usePermission();
+  const { userPermissions } = usePermission();
   const {
     loading, data, error, refetch,
   } = useQuery(ALL_USERS);
@@ -79,13 +79,17 @@ const UserList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
   ];
 
   useEffect(() => {
-    if (!getPermissions().includes('/users/edit')) {
-      headCells.splice(6, 1);
-      setColumnData(headCells);
+    if (userPermissions?.length > 0) {
+      if (!userPermissions?.includes('/users/edit')) {
+        headCells.splice(6, 1);
+        setColumnData(headCells);
+      } else {
+        setColumnData(headCells);
+      }
     } else {
       setColumnData(headCells);
     }
-  }, [getPermissions, router.pathname]);
+  }, [userPermissions, router.pathname]);
 
   return (
     <>
@@ -96,7 +100,7 @@ const UserList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
         <PageHeader pagetitle="Users" />
       </PageTitleWrapper>
       <Container maxWidth="lg">
-        {((getPermissions().includes('/users/add'))) && (
+        {((userPermissions?.includes('/users/add'))) && (
         <Grid item xs={12}>
           <p><NextLink href="/users/add" passHref>Add User </NextLink></p>
         </Grid>

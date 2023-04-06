@@ -42,9 +42,11 @@ const AddRole = () => {
   }, [usersRoles]);
 
   useEffect(() => {
+    const tempPer = [];
     permissions?.getAdminPermissions.forEach((cid: any) => {
-      setPermissionList([...permissionList, { name: cid.title, category: cid.category }]);
+      tempPer.push({ name: cid.title, category: cid.category });
     });
+    setPermissionList(tempPer);
   }, [permissions]);
 
   const duplicateRoleCheck = (values: string | undefined) => {
@@ -96,8 +98,6 @@ const AddRole = () => {
   const MultihandleChange = (e) => {
     setSelectedValue(e);
   };
-
-  const options = [{ name: 'View stores', category: 'Store management' }, { name: 'Login', category: 'Store management' }, { name: 'Discovery', category: 'Store management' }, { name: 'Videos', category: 'Store management' }, { name: 'Drops Navigation', category: 'Store management' }, { name: 'Drops Navigation Sections', category: 'Store management' }, { name: 'View Logs', category: 'Logs' }, { name: 'Add User', category: 'User Management' }, { name: 'Edit User', category: 'User Management' }, { name: 'View User', category: 'User Management' }, { name: 'Add Role', category: 'Role Management' }, { name: 'Edit Role', category: 'Role Management' }, { name: 'View Role', category: 'Role Management' }, { name: 'Drop List', category: 'Drops' }];
 
   return (
     <>

@@ -105,7 +105,7 @@ export interface Permissions {
 }
 
 export interface AdminUserRoles {
-    roleName: string,
+    roleName?: string,
     permission?: Permissions[],
 }
 

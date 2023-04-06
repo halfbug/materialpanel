@@ -20,7 +20,7 @@ import usePermission from '@/hooks/usePermission';
 
 const RoleList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
   const [columnData, setColumnData] = useState([]);
-  const { getPermissions } = usePermission();
+  const { userPermissions } = usePermission();
   const {
     loading, data, error, refetch,
   } = useQuery(ALL_ADMIN_USERS_ROLES);
@@ -75,13 +75,17 @@ const RoleList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
   ];
 
   useEffect(() => {
-    if (!getPermissions().includes('/roles/edit')) {
-      columns.splice(3, 1);
-      setColumnData(columns);
+    if (userPermissions?.length > 0) {
+      if (!userPermissions.includes('/roles/edit')) {
+        columns.splice(3, 1);
+        setColumnData(columns);
+      } else {
+        setColumnData(columns);
+      }
     } else {
       setColumnData(columns);
     }
-  }, [getPermissions]);
+  }, [userPermissions]);
 
   return (
     <>
@@ -92,7 +96,7 @@ const RoleList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
         <PageHeader pagetitle="Admin User Roles" />
       </PageTitleWrapper>
       <Container maxWidth="lg">
-        {((getPermissions().includes('/roles/add'))) && (
+        {((userPermissions?.includes('/roles/add'))) && (
         <Grid item xs={12}>
           <p><NextLink href="/roles/add" passHref>Add Admin Role </NextLink></p>
         </Grid>
