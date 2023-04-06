@@ -58,7 +58,7 @@ const SectionModal = ({
           title: sectionName,
           collections: collectionEditData.collections,
           categoryId: collectionEditData.categoryId,
-          storeId: collectionEditData.collections,
+          storeId: collectionEditData.storeId,
           sortOrder: collectionEditData.sortOrder,
           status: collectionEditData.status,
           parentId: collectionEditData.parentId,
