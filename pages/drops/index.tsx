@@ -36,7 +36,7 @@ import * as yup from 'yup';
 import { DropsForm } from '@/types/groupshop';
 import IconButton from '@mui/material/IconButton';
 import LinearIndeterminate from '@/components/Progress/Linear';
-import { CategoryStatus } from 'configs/constant';
+import { BESTSELLERSKEY, CategoryStatus } from 'configs/constant';
 import getDMYFormatedDate from '@/utils/getDMYFormatedDate';
 import SortableTree from 'react-sortable-tree';
 import SectionModal from '@/models/SectionModal';
@@ -85,6 +85,7 @@ const Drops = () => {
     M1Discount: '',
     M2Discount: '',
     M3Discount: '',
+    bestSellers: '',
     publicKey: '',
     privateKey: '',
     listId: '',
@@ -226,6 +227,9 @@ const Drops = () => {
       .string()
       .matches(/^[1-9]?[0-9]{1}$|^100$/, 'Please enter between 0 to 100')
       .required('Milestore3 discount is required'),
+    bestSellers: yup
+      .string()
+      .required('Bestseller is required'),
   });
 
   const {
@@ -245,6 +249,7 @@ const Drops = () => {
                 ...storeData?.drops,
                 codeUpdateStatus: storeData?.drops?.codeUpdateStatus ?? 'none',
                 status: storeData?.drops?.status ?? status,
+                collections: [{ name: BESTSELLERSKEY, shopifyId: `gid://shopify/Collection/${value.bestSellers}` }],
                 rewards: {
                   baseline: `${value.M1Discount}`,
                   average: `${value.M2Discount}`,
@@ -290,6 +295,7 @@ const Drops = () => {
         M1Discount: storeData.drops?.rewards?.baseline ?? findDrops?.findDrops?.details.baseline,
         M2Discount: storeData.drops?.rewards?.average ?? findDrops?.findDrops?.details.average,
         M3Discount: storeData.drops?.rewards?.maximum ?? findDrops?.findDrops?.details.maximum,
+        bestSellers: storeData?.drops?.collections?.find((ele: any) => ele.name === BESTSELLERSKEY)?.shopifyId?.split('/')[4],
         publicKey: storeData.drops?.klaviyo?.publicKey,
         privateKey: storeData.drops?.klaviyo?.privateKey,
         listId: storeData.drops?.klaviyo?.listId,
@@ -577,6 +583,20 @@ const Drops = () => {
                     style={{ width: '300px' }}
                   />
                 </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <h4 className="lable" style={{ width: '135px' }}>Bestsellers</h4>
+                  <TextField
+                    id="bestSellers"
+                    name="bestSellers"
+                    type="number"
+                    placeholder="Please enter Bestseller"
+                    value={values.bestSellers}
+                    onChange={handleChange}
+                    error={touched.M3Discount && Boolean(errors.bestSellers)}
+                    helperText={touched.bestSellers && errors.bestSellers}
+                    style={{ width: '300px' }}
+                  />
+                </div>
                 <Button variant="contained" style={{ marginTop: '10px' }} onClick={() => handleSubmit()}>Save</Button>
               </Card>
               <h2>Drops Navigation Management</h2>
@@ -605,7 +625,7 @@ const Drops = () => {
                     })}
                   />
                 </div>
-                <Button variant="contained" style={{ marginTop: '10px' }} onClick={() => setSectionModal(true)}>Add Section</Button>
+                <Button variant="contained" style={{ marginTop: '10px' }} onClick={() => setSectionModal(true)}>Add Navigation</Button>
                 {sectionData.length ? <Button variant="contained" style={{ marginTop: '10px', marginLeft: '10px' }} onClick={() => handleSectionSave()}>Update Sorting Order</Button> : ''}
               </Card>
             </form>

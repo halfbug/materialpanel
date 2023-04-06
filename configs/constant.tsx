@@ -21,3 +21,5 @@ export enum CategoryStatus {
     ACTIVE = 'ACTIVE',
     DRAFT = 'DRAFT',
 }
+
+export const BESTSELLERSKEY = 'bestsellers';
