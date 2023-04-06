@@ -148,8 +148,7 @@ const Drops = () => {
 
   useEffect(() => {
     if (removedDropsCategoryData?.removeDropsCategory) {
-      const temp: any = sectionData.filter((el) => el.categoryId !== removeNavigationMngData.categoryId).map((section: any) => ({ ...section, children: section?.children?.filter((child: any) => child?.categoryId !== removeNavigationMngData.categoryId) }));
-      setSectionData(temp);
+      getDropsCategory();
       setSuccessToast({ toastTog: true, toastMessage: removeSectionMessage, toastColor: 'success' });
     }
   }, [removedDropsCategoryData]);
@@ -162,8 +161,11 @@ const Drops = () => {
         expanded: true,
         children: getDropsCategoryData.findByStoreId.filter((child: any) => child.parentId === ele.categoryId).sort((a: any, b: any) => a.sortOrder - b.sortOrder),
       })));
-      if (setting.flag) {
-        setSetting({ ...setting, settingData: getDropsCategoryData?.findByStoreId?.find((ele: any) => ele?.categoryId === setting?.settingData?.categoryId) });
+      const settingDataFind = getDropsCategoryData?.findByStoreId?.find((ele: any) => ele?.categoryId === setting?.settingData?.categoryId);
+      if (setting.flag && settingDataFind) {
+        setSetting({ ...setting, settingData: settingDataFind });
+      } else {
+        setSetting({ flag: false, settingData: '' });
       }
     }
   }, [getDropsCategoryData]);
