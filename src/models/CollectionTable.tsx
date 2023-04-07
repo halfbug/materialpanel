@@ -12,6 +12,7 @@ import MenuTwoToneIcon from '@mui/icons-material/MenuTwoTone';
 import { StoreContext } from '@/store/store.context';
 import { DROPS_CATEGORY_UPDATE } from '@/graphql/store.graphql';
 import { useMutation } from '@apollo/client';
+import { useRouter } from 'next/router';
 import AddCollectionIdModal from './AddCollectionIdModal';
 import RemoveIdsModal from './RemoveIdsModal';
 
@@ -62,7 +63,7 @@ const Item: any = ({
   );
 };
 
-const CollectionTable = ({ settingData, saveData }: any) => {
+const CollectionTable = ({ settingData, saveData, findLatestLog }: any) => {
   const contRef = useRef();
   const [collection, setCollection] = useState([]);
   const [addCollectionIdsModal, setAddCollectionIdsModal] = useState<boolean>(false);
@@ -71,6 +72,9 @@ const CollectionTable = ({ settingData, saveData }: any) => {
   const [deleteIdModal, setDeleteIdModal] = useState<boolean>(false);
   const [updateOrder, setUpdateOrder] = useState<boolean>(false);
   const { store, dispatch } = useContext(StoreContext);
+
+  const router = useRouter();
+  const { sid } = router.query;
 
   const [updateDropsCategory, {
     data: updatedDropsCategoryData,
@@ -99,8 +103,29 @@ const CollectionTable = ({ settingData, saveData }: any) => {
 
   const handleAddCollectionModal = (data: any) => {
     if (data) {
+      let collectionUpdateMsg = '';
       let FinalCollectionData = [];
       if (editData?.shopifyId) {
+        // LOGS WORK
+        if (data.shopifyId === editData.shopifyId && data.type === editData.type) {
+          collectionUpdateMsg = '';
+        } else {
+          collectionUpdateMsg = `${sid}\n`;
+          if (data.shopifyId !== editData.shopifyId) {
+            collectionUpdateMsg = collectionUpdateMsg.concat('', `ID changed: from ${editData.shopifyId} to ${data.shopifyId} \n`);
+          }
+
+          if (data.type !== editData.type) {
+            collectionUpdateMsg = collectionUpdateMsg.concat('', `Type changed: from ${editData.type} to ${data.type} \n`);
+          }
+
+          if (data.name !== editData.name) {
+            collectionUpdateMsg = collectionUpdateMsg.concat('', `Name changed: from ${editData.name} to ${data.name}`);
+          } else {
+            collectionUpdateMsg = collectionUpdateMsg.concat('', `for ${data.name} collection.`);
+          }
+        }
+
         let tempColle = [];
         if (data.type === CollectionType.ALLPRODUCT
           && collection.length - 1 !== editId) {
@@ -115,6 +140,7 @@ const CollectionTable = ({ settingData, saveData }: any) => {
         }
         FinalCollectionData = tempColle.map((coll: any) => ({ ...coll, shopifyId: `gid://shopify/Collection/${coll.shopifyId}` }));
       } else {
+        collectionUpdateMsg = `${sid}\n${data.name} collection is created`;
         if (
           !collection.filter((x: any) => x.type === CollectionType.ALLPRODUCT).length
         || data.type === CollectionType.ALLPRODUCT) {
@@ -137,10 +163,12 @@ const CollectionTable = ({ settingData, saveData }: any) => {
               storeId: settingData.storeId,
               title: settingData.title,
             }],
-            isCollectionUpdate: true,
+            collectionUpdateMsg,
           },
         },
-      }).then(() => {}).catch((err) => {
+      }).then(() => {
+        findLatestLog();
+      }).catch((err) => {
         console.log(err);
       });
     } else {
@@ -189,10 +217,12 @@ const CollectionTable = ({ settingData, saveData }: any) => {
               storeId: settingData.storeId,
               title: settingData.title,
             }],
-            isCollectionUpdate: true,
+            collectionUpdateMsg: `${sid}\n${store?.removeId?.name} collection is removed`,
           },
         },
-      }).then(() => {}).catch((err) => {
+      }).then(() => {
+        findLatestLog();
+      }).catch((err) => {
         console.log(err);
       });
     } else {
@@ -216,7 +246,7 @@ const CollectionTable = ({ settingData, saveData }: any) => {
             storeId: settingData.storeId,
             title: settingData.title,
           }],
-          isCollectionUpdate: false,
+          collectionUpdateMsg: '',
         },
       },
     }).then(() => {}).catch((err) => {

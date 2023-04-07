@@ -80,7 +80,7 @@ const SectionModal = ({
           CreateDropsCategoryForFront: {
             id: sid,
             categoryData: updatedCategoryData,
-            isCollectionUpdate: false,
+            collectionUpdateMsg: '',
           },
         },
       }).then(() => {}).catch((err) => {

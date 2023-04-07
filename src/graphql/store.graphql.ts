@@ -291,8 +291,8 @@ const DROPS_CATEGORY_UPDATE = gql`
 `;
 
 const DROPS_CATEGORY_REMOVE = gql`
-  mutation removeDropsCategory($id: [String!]!) {
-    removeDropsCategory(id: $id) {
+  mutation removeDropsCategory($id: [String!]!, $collectionUpdateMsg: String!) {
+    removeDropsCategory(id: $id, collectionUpdateMsg: $collectionUpdateMsg) {
       title
     }
   }
@@ -433,11 +433,28 @@ query getAdminPermissions{
 }
 `;
 
+const SYNC_DISCOUNT_CODES = gql`
+mutation syncDiscountCodes($storeId: String!) {
+  syncDiscountCodes(storeId: $storeId) {
+    codeUpdateStatus
+  }
+}
+`;
+
+const FIND_LATEST_LOG = gql`
+query findLatestLog($storeId: String!, $context: String!){
+  findLatestLog(storeId: $storeId, context: $context){
+    message
+    createdAt
+  }
+}
+`;
+
 export {
   ALL_STORES, ALL_LOGS, VIDEO_POST, GET_ALL_VIDEOS, VIDEOS_UPDATE, DISCOVERYTOOLS_UPDATE,
   DROPS_UPDATE, GET_STORE_DETAILS, DEFAULT_DISCOUNT, ALL_DROPS, DROPS_PAGE, GET_UPDATE_CODES_STATUS,
   FIND_KLAVIYO_LIST, VIDEOS_REMOVE, DROPS_CATEGORY_UPDATE, GET_DROPS_CATEGORY,
   DROPS_CATEGORY_REMOVE, ALL_USERS, GET_USER, UPDATE_ADMIN_USER, CREATE_ADMIN_USER,
   CREATE_ADMIN_USER_ROLE, ALL_ADMIN_USERS_ROLES, UPDATE_ADMIN_USER_ROLE, FIND_ADMIN_ROLE_BY_NAME,
-  FIND_ADMIN_PERMISSION,
+  FIND_ADMIN_PERMISSION, SYNC_DISCOUNT_CODES, FIND_LATEST_LOG,
 };

@@ -25,7 +25,7 @@ import {
 } from '@mui/material';
 import Footer from '@/components/Footer';
 import {
-  DEFAULT_DISCOUNT, DROPS_CATEGORY_REMOVE, DROPS_CATEGORY_UPDATE, DROPS_UPDATE, GET_DROPS_CATEGORY, GET_STORE_DETAILS, GET_UPDATE_CODES_STATUS,
+  DEFAULT_DISCOUNT, DROPS_CATEGORY_REMOVE, DROPS_CATEGORY_UPDATE, DROPS_UPDATE, FIND_LATEST_LOG, GET_DROPS_CATEGORY, GET_STORE_DETAILS, GET_UPDATE_CODES_STATUS, SYNC_DISCOUNT_CODES,
 } from '@/graphql/store.graphql';
 import { useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
@@ -103,6 +103,34 @@ const Drops = () => {
   const [status, setStatus] = useState<string>('');
   const [subscriberListId, setSubscriberListId] = useState('');
 
+  const [latestLogMSG, setlatestLogMSG] = useState<string[]>(['']);
+  const [latestLogDate, setlatestLogDate] = useState<string>('');
+
+  const [syncDiscountCodes, { data: syncDiscountCodesData }] = useMutation<any>(
+    SYNC_DISCOUNT_CODES,
+    {
+      variables: { storeId: sid },
+    },
+  );
+
+  const { data: latestLogData, refetch: findLatestLog } = useQuery(FIND_LATEST_LOG, {
+    skip: !sid,
+    variables: {
+      storeId: sid,
+      context: 'DROPS_COLLECTION_UPDATED',
+    },
+    fetchPolicy: 'network-only',
+  });
+
+  useEffect(() => {
+    if (latestLogData?.findLatestLog) {
+      const arr = latestLogData?.findLatestLog.message.split('\n');
+      arr.shift();
+      setlatestLogMSG(arr);
+      setlatestLogDate(getDMYFormatedDate(latestLogData?.findLatestLog.createdAt));
+    }
+  }, [latestLogData]);
+
   const { data: rdata, refetch: progressStatus } = useQuery(GET_UPDATE_CODES_STATUS, {
     skip: !sid,
     variables: {
@@ -153,6 +181,22 @@ const Drops = () => {
       setSuccessToast({ toastTog: true, toastMessage: removeSectionMessage, toastColor: 'success' });
     }
   }, [removedDropsCategoryData]);
+
+  useEffect(() => {
+    if (syncDiscountCodesData?.syncDiscountCodes?.codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress) {
+      setcodeUpdateStatus(CodeUpdateStatusTypeEnum.inprogress);
+    }
+  }, [syncDiscountCodesData]);
+
+  const syncDiscountCodesFun = () => {
+    (async () => {
+      try {
+        await syncDiscountCodes();
+      } catch (err) {
+        console.log(err);
+      }
+    })();
+  };
 
   useEffect(() => {
     if (getDropsCategoryData?.findByStoreId?.length > 0) {
@@ -312,10 +356,7 @@ const Drops = () => {
   useEffect(() => {
     if (dropsUpdateData?.updateStore?.drops) {
       refetch();
-      setSuccessToast({ toastTog: true, toastMessage: dropsUpdatedMessage, toastColor: 'success' });
-      if (dropsUpdateData?.updateStore?.drops?.codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress) {
-        setcodeUpdateStatus(CodeUpdateStatusTypeEnum.inprogress);
-      }
+      setSuccessToast({ toastTog: true, toastMessage: dropsUpdatedMessage });
     }
   }, [dropsUpdateData]);
 
@@ -377,13 +418,28 @@ const Drops = () => {
     (async () => {
       if (data === 'delete') {
         const tempDeleteIds = [];
-        removeNavigationMngData?.children?.length > 0 && removeNavigationMngData.children.forEach((ele: any) => tempDeleteIds.push(ele.categoryId));
+        const tempDeleteCateNames = [];
+        removeNavigationMngData?.children?.length > 0 && removeNavigationMngData.children.forEach((ele: any) => {
+          tempDeleteIds.push(ele.categoryId);
+          tempDeleteCateNames.push(ele.title);
+        });
         tempDeleteIds.push(removeNavigationMngData.categoryId);
+        tempDeleteCateNames.push(removeNavigationMngData.title);
+        // LOGS WORK
+        let collectionUpdateMsg = `${sid}\n`;
+        if (tempDeleteCateNames.length === 1) {
+          collectionUpdateMsg = collectionUpdateMsg.concat('', `Removed Category/Subcategory: ${tempDeleteCateNames[0]}`);
+        } else {
+          collectionUpdateMsg = collectionUpdateMsg.concat('Removed Category and Subcategory/Subcategories: ', tempDeleteCateNames.toString());
+        }
         try {
           await removeDropsCategory({
             variables: {
               id: tempDeleteIds,
+              collectionUpdateMsg,
             },
+          }).then(() => {
+            findLatestLog();
           });
         } catch (err) {
           console.log(err);
@@ -437,6 +493,16 @@ const Drops = () => {
             },
           },
         });
+      } catch (err) {
+        console.log(err);
+      }
+    })();
+  };
+
+  const findLatestLogFun = () => {
+    (async () => {
+      try {
+        await findLatestLog();
       } catch (err) {
         console.log(err);
       }
@@ -516,15 +582,49 @@ const Drops = () => {
           <Grid item xs={12}>
             <Card style={{ paddingLeft: '20px', paddingRight: '20px' }}>
               {codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress && <LinearIndeterminate />}
-              <h4 style={{ whiteSpace: 'nowrap' }}>
-                <>
-                  Discount Code Update -
-                  {' '}
-                  {codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress ? 'In Progress' : 'Completed '}
-                  {codeUpdateStatus !== CodeUpdateStatusTypeEnum.inprogress && lastSync ? `(${lastSync})` : ''}
-                  {codeUpdateStatus !== CodeUpdateStatusTypeEnum.inprogress && dropsCount ? `(${dropsCount})` : ''}
-                </>
-              </h4>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <h4 style={{ whiteSpace: 'nowrap' }}>
+                  <>
+                    Discount Code Update -
+                    {' '}
+                    {codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress ? 'In Progress' : 'Completed '}
+                    {codeUpdateStatus !== CodeUpdateStatusTypeEnum.inprogress && lastSync ? `(${lastSync})` : ''}
+                    {codeUpdateStatus !== CodeUpdateStatusTypeEnum.inprogress && dropsCount ? `(${dropsCount})` : ''}
+                  </>
+                </h4>
+                <Button
+                  variant="contained"
+                  disabled={codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress}
+                  style={{ marginTop: '10px', marginBottom: '10px' }}
+                  onClick={syncDiscountCodesFun}
+                >
+                  Sync Discount Codes
+
+                </Button>
+              </div>
+            </Card>
+          </Grid>
+        </Grid>
+      </Container>
+      <Container maxWidth="lg" style={{ marginBottom: '20px' }}>
+        <Grid
+          container
+          direction="row"
+          justifyContent="center"
+          alignItems="stretch"
+          spacing={3}
+        >
+          <Grid item xs={12}>
+            <Card style={{ paddingLeft: '20px', paddingRight: '20px' }}>
+              <div>
+                <h4 style={{ whiteSpace: 'nowrap' }}>
+                  <>
+                    Last update in collection ids
+                    {latestLogDate ? ` - (${latestLogDate})` : ''}
+                  </>
+                </h4>
+                <p>{latestLogMSG.map((m) => <div key={m}>{m}</div>)}</p>
+              </div>
             </Card>
           </Grid>
         </Grid>
@@ -638,7 +738,7 @@ const Drops = () => {
               setFieldValue={setFieldValue}
               handleForm={handleForm}
             />
-            { setting.flag ? <CollectionTable settingData={setting.settingData} saveData={(data: string) => handleSaveCollectionId(data)} /> : '' }
+            { setting.flag ? <CollectionTable settingData={setting.settingData} saveData={(data: string) => handleSaveCollectionId(data)} findLatestLog={findLatestLogFun} /> : '' }
           </Grid>
         </Grid>
       </Container>
