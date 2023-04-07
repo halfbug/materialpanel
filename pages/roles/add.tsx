@@ -17,6 +17,7 @@ import { AdminUserRoles } from '@/types/groupshop';
 import { createIdentifier } from 'typescript';
 
 const AddRole = () => {
+  const router = useRouter();
   const [adminUserList, setAdminUserList] = useState<[]>([]);
   const [permissionList, setPermissionList] = useState([]);
   const [createAdminRole, { data }] = useMutation<AdminUserRoles>(CREATE_ADMIN_USER_ROLE);
@@ -88,7 +89,9 @@ const AddRole = () => {
         setSuccessToast({ toastTog: true, toastMessage: 'User Role added successfully!' });
         setSelectedValue([]);
         resetForm();
-        // router.push('/roles');
+        setTimeout(() => {
+          router.push('/roles');
+        }, 2000);
       } catch (error) {
         console.error('An unexpected error happened:', error);
       }

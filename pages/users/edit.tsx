@@ -11,7 +11,7 @@ import * as yup from 'yup';
 import { ALL_ADMIN_USERS_ROLES, ALL_USERS, UPDATE_ADMIN_USER } from '@/graphql/store.graphql';
 import { useMutation, useQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
-import { Router, useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import { AdminUserUpdate } from '@/types/groupshop';
 
 const UserEdit = () => {
@@ -23,8 +23,9 @@ const UserEdit = () => {
     toastTog: false,
     toastMessage: '',
   });
-  const [adminUserUpdate, { data }] = useMutation<AdminUserUpdate>(UPDATE_ADMIN_USER);
 
+  const [adminUserUpdate, { data }] = useMutation<AdminUserUpdate>(UPDATE_ADMIN_USER);
+  const router = useRouter();
   const { query: { sid } } = useRouter();
   const [userData, setUserData] = useState<any>({
     firstName: '',
@@ -49,7 +50,7 @@ const UserEdit = () => {
     setAdminUserList(usersData?.getAdminUsers);
     const user:any = usersData?.getAdminUsers.filter((item:any) => item.id === sid);
     setUserStatus(user?.[0]?.status);
-    setUserAdminRole(user?.[0]?.roleName);
+    setUserAdminRole(user?.[0]?.userRole);
     setUserData({
       firstName: user?.[0]?.firstName,
       lastName: user?.[0]?.lastName,
@@ -107,6 +108,9 @@ const UserEdit = () => {
         });
         refetch();
         setSuccessToast({ toastTog: true, toastMessage: 'User updated successfully!' });
+        setTimeout(() => {
+          router.push('/users');
+        }, 2000);
       } catch (error) {
         console.error('An unexpected error happened:', error);
       }

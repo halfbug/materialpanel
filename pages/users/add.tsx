@@ -11,7 +11,7 @@ import * as yup from 'yup';
 import { ALL_ADMIN_USERS_ROLES, ALL_USERS, CREATE_ADMIN_USER } from '@/graphql/store.graphql';
 import { useMutation, useQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
-import { Router, useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import { AdminUser } from '@/types/groupshop';
 
 const AddUser = () => {
@@ -27,6 +27,7 @@ const AddUser = () => {
     email: '',
     status: 'Active',
     password: '',
+    cpassword: '',
     userRole: '',
   });
   const [adminUserCreate, { data }] = useMutation<AdminUser>(CREATE_ADMIN_USER);
@@ -77,8 +78,9 @@ const AddUser = () => {
       .matches(/[a-z]/, 'Password requires a lowercase letter')
       .matches(/[A-Z]/, 'Password requires an uppercase letter')
       .matches(/[^\w]/, 'Password requires a symbol')
-      .required('password is required'),
+      .required('Password is required'),
     cpassword: yup.string()
+      .required('Confirm Password is required')
       .oneOf([yup.ref('password'), null], 'Must match "Password" field value'),
   });
 
@@ -109,6 +111,9 @@ const AddUser = () => {
         });
         setSuccessToast({ toastTog: true, toastMessage: 'User Role added successfully!' });
         resetForm();
+        setTimeout(() => {
+          router.push('/users');
+        }, 2000);
       } catch (error) {
         console.error('An unexpected error happened:', error);
       }

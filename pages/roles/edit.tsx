@@ -24,7 +24,7 @@ const UserEdit = () => {
     toastMessage: '',
   });
   const [adminUserRoleUpdate, { data }] = useMutation<AdminUserRolesUpdate>(UPDATE_ADMIN_USER_ROLE);
-
+  const router = useRouter();
   const { query: { sid } } = useRouter();
   const [userData, setUserData] = useState<any>({
     roleName: '',
@@ -104,7 +104,9 @@ const UserEdit = () => {
         });
         refetch();
         setSuccessToast({ toastTog: true, toastMessage: 'User updated successfully!' });
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        setTimeout(() => {
+          router.push('/roles');
+        }, 2000);
       } catch (error) {
         console.error('An unexpected error happened:', error);
       }
