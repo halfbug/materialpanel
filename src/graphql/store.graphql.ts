@@ -324,7 +324,10 @@ query getAdminUsers{
     lastName
     email
     status
-    userRole    
+    userRole{
+      id
+      roleName
+    }    
     createdAt
   }
 }

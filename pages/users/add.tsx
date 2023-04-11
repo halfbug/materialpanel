@@ -47,7 +47,7 @@ const AddUser = () => {
   } = useQuery(ALL_ADMIN_USERS_ROLES);
 
   useEffect(() => {
-    setUserAdminRole(usersRoles?.getAdminRoles[0]?.roleName);
+    setUserAdminRole(usersRoles?.getAdminRoles[0]?.id);
     setAdminUserRoles(usersRoles?.getAdminRoles);
   }, [usersRoles]);
 
@@ -259,7 +259,7 @@ const AddUser = () => {
                   >
                     {adminUserRoles?.map((opt:any, index: number) => (
                       // eslint-disable-next-line react/no-array-index-key
-                      <MenuItem key={opt.roleName} value={opt.roleName}>{opt.roleName}</MenuItem>
+                      <MenuItem key={opt.id} value={opt.id}>{opt.roleName}</MenuItem>
                     ))}
 
                   </Select>

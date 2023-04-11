@@ -49,7 +49,7 @@ const UserList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
       label: 'Email',
     },
     {
-      id: 'userRole',
+      id: 'userRole.roleName',
       disablePadding: false,
       label: 'Role',
     },

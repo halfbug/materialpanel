@@ -50,7 +50,7 @@ const UserEdit = () => {
     setAdminUserList(usersData?.getAdminUsers);
     const user:any = usersData?.getAdminUsers.filter((item:any) => item.id === sid);
     setUserStatus(user?.[0]?.status);
-    setUserAdminRole(user?.[0]?.userRole);
+    setUserAdminRole(user?.[0]?.userRole?.id);
     setUserData({
       firstName: user?.[0]?.firstName,
       lastName: user?.[0]?.lastName,
@@ -225,7 +225,7 @@ const UserEdit = () => {
                   >
                     {adminUserRoles?.map((opt:any, index: number) => (
                       // eslint-disable-next-line react/no-array-index-key
-                      <MenuItem key={opt.roleName} value={opt.roleName}>{opt.roleName}</MenuItem>
+                      <MenuItem key={opt.id} value={opt.id}>{opt.roleName}</MenuItem>
                     ))}
 
                   </Select>

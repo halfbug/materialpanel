@@ -33,7 +33,7 @@ const RoleList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
 
     {
       field: 'rollName',
-      headerName: 'Roll Name',
+      headerName: 'Role Name',
       width: 150,
       renderCell: (params: GridValueGetterParams) => (params.row.roleName),
     },
