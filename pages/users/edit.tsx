@@ -31,7 +31,7 @@ const UserEdit = () => {
     firstName: '',
     lastName: '',
     email: '',
-    status: '',
+    status: userStatus,
   });
 
   const {
@@ -101,7 +101,7 @@ const UserEdit = () => {
               email,
               firstName,
               lastName,
-              status,
+              status: userStatus,
               userRole: userAdminRole,
             },
           },
