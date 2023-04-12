@@ -15,10 +15,11 @@ import { useRouter } from 'next/router';
 import Multiselect from 'multiselect-react-dropdown';
 import { AdminUserRolesUpdate } from '@/types/groupshop';
 
-const UserEdit = () => {
+const RoleEdit = () => {
   const [adminUserList, setAdminUserList] = useState<[]>([]);
   const [permissionList, setPermissionList] = useState([]);
   const [selectedValue, setSelectedValue] = useState([]);
+  const [permissiomError, setPermissiomError] = useState('');
   const [successToast, setSuccessToast] = useState<any>({
     toastTog: false,
     toastMessage: '',
@@ -92,21 +93,26 @@ const UserEdit = () => {
     validateOnChange: true,
     onSubmit: async (valz) => {
       try {
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        adminUserRoleUpdate({
-          variables: {
-            updateAdminRoleInput: {
-              id: sid,
-              roleName: valz.roleName,
-              permission: selectedValue,
+        if (selectedValue.length > 0) {
+          setPermissiomError('');
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
+          adminUserRoleUpdate({
+            variables: {
+              updateAdminRoleInput: {
+                id: sid,
+                roleName: valz.roleName,
+                permission: selectedValue,
+              },
             },
-          },
-        });
-        refetch();
-        setSuccessToast({ toastTog: true, toastMessage: 'User updated successfully!' });
-        setTimeout(() => {
-          router.push('/roles');
-        }, 2000);
+          });
+          refetch();
+          setSuccessToast({ toastTog: true, toastMessage: 'User updated successfully!' });
+          setTimeout(() => {
+            router.push('/roles');
+          }, 2000);
+        } else {
+          setPermissiomError('Permission is required');
+        }
       } catch (error) {
         console.error('An unexpected error happened:', error);
       }
@@ -143,7 +149,7 @@ const UserEdit = () => {
         <title>Edit Role</title>
       </Head>
       <PageTitleWrapper>
-        <PageHeader pagetitle="Edit User" />
+        <PageHeader pagetitle="Edit Role" />
       </PageTitleWrapper>
       <Container maxWidth="lg">
         <Grid
@@ -184,6 +190,12 @@ const UserEdit = () => {
                     groupBy="category"
                   />
                 </div>
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: '10px', paddingLeft: '145px',
+                }}
+                >
+                  <p className="permissiom-error">{permissiomError}</p>
+                </div>
                 <Button variant="contained" type="submit" style={{ marginTop: '10px' }}>Save</Button>
 
               </Card>
@@ -196,8 +208,8 @@ const UserEdit = () => {
   );
 };
 
-UserEdit.getLayout = (page) => (
+RoleEdit.getLayout = (page) => (
   <SidebarLayout>{page}</SidebarLayout>
 );
 
-export default UserEdit;
+export default RoleEdit;

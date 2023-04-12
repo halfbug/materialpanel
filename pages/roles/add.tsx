@@ -20,6 +20,7 @@ const AddRole = () => {
   const router = useRouter();
   const [adminUserList, setAdminUserList] = useState<[]>([]);
   const [permissionList, setPermissionList] = useState([]);
+  const [permissiomError, setPermissiomError] = useState('');
   const [createAdminRole, { data }] = useMutation<AdminUserRoles>(CREATE_ADMIN_USER_ROLE);
   const [selectedValue, setSelectedValue] = useState([]);
   const [successToast, setSuccessToast] = useState<any>({
@@ -77,21 +78,26 @@ const AddRole = () => {
     validateOnChange: true,
     onSubmit: async (valz) => {
       try {
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        createAdminRole({
-          variables: {
-            createAdminRoleInput: {
-              roleName: valz.roleName,
-              permission: selectedValue,
+        if (selectedValue.length > 0) {
+          setPermissiomError('');
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
+          createAdminRole({
+            variables: {
+              createAdminRoleInput: {
+                roleName: valz.roleName,
+                permission: selectedValue,
+              },
             },
-          },
-        });
-        setSuccessToast({ toastTog: true, toastMessage: 'User Role added successfully!' });
-        setSelectedValue([]);
-        resetForm();
-        setTimeout(() => {
-          router.push('/roles');
-        }, 2000);
+          });
+          setSuccessToast({ toastTog: true, toastMessage: 'User Role added successfully!' });
+          setSelectedValue([]);
+          resetForm();
+          setTimeout(() => {
+            router.push('/roles');
+          }, 2000);
+        } else {
+          setPermissiomError('Permission is required');
+        }
       } catch (error) {
         console.error('An unexpected error happened:', error);
       }
@@ -172,6 +178,12 @@ const AddRole = () => {
                     onRemove={MultihandleChange}
                     groupBy="category"
                   />
+                </div>
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: '10px', paddingLeft: '145px',
+                }}
+                >
+                  <p className="permissiom-error">{permissiomError}</p>
                 </div>
 
                 <Button variant="contained" type="submit" style={{ marginTop: '10px' }}>Save</Button>
