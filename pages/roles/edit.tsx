@@ -162,7 +162,7 @@ const RoleEdit = () => {
           <Grid item xs={12}>
 
             <form noValidate onSubmit={handleSubmit}>
-              <Card style={{ padding: '20px' }}>
+              <Card style={{ padding: '20px 20px 280px 20px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <h4 className="lable" style={{ width: '135px' }}>Role Name</h4>
                   <TextField
@@ -178,7 +178,7 @@ const RoleEdit = () => {
                   />
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <h4 className="lable" style={{ width: '135px' }}>User Permission</h4>
+                  <h4 className="lable text-nowrap" style={{ width: '135px' }}>User Permission</h4>
 
                   <Multiselect
                     options={permissionList}
