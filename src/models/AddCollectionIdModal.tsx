@@ -55,7 +55,7 @@ const AddCollectionIdModal = ({
   });
 
   const {
-    handleSubmit, values, handleChange, touched, errors,
+    handleSubmit, values, handleChange, touched, errors, setFieldValue,
   }: FormikProps<CollectionIdForm> = useFormik<CollectionIdForm>({
     initialValues: collection,
     validationSchema,
@@ -68,6 +68,13 @@ const AddCollectionIdModal = ({
 
   const handleClose = (data: any) => {
     close(data);
+  };
+
+  const handleChangeId = (e: any) => {
+    const tempVal = e.target.value.trim();
+    if (/^[0-9]+$/.test(tempVal) || !tempVal) {
+      setFieldValue(e.target.name, tempVal);
+    }
   };
 
   return (
@@ -101,6 +108,7 @@ const AddCollectionIdModal = ({
               error={touched.name && Boolean(errors.name)}
               helperText={touched.name && errors.name}
               style={{ width: '300px' }}
+              autoComplete="off"
             />
           </div>
           <div style={{ marginTop: '10px' }}>
@@ -130,10 +138,11 @@ const AddCollectionIdModal = ({
               name="shopifyId"
               placeholder="Please enter collection ID"
               value={values.shopifyId}
-              onChange={handleChange}
+              onChange={(e) => handleChangeId(e)}
               error={touched.shopifyId && Boolean(errors.shopifyId)}
               helperText={touched.shopifyId && errors.shopifyId}
               style={{ width: '300px' }}
+              autoComplete="off"
             />
           </div>
           <div style={{ textAlign: 'end' }}>
