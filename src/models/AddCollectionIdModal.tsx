@@ -104,7 +104,8 @@ const AddCollectionIdModal = ({
             />
           </div>
           <div style={{ marginTop: '10px' }}>
-            <InputLabel htmlFor="component-error" style={{ fontWeight: '600', color: '#000', marginBottom: '10px' }}>Collection Type</InputLabel>
+            <InputLabel placeholder="Add collection" htmlFor="component-error" style={{ fontWeight: '600', color: '#000', marginBottom: '10px' }}>Collection Type</InputLabel>
+
             <Select
               id="type"
               displayEmpty
@@ -113,8 +114,8 @@ const AddCollectionIdModal = ({
               onChange={handleChange}
               error={touched.type && Boolean(errors.type)}
               style={{ width: '300px' }}
-              placeholder="Please select collection type"
             >
+              <MenuItem value="">Please select collection type</MenuItem>
               <MenuItem value={CollectionType.ALLPRODUCT}>{CollectionTypeKey.ALLPRODUCT}</MenuItem>
               <MenuItem value={CollectionType.SPOTLIGHT}>{CollectionTypeKey.SPOTLIGHT}</MenuItem>
               <MenuItem value={CollectionType.VAULT}>{CollectionTypeKey.VAULT}</MenuItem>
