@@ -4,7 +4,7 @@ import {
 import { useEffect, useState } from 'react';
 
 const RemoveIdsModal = ({
-  show, close, childData, removedDropsCategoryLoading,
+  show, close, childData = [], removedDropsCategoryLoading = false,
 }: any) => {
   const [child, setChild] = useState<any[]>([]);
 

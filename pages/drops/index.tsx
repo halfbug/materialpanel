@@ -49,6 +49,7 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import Tab from '@mui/material/Tab';
 import DropKlaviyoForm from '../components/forms/klaviyoForm';
+import DynamicCartRewards from '../components/forms/dynamicCartRewards';
 
 // eslint-disable-next-line no-shadow
 export enum CodeUpdateStatusTypeEnum {
@@ -765,7 +766,9 @@ const Drops = () => {
               </Grid>
             </TabPanel>
             <TabPanel value="4">
-              test
+              <Grid item xs={6}>
+                <DynamicCartRewards storeData={storeData} getStore={refetch} showToast={setSuccessToast} />
+              </Grid>
             </TabPanel>
           </TabContext>
         </Box>

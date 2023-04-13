@@ -115,3 +115,7 @@ export interface AdminUserRolesUpdate {
     permission?: Permissions[],
 
 }
+export interface CartRewards {
+    rewardTitle: string,
+    rewardValue: string,
+}

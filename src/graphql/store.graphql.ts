@@ -237,6 +237,11 @@ query store($id: String!) {
       lastSync
       codeUpdateStatus
       dropsCount
+      cartRewards{
+        id
+        rewardTitle
+        rewardValue
+      }
     }
   }
 }
