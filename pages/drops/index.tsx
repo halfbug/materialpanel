@@ -22,6 +22,7 @@ import {
   Snackbar,
   Alert,
   TextField,
+  Box,
 } from '@mui/material';
 import Footer from '@/components/Footer';
 import {
@@ -43,6 +44,10 @@ import SectionModal from '@/models/SectionModal';
 import { v4 as uuid } from 'uuid';
 import CollectionTable from '@/models/CollectionTable';
 import RemoveIdsModal from '@/models/RemoveIdsModal';
+import { TabContext } from '@mui/lab';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
+import Tab from '@mui/material/Tab';
 import DropKlaviyoForm from '../components/forms/klaviyoForm';
 
 // eslint-disable-next-line no-shadow
@@ -105,6 +110,7 @@ const Drops = () => {
 
   const [latestLogMSG, setlatestLogMSG] = useState<string[]>(['']);
   const [latestLogDate, setlatestLogDate] = useState<string>('');
+  const [tab, setTab] = useState<string>('1');
 
   const [syncDiscountCodes, { data: syncDiscountCodesData }] = useMutation<any>(
     SYNC_DISCOUNT_CODES,
@@ -356,7 +362,7 @@ const Drops = () => {
   useEffect(() => {
     if (dropsUpdateData?.updateStore?.drops) {
       refetch();
-      setSuccessToast({ toastTog: true, toastMessage: dropsUpdatedMessage });
+      setSuccessToast({ toastTog: true, toastMessage: dropsUpdatedMessage, toastColor: 'success' });
     }
   }, [dropsUpdateData]);
 
@@ -509,6 +515,10 @@ const Drops = () => {
     })();
   };
 
+  const handleChangeTab = (_: any, newValue: any) => {
+    setTab(newValue);
+  };
+
   return (
     <>
       <Snackbar
@@ -630,117 +640,135 @@ const Drops = () => {
         </Grid>
       </Container>
       <Container maxWidth="lg">
-        <Grid
-          container
-          direction="row"
-          justifyContent="center"
-          alignItems="stretch"
-          spacing={3}
-        >
-          <Grid item xs={6}>
-            <form noValidate onSubmit={handleSubmit}>
-              <h2 style={{ alignItems: 'center' }}>Drops Milestone Management</h2>
-              <Card style={{ padding: '20px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <h4 className="lable" style={{ width: '135px' }}>Milestore1 Discount</h4>
-                  <TextField
-                    id="M1Discount"
-                    name="M1Discount"
-                    type="number"
-                    placeholder="Please enter M1 Discount"
-                    value={values.M1Discount}
-                    onChange={handleChange}
-                    error={touched.M1Discount && Boolean(errors.M1Discount)}
-                    helperText={touched.M1Discount && errors.M1Discount}
-                    style={{ width: '300px' }}
-                  />
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <h4 className="lable" style={{ width: '135px' }}>Milestore2 Discount</h4>
-                  <TextField
-                    id="M2Discount"
-                    name="M2Discount"
-                    type="number"
-                    placeholder="Please enter M2 Discount"
-                    value={values.M2Discount}
-                    onChange={handleChange}
-                    error={touched.M2Discount && Boolean(errors.M2Discount)}
-                    helperText={touched.M2Discount && errors.M2Discount}
-                    style={{ width: '300px' }}
-                  />
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <h4 className="lable" style={{ width: '135px' }}>Milestore3 Discount</h4>
-                  <TextField
-                    id="M3Discount"
-                    name="M3Discount"
-                    type="number"
-                    placeholder="Please enter M3 Discount"
-                    value={values.M3Discount}
-                    onChange={handleChange}
-                    error={touched.M3Discount && Boolean(errors.M3Discount)}
-                    helperText={touched.M3Discount && errors.M3Discount}
-                    style={{ width: '300px' }}
-                  />
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <h4 className="lable" style={{ width: '135px' }}>Bestsellers</h4>
-                  <TextField
-                    id="bestSellers"
-                    name="bestSellers"
-                    type="number"
-                    placeholder="Please enter Bestseller"
-                    value={values.bestSellers}
-                    onChange={handleChange}
-                    error={touched.M3Discount && Boolean(errors.bestSellers)}
-                    helperText={touched.bestSellers && errors.bestSellers}
-                    style={{ width: '300px' }}
-                  />
-                </div>
-                <Button variant="contained" style={{ marginTop: '10px' }} onClick={() => handleSubmit()}>Save</Button>
-              </Card>
-              <h2>Drops Navigation Management</h2>
-              <Card style={{ padding: '20px' }}>
-                <div style={{ display: 'flex', maxHeight: '550px', overflow: 'auto' }}>
-                  <SortableTree
-                    treeData={sectionData}
-                    onChange={handleTreeChange}
-                    isVirtualized={false}
-                    maxDepth={2}
-                    generateNodeProps={({ node }: any) => ({
-                      className: node.status === CategoryStatus.DRAFT ? 'default' : 'success',
-                      buttons: [
-                        <div className="section_navigation" style={{ display: 'flex', alignItems: 'center' }}>
-                          <div tabIndex={0} role="button" onClick={() => setSetting({ flag: true, settingData: node })}>
-                            <IconButton aria-label="delete"><img src="/settings.svg" alt="setting" /></IconButton>
-                          </div>
-                          <div>
-                            <IconButton aria-label="delete" color="error" onClick={() => handleRemoveNavigation(node)}><img src="/close.svg" alt="close" /></IconButton>
-                          </div>
-                          <div>
-                            <IconButton aria-label="delete" onClick={() => { setCollectionEditData(node); setSectionModal(true); }}><img src="/edit.svg" alt="edit" /></IconButton>
-                          </div>
-                        </div>,
-                      ],
-                    })}
-                  />
-                </div>
-                <Button variant="contained" style={{ marginTop: '10px' }} onClick={() => setSectionModal(true)}>Add Navigation</Button>
-                {sectionData.length ? <Button variant="contained" style={{ marginTop: '10px', marginLeft: '10px' }} onClick={() => handleSectionSave()}>Update Sorting Order</Button> : ''}
-              </Card>
-            </form>
-          </Grid>
-
-          <Grid item xs={6}>
-            <DropKlaviyoForm
-              storeData={storeData}
-              setSubscriberListId={setSubscriberListId}
-              setFieldValue={setFieldValue}
-              handleForm={handleForm}
-            />
-            { setting.flag ? <CollectionTable settingData={setting.settingData} saveData={(data: string) => handleSaveCollectionId(data)} findLatestLog={findLatestLogFun} /> : '' }
-          </Grid>
-        </Grid>
+        <Box sx={{ width: '100%', typography: 'body1' }}>
+          <TabContext value={tab}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+              <TabList onChange={handleChangeTab} aria-label="lab API tabs example">
+                <Tab label="Milestone management" value="1" />
+                <Tab label="Klaviyo Integration" value="2" />
+                <Tab label="Navigation management" value="3" />
+                <Tab label="Cart Rewards management" value="4" />
+              </TabList>
+            </Box>
+            <TabPanel value="1">
+              <Grid item xs={6}>
+                <form noValidate onSubmit={handleSubmit}>
+                  <h2 style={{ alignItems: 'center' }}>Drops Milestone Management</h2>
+                  <Card style={{ padding: '20px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <h4 className="lable" style={{ width: '135px' }}>Milestore1 Discount</h4>
+                      <TextField
+                        id="M1Discount"
+                        name="M1Discount"
+                        type="number"
+                        placeholder="Please enter M1 Discount"
+                        value={values.M1Discount}
+                        onChange={handleChange}
+                        error={touched.M1Discount && Boolean(errors.M1Discount)}
+                        helperText={touched.M1Discount && errors.M1Discount}
+                        style={{ width: '300px' }}
+                      />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <h4 className="lable" style={{ width: '135px' }}>Milestore2 Discount</h4>
+                      <TextField
+                        id="M2Discount"
+                        name="M2Discount"
+                        type="number"
+                        placeholder="Please enter M2 Discount"
+                        value={values.M2Discount}
+                        onChange={handleChange}
+                        error={touched.M2Discount && Boolean(errors.M2Discount)}
+                        helperText={touched.M2Discount && errors.M2Discount}
+                        style={{ width: '300px' }}
+                      />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <h4 className="lable" style={{ width: '135px' }}>Milestore3 Discount</h4>
+                      <TextField
+                        id="M3Discount"
+                        name="M3Discount"
+                        type="number"
+                        placeholder="Please enter M3 Discount"
+                        value={values.M3Discount}
+                        onChange={handleChange}
+                        error={touched.M3Discount && Boolean(errors.M3Discount)}
+                        helperText={touched.M3Discount && errors.M3Discount}
+                        style={{ width: '300px' }}
+                      />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <h4 className="lable" style={{ width: '135px' }}>Bestsellers</h4>
+                      <TextField
+                        id="bestSellers"
+                        name="bestSellers"
+                        type="number"
+                        placeholder="Please enter Bestseller"
+                        value={values.bestSellers}
+                        onChange={handleChange}
+                        error={touched.M3Discount && Boolean(errors.bestSellers)}
+                        helperText={touched.bestSellers && errors.bestSellers}
+                        style={{ width: '300px' }}
+                      />
+                    </div>
+                    <Button variant="contained" style={{ marginTop: '10px' }} type="submit">Save</Button>
+                  </Card>
+                </form>
+              </Grid>
+            </TabPanel>
+            <TabPanel value="2">
+              <Grid item xs={6}>
+                <DropKlaviyoForm
+                  storeData={storeData}
+                  setSubscriberListId={setSubscriberListId}
+                  setFieldValue={setFieldValue}
+                  handleForm={handleForm}
+                />
+              </Grid>
+            </TabPanel>
+            <TabPanel value="3">
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <h2>Drops Navigation Management</h2>
+                  <Card style={{ padding: '20px' }}>
+                    <div style={{ display: 'flex', maxHeight: '550px', overflow: 'auto' }}>
+                      <SortableTree
+                        treeData={sectionData}
+                        onChange={handleTreeChange}
+                        isVirtualized={false}
+                        maxDepth={2}
+                        generateNodeProps={({ node }: any) => ({
+                          className: node.status === CategoryStatus.DRAFT ? 'default' : 'success',
+                          buttons: [
+                            <div className="section_navigation" style={{ display: 'flex', alignItems: 'center' }}>
+                              <div tabIndex={0} role="button" onClick={() => setSetting({ flag: true, settingData: node })}>
+                                <IconButton aria-label="delete"><img src="/settings.svg" alt="setting" /></IconButton>
+                              </div>
+                              <div>
+                                <IconButton aria-label="delete" color="error" onClick={() => handleRemoveNavigation(node)}><img src="/close.svg" alt="close" /></IconButton>
+                              </div>
+                              <div>
+                                <IconButton aria-label="delete" onClick={() => { setCollectionEditData(node); setSectionModal(true); }}><img src="/edit.svg" alt="edit" /></IconButton>
+                              </div>
+                            </div>,
+                          ],
+                        })}
+                      />
+                    </div>
+                    <Button variant="contained" style={{ marginTop: '10px' }} onClick={() => setSectionModal(true)}>Add Navigation</Button>
+                    {sectionData.length ? <Button variant="contained" style={{ marginTop: '10px', marginLeft: '10px' }} onClick={() => handleSectionSave()}>Update Sorting Order</Button> : ''}
+                  </Card>
+                </Grid>
+                <Grid item xs={6}>
+                  {setting.flag ? <CollectionTable settingData={setting.settingData} saveData={(data: string) => handleSaveCollectionId(data)} findLatestLog={findLatestLogFun} /> : ''}
+                </Grid>
+              </Grid>
+            </TabPanel>
+            <TabPanel value="4">
+              test
+            </TabPanel>
+          </TabContext>
+        </Box>
       </Container>
       <Footer />
       <SectionModal show={sectionModal} close={(data: any) => handleSectionModal(data)} sectionData={sectionData} collectionEditData={collectionEditData} />
