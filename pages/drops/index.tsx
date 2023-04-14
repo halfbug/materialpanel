@@ -396,7 +396,18 @@ const Drops = () => {
   };
 
   const handleTreeChange = (newTreeData: any) => {
-    setSectionData(newTreeData);
+    const tempData = newTreeData.map((ele: any) => {
+      if (ele.status === CategoryStatus.DRAFT) {
+        if (ele?.children?.length) {
+          return false;
+        }
+        return true;
+      }
+      return true;
+    }).filter((el: any) => el === false).length;
+    if (!tempData) {
+      setSectionData(newTreeData);
+    }
   };
 
   useEffect(() => () => {
