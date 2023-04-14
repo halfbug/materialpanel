@@ -78,7 +78,7 @@ function DropsList({
         <title>Drops</title>
       </Head>
       <PageTitleWrapper>
-        <PageHeader title="Drops List" />
+        <PageHeader pagetitle="Drops List" />
       </PageTitleWrapper>
       <Container maxWidth="lg">
         <Grid

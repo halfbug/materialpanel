@@ -123,7 +123,7 @@ const StoreList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
         <title>GSADMIN</title>
       </Head>
       <PageTitleWrapper>
-        <PageHeader meta={meta} />
+        <PageHeader meta={meta} pagetitle="" />
       </PageTitleWrapper>
       <Container maxWidth="lg">
         <Grid

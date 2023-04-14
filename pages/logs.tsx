@@ -98,7 +98,7 @@ function Logs() {
         <title>App Logs</title>
       </Head>
       <PageTitleWrapper>
-        <PageHeader title="Logs" />
+        <PageHeader pagetitle="Logs" />
       </PageTitleWrapper>
       <Container maxWidth="lg">
         <Grid
