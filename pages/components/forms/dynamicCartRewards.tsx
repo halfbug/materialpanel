@@ -46,7 +46,6 @@ const DynamicCartRewards = ({ storeData, getStore, showToast }: any) => {
           toastMessage: CartRewardUpdateMessage,
           toastColor: 'success',
         });
-        setEditData('');
       } else {
         showToast({
           toastTog: true,
@@ -55,6 +54,7 @@ const DynamicCartRewards = ({ storeData, getStore, showToast }: any) => {
         });
       }
     }
+    setEditData('');
     setCartRewardFlag(false);
   };
 
