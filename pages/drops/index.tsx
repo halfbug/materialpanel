@@ -41,7 +41,6 @@ import { BESTSELLERSKEY, CategoryStatus } from 'configs/constant';
 import getDMYFormatedDate from '@/utils/getDMYFormatedDate';
 import SortableTree from 'react-sortable-tree';
 import SectionModal from '@/models/SectionModal';
-import { v4 as uuid } from 'uuid';
 import CollectionTable from '@/models/CollectionTable';
 import RemoveIdsModal from '@/models/RemoveIdsModal';
 import { TabContext } from '@mui/lab';
@@ -72,6 +71,7 @@ const Drops = () => {
   const editCollectionMessage = 'Collection updated successfully';
   const removeCollectionMessage = 'Collection removed successfully';
   const collectionOrderMessage = 'Collection sorting order updated successfully';
+  const collectionOrderChangeError = 'Category should be active to be sub-category';
 
   const [storeData, setStoreData] = useState<any>({});
   const [lastSync, setlastsync] = useState<any>(null);
@@ -407,6 +407,12 @@ const Drops = () => {
     }).filter((el: any) => el === false).length;
     if (!tempData) {
       setSectionData(newTreeData);
+    } else {
+      setSuccessToast({
+        toastTog: true,
+        toastMessage: collectionOrderChangeError,
+        toastColor: 'error',
+      });
     }
   };
 
