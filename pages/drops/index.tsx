@@ -71,7 +71,7 @@ const Drops = () => {
   const editCollectionMessage = 'Collection updated successfully';
   const removeCollectionMessage = 'Collection removed successfully';
   const collectionOrderMessage = 'Collection sorting order updated successfully';
-  const collectionOrderChangeError = 'Category should be active to be sub-category';
+  const collectionOrderChangeError = 'Please select an active category to create a sub-category.';
 
   const [storeData, setStoreData] = useState<any>({});
   const [lastSync, setlastsync] = useState<any>(null);
