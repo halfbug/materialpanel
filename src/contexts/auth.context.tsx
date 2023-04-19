@@ -44,7 +44,7 @@ export const AuthContextProvider = ({
         ...data.user,
         name: `${data.user.first_name} ${data.user.last_name}`,
         avatar: '/static/images/avatars/1.jpg',
-        jobtitle: 'Groupshop Staff',
+        jobtitle: data.user.jobtitle,
       });
       setToken(data.token);
     } else {
