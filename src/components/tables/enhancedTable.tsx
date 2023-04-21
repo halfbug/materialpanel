@@ -237,7 +237,7 @@ const EnhancedTable = <T extends {}>(props : ITableProps<T>) => {
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(25);
   const { store, dispatch } = React.useContext(StoreContext);
 
   const handleRequestSort = (
@@ -312,6 +312,7 @@ const EnhancedTable = <T extends {}>(props : ITableProps<T>) => {
   };
 
   const handleClik = (data:any) => {
+    dispatch({ type: 'REMOVE_USERDATA', payload: data });
     dispatch({ type: 'UPDATE_BRANDNAME', payload: { ...store, brandName: data?.brandName } });
   };
 
@@ -380,10 +381,11 @@ const EnhancedTable = <T extends {}>(props : ITableProps<T>) => {
                               case 'link': return <NextLink href={row[id]} passHref><a>{row[id]}</a></NextLink>;
                               case 'custom':
                                 return options.map(({
-                                  icon, perm, btn, link, callback, changeIcon, ...rest
+                                  icon, perm, btn, link, callback, changeIcon, removeUser, ...rest
                                 }) => {
                                   if (icon) { return <IconButton aria-label="icon" color="primary" onClick={() => callback(row[perm])}>{icon}</IconButton>; }
                                   if (changeIcon) { return <NextLink href={`${link as string}?sid=${row?.id}`} passHref><a {...rest}><IconButton aria-label="delete" color={row?.drops?.status === 'Active' ? 'success' : 'primary'}><StorefrontOutlined /></IconButton></a></NextLink>; }
+                                  if (removeUser) { return removeUser; }
                                   return <NextLink href={`${link as string}?sid=${row?.id}`} passHref><a {...rest}>{btn}</a></NextLink>;
                                 });
                               default:

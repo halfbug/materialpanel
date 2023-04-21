@@ -27,6 +27,7 @@ export interface MStore {
     collectionIdsData?: any,
     editId?: any,
     removeId?: any,
+    removeUserData?: any,
 }
 
 export interface DiscoveryTools {

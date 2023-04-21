@@ -14,6 +14,7 @@ const initialState: MStore = {
   collectionIdsData: [],
   editId: '',
   removeId: '',
+  removeUserData: '',
 };
 
 export const StoreContext = React.createContext<StoreContextType>(
@@ -30,6 +31,7 @@ export const StoreContextProvider = ({
     collectionIdsData: [],
     editId: '',
     removeId: '',
+    removeUserData: '',
   });
 
   return (
