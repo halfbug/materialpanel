@@ -94,6 +94,12 @@ const UserList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
       label: 'Created At',
     },
     {
+      id: 'lastLogin',
+      type: 'datetime',
+      disablePadding: false,
+      label: 'Last Login',
+    },
+    {
       id: 'options',
       disablePadding: false,
       type: 'custom',
