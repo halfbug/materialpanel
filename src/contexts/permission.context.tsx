@@ -38,6 +38,8 @@ const PermissionContextProvider = ({ children }) => {
   };
 
   const [getPermission, { data }] = useLazyQuery(FIND_ADMIN_ROLE_BY_NAME, {
+    fetchPolicy: 'network-only',
+    notifyOnNetworkStatusChange: true,
     onCompleted: (res) => {
       const adminPermission = [];
       const genPermission = [];

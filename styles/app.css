@@ -139,3 +139,7 @@ input::-webkit-inner-spin-button {
     padding-right: 10px !important;
 
 }
+
+.css-15fegxa-MuiGrid-root>.MuiGrid-item{
+    padding-top: 0px !important;
+}

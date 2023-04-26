@@ -84,7 +84,7 @@ const UserList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
       id: 'status',
       disablePadding: false,
       type: 'status',
-      statusOptions: { success: ['Active'], warning: ['inActive'] },
+      statusOptions: { success: ['active'], warning: ['inActive'] },
       label: 'Status',
     },
     {
@@ -188,6 +188,7 @@ const UserList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
           justifyContent="center"
           alignItems="stretch"
           spacing={3}
+          style={{ marginTop: '0px' }}
         >
           <Grid item xs={12}>
 
@@ -198,7 +199,7 @@ const UserList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
             </Card>
           </Grid>
         </Grid>
-        {deleteIdModal ? <RemoveIdsModal show={deleteIdModal} close={async (close: any) => handleRemoveUser(close)} removedDropsCategoryLoading={removeAdminUserLoading} /> : ''}
+        {deleteIdModal ? <RemoveIdsModal show={deleteIdModal} close={(close: any) => handleRemoveUser(close)} removedDropsCategoryLoading={removeAdminUserLoading} /> : ''}
       </Container>
       <Footer />
     </>

@@ -24,7 +24,7 @@ const RoleEdit = () => {
     toastTog: false,
     toastMessage: '',
   });
-  const [adminUserRoleUpdate, { data }] = useMutation<AdminUserRolesUpdate>(UPDATE_ADMIN_USER_ROLE);
+  const [adminUserRoleUpdate, { data }] = useMutation<any>(UPDATE_ADMIN_USER_ROLE);
   const router = useRouter();
   const { query: { sid } } = useRouter();
   const [userData, setUserData] = useState<any>({
@@ -34,6 +34,14 @@ const RoleEdit = () => {
       category: '',
     },
   });
+
+  useEffect(() => {
+    if (data?.updateAdminRole?.id) {
+      refetch();
+      setSuccessToast({ toastTog: true, toastMessage: 'User updated successfully!' });
+      router.push('/roles');
+    }
+  }, [data]);
 
   const {
     loading, data: usersRoles, refetch,
@@ -105,11 +113,6 @@ const RoleEdit = () => {
               },
             },
           });
-          refetch();
-          setSuccessToast({ toastTog: true, toastMessage: 'User updated successfully!' });
-          setTimeout(() => {
-            router.push('/roles');
-          }, 2000);
         } else {
           setPermissiomError('Permission is required');
         }
