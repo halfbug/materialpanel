@@ -1,16 +1,29 @@
 /* eslint-disable max-len */
 import React, { useEffect, useState } from 'react';
 import {
-  Box, Button, Modal, TextField, InputLabel, Select, MenuItem, FormHelperText,
+  Box, Button, Modal, TextField, InputLabel, Select, MenuItem, FormHelperText, CircularProgress,
 } from '@mui/material';
 import { CollectionType, CollectionTypeKey } from 'configs/constant';
 import { FormikProps, useFormik } from 'formik';
 import * as yup from 'yup';
 import { CollectionIdForm } from '@/types/groupshop';
+import { useQuery } from '@apollo/client';
+import { GET_INVENTORY_BY_ID } from '@/graphql/store.graphql';
 
 const AddCollectionIdModal = ({
   show, close, collectionData, editData, updatedDropsCategoryLoading,
 }: any) => {
+  const [getByIdFlag, setGetByIdFlag] = useState<string>('');
+  const {
+    data: getByInventoryId, loading: getByInventoryLoading,
+  } = useQuery(GET_INVENTORY_BY_ID, {
+    skip: !getByIdFlag,
+    variables: {
+      id: getByIdFlag,
+    },
+    fetchPolicy: 'network-only',
+    notifyOnNetworkStatusChange: true,
+  });
   const [collection, setCollection] = useState({
     name: '',
     type: '',
@@ -55,7 +68,7 @@ const AddCollectionIdModal = ({
   });
 
   const {
-    handleSubmit, values, handleChange, touched, errors, setFieldValue,
+    handleSubmit, values, handleChange, touched, errors, setFieldValue, setFieldError,
   }: FormikProps<CollectionIdForm> = useFormik<CollectionIdForm>({
     initialValues: collection,
     validationSchema,
@@ -66,11 +79,24 @@ const AddCollectionIdModal = ({
     },
   });
 
-  const handleClose = (data: any) => {
-    close(data);
+  const handleClose = async (data: any) => {
+    if (data) {
+      setGetByIdFlag(`gid://shopify/Collection/${data.shopifyId}`);
+    } else {
+      close(data);
+    }
   };
 
+  useEffect(() => {
+    if (getByInventoryId?.findById?.length > 0) {
+      close(values);
+    } else if (getByInventoryId?.findById?.length < 1) {
+      setFieldError('shopifyId', 'Collection ID is either incorrect or not synced.');
+    }
+  }, [getByInventoryId]);
+
   const handleChangeId = (e: any) => {
+    setFieldError('shopifyId', '');
     const tempVal = e.target.value.trim();
     if (/^[0-9]+$/.test(tempVal) || !tempVal) {
       setFieldValue(e.target.name, tempVal);
@@ -146,7 +172,11 @@ const AddCollectionIdModal = ({
             />
           </div>
           <div style={{ textAlign: 'end' }}>
-            <Button variant="contained" type="submit" disabled={updatedDropsCategoryLoading} style={{ marginTop: '10px' }}>{editData?.shopifyId ? 'Save' : 'Create'}</Button>
+            <Button variant="contained" type="submit" style={{ marginTop: '10px', height: '40px', width: '75px' }}>
+              {
+              (updatedDropsCategoryLoading || getByInventoryLoading) ? <CircularProgress style={{ color: '#ffffff' }} size="0.875rem" /> : ((editData?.shopifyId && 'Save') || 'Create')
+            }
+            </Button>
           </div>
         </form>
       </Box>

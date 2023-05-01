@@ -23,10 +23,11 @@ import {
   Alert,
   TextField,
   Box,
+  CircularProgress,
 } from '@mui/material';
 import Footer from '@/components/Footer';
 import {
-  DEFAULT_DISCOUNT, DROPS_CATEGORY_REMOVE, DROPS_CATEGORY_UPDATE, DROPS_UPDATE, FIND_LATEST_LOG, GET_DROPS_CATEGORY, GET_STORE_DETAILS, GET_UPDATE_CODES_STATUS, SYNC_DISCOUNT_CODES,
+  DEFAULT_DISCOUNT, DROPS_CATEGORY_REMOVE, DROPS_CATEGORY_UPDATE, DROPS_UPDATE, FIND_LATEST_LOG, GET_DROPS_CATEGORY, GET_INVENTORY_BY_ID, GET_STORE_DETAILS, GET_UPDATE_CODES_STATUS, SYNC_DISCOUNT_CODES,
 } from '@/graphql/store.graphql';
 import { useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
@@ -112,6 +113,18 @@ const Drops = () => {
   const [latestLogMSG, setlatestLogMSG] = useState<string[]>(['']);
   const [latestLogDate, setlatestLogDate] = useState<string>('');
   const [tab, setTab] = useState<string>('1');
+  const [getByIdFlag, setGetByIdFlag] = useState<string>('');
+
+  const {
+    data: getByInventoryId, refetch: getByInventoryIdRefetch, loading: getByInventoryLoading,
+  } = useQuery(GET_INVENTORY_BY_ID, {
+    skip: !getByIdFlag,
+    variables: {
+      id: getByIdFlag,
+    },
+    fetchPolicy: 'network-only',
+    notifyOnNetworkStatusChange: true,
+  });
 
   const [syncDiscountCodes, { data: syncDiscountCodesData }] = useMutation<any>(
     SYNC_DISCOUNT_CODES,
@@ -162,7 +175,7 @@ const Drops = () => {
     variables: { type: 'drops' },
   });
 
-  const [updateStore, { data: dropsUpdateData }] = useMutation<any>(DROPS_UPDATE, {
+  const [updateStore, { data: dropsUpdateData, loading: dropsUpdateLoading }] = useMutation<any>(DROPS_UPDATE, {
     fetchPolicy: 'network-only',
   });
 
@@ -219,6 +232,9 @@ const Drops = () => {
       } else {
         setSetting({ flag: false, settingData: '' });
       }
+    } else if (!getDropsCategoryData?.findByStoreId?.length) {
+      setSectionData([]);
+      setSetting({ flag: false, settingData: '' });
     }
   }, [getDropsCategoryData]);
 
@@ -284,37 +300,50 @@ const Drops = () => {
   });
 
   const {
-    handleSubmit, values, handleChange, touched, errors, setFieldValue,
+    handleSubmit, values, handleChange, touched, errors, setFieldValue, setFieldError,
   }: FormikProps<DropsForm> = useFormik<DropsForm>({
     initialValues: dropsIds,
     validationSchema,
     enableReinitialize: true,
     validateOnChange: true,
     onSubmit: async (value) => {
-      try {
-        await updateStore({
-          variables: {
-            updateStoreInput: {
-              id: sid,
-              drops: {
-                ...storeData?.drops,
-                codeUpdateStatus: storeData?.drops?.codeUpdateStatus ?? 'none',
-                status: storeData?.drops?.status ?? status,
-                collections: [{ name: BESTSELLERSKEY, shopifyId: `gid://shopify/Collection/${value.bestSellers}` }],
-                rewards: {
-                  baseline: `${value.M1Discount}`,
-                  average: `${value.M2Discount}`,
-                  maximum: `${value.M3Discount}`,
-                },
+      setGetByIdFlag(`gid://shopify/Collection/${value?.bestSellers}`);
+      getByInventoryIdRefetch();
+    },
+  });
+
+  const mileStoneApiCall = async () => {
+    try {
+      await updateStore({
+        variables: {
+          updateStoreInput: {
+            id: sid,
+            drops: {
+              ...storeData?.drops,
+              codeUpdateStatus: storeData?.drops?.codeUpdateStatus ?? 'none',
+              status: storeData?.drops?.status ?? status,
+              collections: [{ name: BESTSELLERSKEY, shopifyId: `gid://shopify/Collection/${values.bestSellers}` }],
+              rewards: {
+                baseline: `${values.M1Discount}`,
+                average: `${values.M2Discount}`,
+                maximum: `${values.M3Discount}`,
               },
             },
           },
-        });
-      } catch (error) {
-        console.error('An unexpected error happened:', error);
-      }
-    },
-  });
+        },
+      });
+    } catch (error) {
+      console.error('An unexpected error happened:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (getByInventoryId?.findById?.length > 0) {
+      mileStoneApiCall();
+    } else if (getByInventoryId?.findById?.length < 1) {
+      setFieldError('bestSellers', 'Collection ID is either incorrect or not synced.');
+    }
+  }, [getByInventoryId]);
 
   const updateStoreCall = async () => {
     await updateStore({
@@ -537,6 +566,14 @@ const Drops = () => {
     setTab(newValue);
   };
 
+  const handleChangeId = (e: any) => {
+    setFieldError('shopifyId', '');
+    const tempVal = e.target.value.trim();
+    if (/^[0-9]+$/.test(tempVal) || !tempVal) {
+      setFieldValue(e.target.name, tempVal);
+    }
+  };
+
   return (
     <>
       <Snackbar
@@ -720,16 +757,18 @@ const Drops = () => {
                       <TextField
                         id="bestSellers"
                         name="bestSellers"
-                        type="number"
                         placeholder="Please enter Bestseller"
                         value={values.bestSellers}
-                        onChange={handleChange}
+                        onChange={(e) => handleChangeId(e)}
                         error={touched.M3Discount && Boolean(errors.bestSellers)}
                         helperText={touched.bestSellers && errors.bestSellers}
                         style={{ width: '300px' }}
+                        autoComplete="off"
                       />
                     </div>
-                    <Button variant="contained" style={{ marginTop: '10px' }} type="submit">Save</Button>
+                    <Button variant="contained" style={{ marginTop: '10px', height: '40px', width: '75px' }} type="submit">
+                      {(getByInventoryLoading || dropsUpdateLoading) ? <CircularProgress style={{ color: '#ffffff' }} size="0.875rem" /> : 'Save'}
+                    </Button>
                   </Card>
                 </form>
               </Grid>
@@ -791,7 +830,7 @@ const Drops = () => {
         </Box>
       </Container>
       <Footer />
-      <SectionModal show={sectionModal} close={(data: any) => handleSectionModal(data)} sectionData={sectionData} collectionEditData={collectionEditData} />
+      {sectionModal ? <SectionModal show={sectionModal} close={(data: any) => handleSectionModal(data)} sectionData={sectionData} collectionEditData={collectionEditData} /> : ''}
       {deleteIdModal ? <RemoveIdsModal show={deleteIdModal} close={(data: any) => hanleRemove(data)} childData={removeNavigationMngData?.children} removedDropsCategoryLoading={removedDropsCategoryLoading} /> : ''}
     </>
   );

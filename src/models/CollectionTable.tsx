@@ -175,8 +175,8 @@ const CollectionTable = ({ settingData, saveData, findLatestLog }: any) => {
       dispatch({ type: 'UPDATE_EDITID', payload: undefined });
       setEditData('');
       setEditId('');
-      setAddCollectionIdsModal(false);
     }
+    setAddCollectionIdsModal(false);
   };
 
   useEffect(() => {

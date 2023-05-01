@@ -23,6 +23,7 @@ import '@/styles/global.css';
 import 'react-sortable-tree/style.css';
 import '../styles/app.css';
 import { PermissionContextProvider } from '@/contexts/permission.context';
+import { StyledEngineProvider } from '@mui/material';
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -49,25 +50,27 @@ function TokyoApp(props: TokyoAppProps) {
     <AuthContextProvider>
       {/* <ApolloProvider client={apolloClient}> */}
       <StoreContextProvider>
-        <CacheProvider value={emotionCache}>
-          <Head>
-            <title>GSADMIN</title>
-            <meta
-              name="viewport"
-              content="width=device-width, initial-scale=1, shrink-to-fit=no"
-            />
-          </Head>
-          <PermissionContextProvider>
-            <SidebarProvider>
-              <ThemeProviderWrapper>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <CssBaseline />
-                  {getLayout(<Component {...pageProps} />)}
-                </LocalizationProvider>
-              </ThemeProviderWrapper>
-            </SidebarProvider>
-          </PermissionContextProvider>
-        </CacheProvider>
+        <StyledEngineProvider injectFirst>
+          <CacheProvider value={emotionCache}>
+            <Head>
+              <title>GSADMIN</title>
+              <meta
+                name="viewport"
+                content="width=device-width, initial-scale=1, shrink-to-fit=no"
+              />
+            </Head>
+            <PermissionContextProvider>
+              <SidebarProvider>
+                <ThemeProviderWrapper>
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <CssBaseline />
+                    {getLayout(<Component {...pageProps} />)}
+                  </LocalizationProvider>
+                </ThemeProviderWrapper>
+              </SidebarProvider>
+            </PermissionContextProvider>
+          </CacheProvider>
+        </StyledEngineProvider>
       </StoreContextProvider>
       {/* </ApolloProvider> */}
     </AuthContextProvider>
