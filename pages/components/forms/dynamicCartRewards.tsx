@@ -8,6 +8,7 @@ import {
   Button,
   Card, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
 } from '@mui/material';
+import { CARTREWARDERR } from 'configs/constant';
 import React, { useState, useEffect } from 'react';
 
 const DynamicCartRewards = ({ storeData, getStore, showToast }: any) => {
@@ -38,7 +39,7 @@ const DynamicCartRewards = ({ storeData, getStore, showToast }: any) => {
   }, [dropsUpdateData]);
 
   const handleCartReward = (data: any) => {
-    if (data) {
+    if (data === 'update') {
       getStore();
       if (editData) {
         showToast({
@@ -53,6 +54,12 @@ const DynamicCartRewards = ({ storeData, getStore, showToast }: any) => {
           toastColor: 'success',
         });
       }
+    } else if (data === CARTREWARDERR) {
+      showToast({
+        toastTog: true,
+        toastMessage: CARTREWARDERR,
+        toastColor: 'error',
+      });
     }
     setEditData('');
     setCartRewardFlag(false);
@@ -61,6 +68,8 @@ const DynamicCartRewards = ({ storeData, getStore, showToast }: any) => {
   useEffect(() => {
     if (storeData?.drops?.cartRewards?.length) {
       setCartRewards(storeData.drops.cartRewards);
+    } else if (!storeData?.drops?.cartRewards?.length) {
+      setCartRewards([]);
     }
   }, [storeData]);
 

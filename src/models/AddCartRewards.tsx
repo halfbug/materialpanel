@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import { useMutation } from '@apollo/client';
 import { DROPS_UPDATE } from '@/graphql/store.graphql';
 import { v4 as uuid } from 'uuid';
+import { CARTREWARDERR } from 'configs/constant';
 
 const AddCartRewards = ({
   show, hide, storeData, editData,
@@ -63,27 +64,31 @@ const AddCartRewards = ({
     enableReinitialize: true,
     validateOnChange: true,
     onSubmit: async (value) => {
-      if (editData?.id) {
-        const updateData = storeData?.drops?.cartRewards.map((ele: any) => {
-          if (ele.id === editData?.id) {
-            return {
-              ...ele,
-              rewardTitle: value.rewardTitle,
-              rewardValue: `${value.rewardValue}`,
-            };
-          } return ele;
-        });
-        updateApi(updateData);
+      if (storeData?.drops) {
+        if (editData?.id) {
+          const updateData = storeData?.drops?.cartRewards.map((ele: any) => {
+            if (ele.id === editData?.id) {
+              return {
+                ...ele,
+                rewardTitle: value.rewardTitle,
+                rewardValue: `${value.rewardValue}`,
+              };
+            } return ele;
+          });
+          updateApi(updateData);
+        } else {
+          const rewardsValue = {
+            id: uniqueId,
+            rewardTitle: value.rewardTitle,
+            rewardValue: `${value.rewardValue}`,
+          };
+          const temoStoreData = storeData?.drops?.cartRewards?.length
+            ? [...storeData.drops.cartRewards, rewardsValue]
+            : [rewardsValue];
+          updateApi(temoStoreData);
+        }
       } else {
-        const rewardsValue = {
-          id: uniqueId,
-          rewardTitle: value.rewardTitle,
-          rewardValue: `${value.rewardValue}`,
-        };
-        const temoStoreData = storeData?.drops?.cartRewards?.length
-          ? [...storeData.drops.cartRewards, rewardsValue]
-          : [rewardsValue];
-        updateApi(temoStoreData);
+        hide(CARTREWARDERR);
       }
     },
   });

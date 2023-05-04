@@ -26,7 +26,7 @@ import NextLink from 'next/link';
 import { StoreContext } from '@/store/store.context';
 import Button from '@mui/material/Button/Button';
 import { IconButton } from '@mui/material';
-import { StorefrontOutlined } from '@mui/icons-material';
+import { StarOutlineOutlined, StorefrontOutlined, StarOutlined } from '@mui/icons-material';
 
 // interface Data {
 //   calories: number;
@@ -228,10 +228,13 @@ interface ITableProps<T> {
   headCells: Array<HeadCell<T>>,
   rows: T[],
   orderByFieldName: string | number | symbol,
+  allUser?: any[],
 }
 
 const EnhancedTable = <T extends {}>(props : ITableProps<T>) => {
-  const { rows, headCells, orderByFieldName } = props;
+  const {
+    rows, headCells, orderByFieldName, allUser,
+  } = props;
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<string | number | symbol>(orderByFieldName);
   const [selected, setSelected] = React.useState<readonly string[]>([]);
@@ -381,10 +384,14 @@ const EnhancedTable = <T extends {}>(props : ITableProps<T>) => {
                               case 'link': return <NextLink href={row[id]} passHref><a>{row[id]}</a></NextLink>;
                               case 'custom':
                                 return options.map(({
-                                  icon, perm, btn, link, callback, changeIcon, removeUser, ...rest
+                                  icon, perm, btn, link, callback, changeIcon, removeUser,
+                                  favourite, ...rest
                                 }) => {
                                   if (icon) { return <IconButton aria-label="icon" color="primary" onClick={() => callback(row[perm])}>{icon}</IconButton>; }
                                   if (changeIcon) { return <NextLink href={`${link as string}?sid=${row?.id}`} passHref><a {...rest}><IconButton aria-label="delete" color={row?.drops?.status === 'Active' ? 'success' : 'primary'}><StorefrontOutlined /></IconButton></a></NextLink>; }
+                                  if (favourite) {
+                                    return <IconButton aria-label="delete" color="primary" onClick={() => callback(row)}>{allUser?.includes(row?.id) ? <StarOutlined /> : <StarOutlineOutlined />}</IconButton>;
+                                  }
                                   if (removeUser) { return removeUser; }
                                   return <NextLink href={`${link as string}?sid=${row?.id}`} passHref><a {...rest}>{btn}</a></NextLink>;
                                 });

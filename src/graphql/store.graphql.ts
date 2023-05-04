@@ -335,6 +335,7 @@ query getAdminUsers{
     }    
     createdAt
     lastLogin
+    favouriteStore
   }
 }
 `;
@@ -374,6 +375,13 @@ const UPDATE_ADMIN_USER = gql`
       lastName
       status
       email 
+      userRole{
+        id
+        roleName
+      }    
+      createdAt
+      lastLogin
+      favouriteStore
   }
 }
 `;

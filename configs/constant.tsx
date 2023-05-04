@@ -23,3 +23,4 @@ export enum CategoryStatus {
 }
 
 export const BESTSELLERSKEY = 'bestsellers';
+export const CARTREWARDERR = 'Please fill first of all field';
