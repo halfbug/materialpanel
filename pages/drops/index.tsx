@@ -9,7 +9,7 @@ import Head from 'next/head';
 import SidebarLayout from '@/layouts/SidebarLayout';
 import PageTitle from '@/components/PageTitle';
 import {
-  useState, useEffect,
+  useState, useEffect, useContext,
 } from 'react';
 import PageTitleWrapper from '@/components/PageTitleWrapper';
 import {
@@ -48,6 +48,7 @@ import { TabContext } from '@mui/lab';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import Tab from '@mui/material/Tab';
+import { AuthContext } from '@/contexts/auth.context';
 import DropKlaviyoForm from '../components/forms/klaviyoForm';
 import DynamicCartRewards from '../components/forms/dynamicCartRewards';
 
@@ -61,7 +62,7 @@ export enum CodeUpdateStatusTypeEnum {
 const Drops = () => {
   const router = useRouter();
   const { sid } = router.query;
-
+  const { user } = useContext(AuthContext);
   const dropsUpdatedMessage = 'Drops updated successfully!';
   const dropsUpdatedError = 'First fill all field';
   const addSectionMessage = 'Section added successfully';
@@ -318,6 +319,8 @@ const Drops = () => {
         variables: {
           updateStoreInput: {
             id: sid,
+            userId: user?.userRole,
+            activity: 'Drops Milestone Management',
             drops: {
               ...storeData?.drops,
               codeUpdateStatus: storeData?.drops?.codeUpdateStatus ?? 'none',
@@ -350,6 +353,8 @@ const Drops = () => {
       variables: {
         updateStoreInput: {
           id: sid,
+          userId: user?.userRole,
+          activity: 'Klaviyo Integration',
           drops: {
             ...storeData?.drops,
             klaviyo: {
@@ -415,6 +420,7 @@ const Drops = () => {
       variables: {
         updateStoreInput: {
           id: sid,
+          userId: user?.userRole,
           drops: {
             ...storeData.drops,
             status: value,
@@ -489,6 +495,8 @@ const Drops = () => {
           await removeDropsCategory({
             variables: {
               id: tempDeleteIds,
+              userId: user?.userRole,
+              storeId: sid,
               collectionUpdateMsg,
             },
           }).then(() => {
@@ -542,6 +550,8 @@ const Drops = () => {
           variables: {
             CreateDropsCategoryForFront: {
               id: sid,
+              userId: user?.userRole,
+              activity: 'Update Sorting Order',
               categoryData: updatedCategoryData,
             },
           },
@@ -817,20 +827,20 @@ const Drops = () => {
                   </Card>
                 </Grid>
                 <Grid item xs={6}>
-                  {setting.flag ? <CollectionTable settingData={setting.settingData} saveData={(data: string) => handleSaveCollectionId(data)} findLatestLog={findLatestLogFun} /> : ''}
+                  {setting.flag ? <CollectionTable settingData={setting.settingData} saveData={(data: string) => handleSaveCollectionId(data)} userRole={user?.userRole} findLatestLog={findLatestLogFun} /> : ''}
                 </Grid>
               </Grid>
             </TabPanel>
             <TabPanel value="4">
               <Grid item xs={6}>
-                <DynamicCartRewards storeData={storeData} getStore={refetch} showToast={setSuccessToast} />
+                <DynamicCartRewards storeData={storeData} getStore={refetch} userRole={user?.userRole} showToast={setSuccessToast} />
               </Grid>
             </TabPanel>
           </TabContext>
         </Box>
       </Container>
       <Footer />
-      {sectionModal ? <SectionModal show={sectionModal} close={(data: any) => handleSectionModal(data)} sectionData={sectionData} collectionEditData={collectionEditData} /> : ''}
+      {sectionModal ? <SectionModal show={sectionModal} close={(data: any) => handleSectionModal(data)} sectionData={sectionData} collectionEditData={collectionEditData} userRole={user?.userRole} /> : ''}
       {deleteIdModal ? <RemoveIdsModal show={deleteIdModal} close={(data: any) => hanleRemove(data)} childData={removeNavigationMngData?.children} removedDropsCategoryLoading={removedDropsCategoryLoading} /> : ''}
     </>
   );

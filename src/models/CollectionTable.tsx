@@ -63,7 +63,9 @@ const Item: any = ({
   );
 };
 
-const CollectionTable = ({ settingData, saveData, findLatestLog }: any) => {
+const CollectionTable = ({
+  settingData, saveData, findLatestLog, userRole,
+}: any) => {
   const contRef = useRef();
   const [collection, setCollection] = useState([]);
   const [addCollectionIdsModal, setAddCollectionIdsModal] = useState<boolean>(false);
@@ -154,6 +156,8 @@ const CollectionTable = ({ settingData, saveData, findLatestLog }: any) => {
         variables: {
           CreateDropsCategoryForFront: {
             id: settingData.storeId,
+            userId: userRole,
+            activity: 'Manage Section Content',
             categoryData: [{
               categoryId: settingData.categoryId,
               collections: FinalCollectionData,
@@ -208,6 +212,8 @@ const CollectionTable = ({ settingData, saveData, findLatestLog }: any) => {
         variables: {
           CreateDropsCategoryForFront: {
             id: settingData.storeId,
+            userId: userRole,
+            activity: 'Manage Section Content',
             categoryData: [{
               categoryId: settingData.categoryId,
               collections: UpdatedData.length ? UpdatedData.map((coll: any) => ({ ...coll, shopifyId: `gid://shopify/Collection/${coll.shopifyId}` })) : [],
@@ -237,6 +243,8 @@ const CollectionTable = ({ settingData, saveData, findLatestLog }: any) => {
       variables: {
         CreateDropsCategoryForFront: {
           id: settingData.storeId,
+          userId: userRole,
+          activity: 'Update Sorting Order',
           categoryData: [{
             categoryId: settingData.categoryId,
             collections: collection.map((coll: any) => ({ ...coll, shopifyId: `gid://shopify/Collection/${coll.shopifyId}` })),

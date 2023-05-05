@@ -12,7 +12,7 @@ import { v4 as uuid } from 'uuid';
 import { CARTREWARDERR } from 'configs/constant';
 
 const AddCartRewards = ({
-  show, hide, storeData, editData,
+  show, hide, storeData, editData, userRole,
 }: any) => {
   const router = useRouter();
   const { sid } = router.query;
@@ -99,6 +99,8 @@ const AddCartRewards = ({
         variables: {
           updateStoreInput: {
             id: sid,
+            userId: userRole,
+            activity: 'Cart Rewards Management',
             drops: {
               ...storeData?.drops,
               cartRewards: updatingData,

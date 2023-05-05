@@ -28,14 +28,21 @@ export default function DropKlaviyoForm({
   handleForm, storeData, setFieldValue, setSubscriberListId,
 }: DropKlaviyoProps) {
   const [storeId, setStoreId] = useState('');
+  const [sListId, setSListId] = useState('');
   const [showInst, setShowInst] = useState<boolean>(false);
   const [getDrop, { data: dropData }] = useLazyQuery(FIND_KLAVIYO_LIST, {
     onCompleted: (res) => {
       setSubscriberListId(res?.findKlaviyoList.listId);
-      handleForm();
+      setSListId(res?.findKlaviyoList.listId);
     },
     onError() { console.log('Error in finding Droplist!'); },
   });
+
+  useEffect(() => {
+    if (sListId) {
+      handleForm();
+    }
+  }, [sListId]);
 
   const updateKlaviyoForm = (values: any) => {
     setFieldValue('privateKey', values.privateKey);

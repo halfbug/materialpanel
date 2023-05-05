@@ -32,6 +32,7 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import { DiscoveryTools } from '@/types/groupshop';
 import DraggableList from 'react-draggable-list';
 import { StoreContext } from '@/store/store.context';
+import { AuthContext } from '@/contexts/auth.context';
 
 const Item: any = ({ item, dragHandleProps }: any) => {
   const { onMouseDown, onTouchStart } = dragHandleProps;
@@ -77,6 +78,7 @@ const Item: any = ({ item, dragHandleProps }: any) => {
 const Discoverytools = () => {
   const router = useRouter();
   const { sid } = router.query;
+  const { user } = useContext(AuthContext);
   const [getAllStore, setGetAllStore] = useState<any>();
   const [refetch] = useLazyQuery(ALL_STORES, {
     fetchPolicy: 'network-only',
@@ -155,6 +157,8 @@ const Discoverytools = () => {
       variables: {
         updateDiscoveryTools: {
           id: sid,
+          userId: user?.userRole,
+          activity: 'Discovery Tools Management',
           discoveryTool: {
             matchingBrandName: data,
             status: statusData,

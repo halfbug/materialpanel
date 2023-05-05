@@ -11,11 +11,12 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import {
-  useEffect, useState, useMemo, useCallback,
+  useEffect, useState, useMemo, useCallback, useContext,
 } from 'react';
 import { VideoUpdate } from '@/types/groupshop';
 import { v4 as uuid } from 'uuid';
 import moment from 'moment';
+import { AuthContext } from '@/contexts/auth.context';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { IconButton } from '@mui/material';
@@ -40,6 +41,8 @@ const useVideoUpload = (gridRef: any) => {
   const VideoSuccessMessage = 'Video uploaded successfully!';
   const VideoRemoveMessage = 'Video removed successfully!';
   const DropsEnabledMessage = 'First of fill all drops filed!';
+
+  const { user } = useContext(AuthContext);
 
   const columnDefs: any = [
     {
@@ -197,6 +200,8 @@ const useVideoUpload = (gridRef: any) => {
                 await videoPost({
                   variables: {
                     createVideoInput: {
+                      userId: user?.userRole,
+                      activity: 'Video Management',
                       storeId: sid,
                       type: el.Location,
                       name: el.Key,
@@ -248,6 +253,8 @@ const useVideoUpload = (gridRef: any) => {
                 await videoPost({
                   variables: {
                     createVideoInput: {
+                      userId: user?.userRole,
+                      activity: 'Video Management',
                       storeId: sid,
                       type: el.Location,
                       name: el.Key,
@@ -316,6 +323,8 @@ const useVideoUpload = (gridRef: any) => {
     videoStatusUpdate({
       variables: {
         updateVideoInput: {
+          userId: user?.userRole,
+          activity: 'Video Management',
           selectedIds: selectedVideoIds,
           storeId: sid,
         },

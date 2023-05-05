@@ -11,7 +11,7 @@ import { useState, useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 
 const SectionModal = ({
-  show, close, sectionData, collectionEditData,
+  show, close, sectionData, collectionEditData, userRole,
 }: any) => {
   const router = useRouter();
   const { sid } = router.query;
@@ -79,6 +79,8 @@ const SectionModal = ({
         variables: {
           CreateDropsCategoryForFront: {
             id: sid,
+            userId: userRole,
+            activity: 'Drops Navigation Management',
             categoryData: updatedCategoryData,
             collectionUpdateMsg: '',
           },

@@ -11,7 +11,9 @@ import {
 import { CARTREWARDERR } from 'configs/constant';
 import React, { useState, useEffect } from 'react';
 
-const DynamicCartRewards = ({ storeData, getStore, showToast }: any) => {
+const DynamicCartRewards = ({
+  storeData, getStore, userRole, showToast,
+}: any) => {
   const CartRewardAddMessage = 'Cart reward added successfully';
   const CartRewardUpdateMessage = 'Cart reward updated successfully';
   const CartRewardRemoveMessage = 'Cart reward removed successfully';
@@ -80,6 +82,8 @@ const DynamicCartRewards = ({ storeData, getStore, showToast }: any) => {
           variables: {
             updateStoreInput: {
               id: storeData.id,
+              userId: userRole,
+              activity: 'Cart Rewards Management',
               drops: {
                 ...storeData?.drops,
                 cartRewards: cartRewards.filter((reward: any) => reward.id !== deleteId),
@@ -137,7 +141,7 @@ const DynamicCartRewards = ({ storeData, getStore, showToast }: any) => {
           </Table>
         </TableContainer>
       </Card>
-      {cartRewardFlag ? <AddCartRewards show={cartRewardFlag} hide={(data: any) => handleCartReward(data)} storeData={storeData} editData={editData} /> : ''}
+      {cartRewardFlag ? <AddCartRewards show={cartRewardFlag} hide={(data: any) => handleCartReward(data)} storeData={storeData} userRole={userRole} editData={editData} /> : ''}
       {deleteId ? <RemoveIdsModal show={deleteId} close={async (data: any) => hanleRemove(data)} removedDropsCategoryLoading={updateLoading} /> : ''}
     </div>
   );

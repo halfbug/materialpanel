@@ -296,8 +296,8 @@ const DROPS_CATEGORY_UPDATE = gql`
 `;
 
 const DROPS_CATEGORY_REMOVE = gql`
-  mutation removeDropsCategory($id: [String!]!, $collectionUpdateMsg: String!) {
-    removeDropsCategory(id: $id, collectionUpdateMsg: $collectionUpdateMsg) {
+  mutation removeDropsCategory($id: [String!]!, $collectionUpdateMsg: String!, $userId: String!, $storeId: String!) {
+    removeDropsCategory(id: $id, collectionUpdateMsg: $collectionUpdateMsg, userId: $userId, storeId: $storeId) {
       title
     }
   }
