@@ -19,9 +19,9 @@ import {
 import { NextPage } from 'next';
 import { useContext, useEffect, useState } from 'react';
 import usePermission from '@/hooks/usePermission';
-import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { AuthContext } from '@/contexts/auth.context';
 import { StoreContext } from '@/store/store.context';
+import Tabs from '@/components/Tabs/tabs';
 import FavouriteStore from './FavouriteStore';
 
 interface THeader {
@@ -33,8 +33,6 @@ const StoreList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
   const { user } = useContext(AuthContext);
   const { store, dispatch } = useContext(StoreContext);
   // console.log('merchant', userPermission);
-
-  const [tab, setTab] = useState<string>('1');
 
   const {
     loading, data, error, refetch,
@@ -149,10 +147,6 @@ const StoreList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
     }
   }, [columnData, userPermissions]);
 
-  const handleChangeTab = (_: any, newValue: any) => {
-    setTab(newValue);
-  };
-
   useEffect(() => {
     if (allUserData?.getAdminUsers) {
       const tempFavStore = allUserData.getAdminUsers?.find((ele: any) => ele?.email === user?.email);
@@ -195,37 +189,36 @@ const StoreList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
         <PageHeader meta={meta} pagetitle="" />
       </PageTitleWrapper>
       <Container maxWidth="lg">
-        <Box sx={{ width: '100%', typography: 'body1' }}>
-          <TabContext value={tab}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-              <TabList onChange={handleChangeTab} aria-label="lab API tabs example">
-                <Tab label="All Store" value="1" />
-                <Tab label="Favourite Store" value="2" />
-              </TabList>
-            </Box>
-            <TabPanel value="1">
-              <Grid
-                container
-                direction="row"
-                justifyContent="center"
-                alignItems="stretch"
-                spacing={3}
-                style={{ marginTop: '10px' }}
-              >
-                <Grid item xs={12}>
+        <Tabs
+          tabList={[
+            {
+              label: 'All Store',
+              value: '1',
+              component:
+  <Grid
+    container
+    direction="row"
+    justifyContent="center"
+    alignItems="stretch"
+    spacing={3}
+    style={{ marginTop: '10px' }}
+  >
+    <Grid item xs={12}>
 
-                  <Card sx={{ padding: 3 }}>
-                    {loading && <LinearIndeterminate />}
-                    <EnhancedTable headCells={columnData ?? []} rows={data?.stores ?? []} orderByFieldName="brandName" allUser={store?.userData?.favouriteStore} />
-                  </Card>
-                </Grid>
-              </Grid>
-            </TabPanel>
-            <TabPanel value="2">
-              <FavouriteStore stores={data?.stores ?? []} loading={loading} changeTab={setTab} />
-            </TabPanel>
-          </TabContext>
-        </Box>
+      <Card sx={{ padding: 3 }}>
+        {loading && <LinearIndeterminate />}
+        <EnhancedTable headCells={columnData ?? []} rows={data?.stores ?? []} orderByFieldName="brandName" allUser={store?.userData?.favouriteStore} />
+      </Card>
+    </Grid>
+  </Grid>,
+            },
+            {
+              label: 'Favourite Store',
+              value: '2',
+              component: <FavouriteStore stores={data?.stores ?? []} loading={loading} />,
+            },
+          ]}
+        />
       </Container>
       <Footer />
     </>

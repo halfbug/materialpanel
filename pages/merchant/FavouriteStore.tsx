@@ -12,7 +12,7 @@ import { Card, Grid, IconButton } from '@mui/material';
 import React, { useState, useEffect, useContext } from 'react';
 
 const FavouriteStore = ({
-  stores, loading, changeTab,
+  stores, loading,
 }: any) => {
   const { userPermissions } = usePermission();
   const { store, dispatch } = useContext(StoreContext);
@@ -24,9 +24,6 @@ const FavouriteStore = ({
   useEffect(() => {
     if (updatedAdminUserData?.updateAdminUser) {
       dispatch({ type: 'USER_DATA', payload: updatedAdminUserData?.updateAdminUser });
-      if (!updatedAdminUserData?.updateAdminUser?.favouriteStore.length) {
-        changeTab('1');
-      }
     }
   }, [updatedAdminUserData]);
 

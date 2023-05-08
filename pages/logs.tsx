@@ -9,6 +9,8 @@ import Footer from '@/components/Footer';
 import { useQuery } from '@apollo/client';
 import LinearIndeterminate from '@/components/Progress/Linear';
 import { ALL_LOGS } from '@/graphql/store.graphql';
+import Tabs from '@/components/Tabs/tabs';
+import { useState } from 'react';
 
 function Logs() {
   const {
@@ -101,16 +103,23 @@ function Logs() {
         <PageHeader pagetitle="Logs" />
       </PageTitleWrapper>
       <Container maxWidth="lg">
-        <Grid
-          container
-          direction="row"
-          justifyContent="center"
-          alignItems="stretch"
-          spacing={3}
-        >
-          <Grid item xs={12}>
-            <Card sx={{ padding: 3 }}>
-              {/* <div style={{ display: 'flex', height: '70vh' }}>
+        <Tabs
+          tabList={[
+            {
+              label: 'Logs List',
+              value: '1',
+              component:
+  <Grid
+    container
+    direction="row"
+    justifyContent="center"
+    alignItems="stretch"
+    spacing={3}
+    style={{ marginTop: '10px' }}
+  >
+    <Grid item xs={12}>
+      <Card sx={{ padding: 3 }}>
+        {/* <div style={{ display: 'flex', height: '70vh' }}>
                 <div style={{ flexGrow: 1 }}>
                   <DataGrid
                     rows={rows}
@@ -121,11 +130,14 @@ function Logs() {
                   />
                 </div>
               </div> */}
-              {loading && <LinearIndeterminate />}
-              <EnhancedTable headCells={headCells} rows={data?.apploggers ?? []} orderByFieldName="createdAt" />
-            </Card>
-          </Grid>
-        </Grid>
+        {loading && <LinearIndeterminate />}
+        <EnhancedTable headCells={headCells} rows={data?.apploggers ?? []} orderByFieldName="createdAt" />
+      </Card>
+    </Grid>
+  </Grid>,
+            },
+          ]}
+        />
       </Container>
       <Footer />
     </>

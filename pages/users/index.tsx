@@ -22,6 +22,7 @@ import usePermission from '@/hooks/usePermission';
 import { useRouter } from 'next/router';
 import RemoveIdsModal from '@/models/RemoveIdsModal';
 import { StoreContext } from '@/store/store.context';
+import Tabs from '@/components/Tabs/tabs';
 
 const UserList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
   const { dispatch, store } = useContext(StoreContext);
@@ -177,6 +178,39 @@ const UserList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
         <PageHeader pagetitle="Users" />
       </PageTitleWrapper>
       <Container maxWidth="lg">
+        <Tabs
+          tabList={[
+            {
+              label: 'Users List',
+              value: '1',
+              component:
+  <>
+    {((userPermissions?.includes('/users/add'))) && (
+    <Grid item xs={12}>
+      <p><NextLink href="/users/add" passHref>Add User </NextLink></p>
+    </Grid>
+    )}
+    <Grid
+      container
+      direction="row"
+      justifyContent="center"
+      alignItems="stretch"
+      spacing={3}
+      style={{ marginTop: '0px' }}
+    >
+      <Grid item xs={12}>
+
+        <Card sx={{ padding: 3 }}>
+          {loading && <LinearIndeterminate />}
+
+          <EnhancedTable headCells={columnData} rows={data?.getAdminUsers ?? []} orderByFieldName="firstName" />
+        </Card>
+      </Grid>
+    </Grid>
+  </>,
+            },
+          ]}
+        />
         {((userPermissions?.includes('/users/add'))) && (
         <Grid item xs={12}>
           <p><NextLink href="/users/add" passHref>Add User </NextLink></p>

@@ -20,6 +20,7 @@ import NextLink from 'next/link';
 import { useEffect, useState } from 'react';
 import usePermission from '@/hooks/usePermission';
 import RemoveIdsModal from '@/models/RemoveIdsModal';
+import Tabs from '@/components/Tabs/tabs';
 
 const RoleList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
   const [columnData, setColumnData] = useState([]);
@@ -180,36 +181,47 @@ const RoleList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
         <PageHeader pagetitle="Admin User Roles" />
       </PageTitleWrapper>
       <Container maxWidth="lg">
-        {((userPermissions?.includes('/roles/add'))) && (
-        <Grid item xs={12}>
-          <p><NextLink href="/roles/add" passHref>Add Admin Role </NextLink></p>
-        </Grid>
-        )}
-        <Grid
-          container
-          direction="row"
-          justifyContent="center"
-          alignItems="stretch"
-          spacing={3}
-          style={{ marginTop: '0px' }}
-        >
-          <Grid item xs={12}>
+        <Tabs
+          tabList={[
+            {
+              label: 'Roles List',
+              value: '1',
+              component:
+  <>
+    {((userPermissions?.includes('/roles/add'))) && (
+    <Grid item xs={12}>
+      <p><NextLink href="/roles/add" passHref>Add Admin Role </NextLink></p>
+    </Grid>
+    )}
+    <Grid
+      container
+      direction="row"
+      justifyContent="center"
+      alignItems="stretch"
+      spacing={3}
+      style={{ marginTop: '0px' }}
+    >
+      <Grid item xs={12}>
 
-            <Card sx={{ padding: 3 }}>
-              {loading && <LinearIndeterminate />}
-              <div style={{ display: 'flex', height: '70vh' }}>
-                <div style={{ flexGrow: 1 }}>
-                  <DataGrid
-                    rows={data?.getAdminRoles ?? []}
-                    columns={columnData}
-                    pageSize={25}
-                    rowsPerPageOptions={[5, 10, 25]}
-                  />
-                </div>
-              </div>
-            </Card>
-          </Grid>
-        </Grid>
+        <Card sx={{ padding: 3 }}>
+          {loading && <LinearIndeterminate />}
+          <div style={{ display: 'flex', height: '70vh' }}>
+            <div style={{ flexGrow: 1 }}>
+              <DataGrid
+                rows={data?.getAdminRoles ?? []}
+                columns={columnData}
+                pageSize={25}
+                rowsPerPageOptions={[5, 10, 25]}
+              />
+            </div>
+          </div>
+        </Card>
+      </Grid>
+    </Grid>
+  </>,
+            },
+          ]}
+        />
       </Container>
       <Footer />
       {deleteIdModal ? <RemoveIdsModal show={deleteIdModal} close={(close: any) => handleRemoveUser(close)} removedDropsCategoryLoading={removeAdminRoleLoading} /> : ''}

@@ -27,6 +27,7 @@ import 'ag-grid-community/styles/ag-theme-alpine.css';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { CodeUpdateStatusTypeEnum } from 'pages/drops';
+import Tabs from '@/components/Tabs/tabs';
 
 function Videoupload() {
   const gridRef = useRef();
@@ -98,96 +99,104 @@ function Videoupload() {
         </div>
       </PageTitleWrapper>
       <Container maxWidth="lg">
-        <Grid
-          container
-          direction="row"
-          justifyContent="center"
-          alignItems="stretch"
-          spacing={3}
-        >
-          <Grid item xs={12}>
-            <Card>
-              <CardHeader title="Upload Video" />
-              <Divider />
-              <CardContent>
-                {isLoading && <LinearIndeterminate />}
-                <Box
-                  component="form"
-                  sx={{
-                    '& .MuiTextField-root': { m: 1, width: '25ch' },
-                  }}
-                  noValidate
-                  autoComplete="off"
-                >
-                  <TextField
-                    onChange={(e) => handleChangeVideo(e)}
-                    id="standard-helperText"
-                    type="file"
-                    inputProps={{
-                      multiple: true,
-                      accept: 'video/*',
-                    }}
-                    disabled={isLoading}
-                    value={fileName}
-                  />
-                </Box>
-                <div>
-                  <div>
-                    <div>
-                      {errFlag && <span style={{ marginLeft: '12px', color: 'red' }}>{errFlag}</span>}
-                    </div>
-                    <div>
-                      {videoError.map((ele: any) => (
-                        <>
-                          <span style={{ marginLeft: '12px', color: 'red' }}>{ele}</span>
-                          <br />
-                        </>
-                      ))}
-                    </div>
-                  </div>
-                  <div style={{ marginLeft: '12px', marginTop: '10px' }}>
-                    {selectVideo.length}
-                    {' '}
-                    of 5 Video selected (Max 5)
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12}>
-            <Card>
-              <Grid container xs={12} style={{ justifyContent: 'space-between' }}>
-                <CardHeader title="Uploaded video List" />
-                <Button sx={{ margin: 1 }} style={{ right: '10px' }} variant="contained" onClick={() => handleClick()} disabled={isLoading}>Submit</Button>
-              </Grid>
-              <Divider />
-              <CardContent>
-                {rows.length > 0 && (
-                  <div style={{ height: '100%', width: '100%' }} className="ag-theme-alpine">
-                    <AgGridReact
-                      domLayout="autoHeight"
-                      ref={gridRef}
-                      rowData={rows}
-                      columnDefs={columnDefs}
-                      defaultColDef={defaultColDef}
-                      immutableData
-                      rowSelection="multiple"
-                      suppressRowClickSelection
-                      isRowSelectable={isRowSelectable}
-                      rowDragManaged
-                      animateRows
-                      onRowDragMove={onRowDragMove}
-                      onFirstDataRendered={onFirstDataRendered}
-                      onGridSizeChanged={onGridSizeChanged}
-                      getRowNodeId={getRowNodeId}
-                      onSelectionChanged={onSelectionChanged}
-                    />
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </Grid>
+        <Tabs
+          tabList={[{
+            label: 'Video List',
+            value: '1',
+            component:
+  <Grid
+    container
+    direction="row"
+    justifyContent="center"
+    alignItems="stretch"
+    spacing={3}
+    style={{ marginTop: '10px' }}
+  >
+    <Grid item xs={12}>
+      <Card>
+        <CardHeader title="Upload Video" />
+        <Divider />
+        <CardContent>
+          {isLoading && <LinearIndeterminate />}
+          <Box
+            component="form"
+            sx={{
+              '& .MuiTextField-root': { m: 1, width: '25ch' },
+            }}
+            noValidate
+            autoComplete="off"
+          >
+            <TextField
+              onChange={(e) => handleChangeVideo(e)}
+              id="standard-helperText"
+              type="file"
+              inputProps={{
+                multiple: true,
+                accept: 'video/*',
+              }}
+              disabled={isLoading}
+              value={fileName}
+            />
+          </Box>
+          <div>
+            <div>
+              <div>
+                {errFlag && <span style={{ marginLeft: '12px', color: 'red' }}>{errFlag}</span>}
+              </div>
+              <div>
+                {videoError.map((ele: any) => (
+                  <>
+                    <span style={{ marginLeft: '12px', color: 'red' }}>{ele}</span>
+                    <br />
+                  </>
+                ))}
+              </div>
+            </div>
+            <div style={{ marginLeft: '12px', marginTop: '10px' }}>
+              {selectVideo.length}
+              {' '}
+              of 5 Video selected (Max 5)
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </Grid>
+    <Grid item xs={12} style={{ marginTop: '10px' }}>
+      <Card>
+        <Grid container xs={12} style={{ justifyContent: 'space-between' }}>
+          <CardHeader title="Uploaded video List" />
+          <Button sx={{ margin: 1 }} style={{ right: '10px' }} variant="contained" onClick={() => handleClick()} disabled={isLoading}>Submit</Button>
         </Grid>
+        <Divider />
+        <CardContent>
+          {rows.length > 0 && (
+          <div style={{ height: '100%', width: '100%' }} className="ag-theme-alpine">
+            <AgGridReact
+              domLayout="autoHeight"
+              ref={gridRef}
+              rowData={rows}
+              columnDefs={columnDefs}
+              defaultColDef={defaultColDef}
+              immutableData
+              rowSelection="multiple"
+              suppressRowClickSelection
+              isRowSelectable={isRowSelectable}
+              rowDragManaged
+              animateRows
+              onRowDragMove={onRowDragMove}
+              onFirstDataRendered={onFirstDataRendered}
+              onGridSizeChanged={onGridSizeChanged}
+              getRowNodeId={getRowNodeId}
+              onSelectionChanged={onSelectionChanged}
+            />
+          </div>
+          )}
+        </CardContent>
+      </Card>
+    </Grid>
+  </Grid>,
+          }]}
+        />
       </Container>
       <Footer />
     </>
