@@ -41,7 +41,7 @@ function DropsList({
     {
       field: 'status',
       headerName: 'Status',
-      width: 120,
+      width: 100,
       renderCell: getStatusLabel,
     },
     {
@@ -56,6 +56,12 @@ function DropsList({
       width: 150,
       // eslint-disable-next-line max-len
       valueGetter: (params: GridValueGetterParams) => ((params.row.customerDetail.firstName !== null && params.row.customerDetail.firstName !== '') ? params.row.customerDetail.firstName : params.row.customerDetail.fullName),
+    },
+    {
+      field: 'store',
+      headerName: 'Store Name',
+      width: 220,
+      valueGetter: (params: GridValueGetterParams) => params.row.store?.shop || '',
     },
     {
       field: 'createdAt',

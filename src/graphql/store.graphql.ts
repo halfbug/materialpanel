@@ -109,7 +109,9 @@ query getDrops($gridargs:GridArgs! ){
       title
     }
     createdAt
- 
+    store{
+      shop
+    }
     }
   }
 }
