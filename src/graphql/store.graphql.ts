@@ -36,14 +36,24 @@ query stores{
 `;
 
 const ALL_LOGS = gql`
-query apploggers{
-  apploggers{
-    id
-    context
-    level
-    stack
-    message
-    createdAt
+query apploggers($gridargs:GridArgs! ){
+  apploggers(gridArgs:$gridargs){
+    pageInfo {
+      total
+      count
+      currentPage
+      lastPage
+      hasNextPage
+      hasPreviousPage
+    }
+    result{
+      id
+      context
+      level
+      stack
+      message
+      createdAt
+    }
   }
 }
 `;
