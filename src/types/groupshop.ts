@@ -42,6 +42,7 @@ export interface IUser {
      email: string;
      id:string;
      name?: string;
+     userId?: string;
      userRole?: string;
      avatar?: string,
      jobtitle?: string,

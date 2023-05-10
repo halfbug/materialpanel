@@ -27,9 +27,9 @@ import {
 } from '@mui/material';
 import Footer from '@/components/Footer';
 import {
-  DEFAULT_DISCOUNT, DROPS_CATEGORY_REMOVE, DROPS_CATEGORY_UPDATE, DROPS_UPDATE, FIND_LATEST_LOG, GET_DROPS_CATEGORY, GET_INVENTORY_BY_ID, GET_STORE_DETAILS, GET_UPDATE_CODES_STATUS, SYNC_DISCOUNT_CODES,
+  DEFAULT_DISCOUNT, DROPS_CATEGORY_REMOVE, DROPS_CATEGORY_UPDATE, DROPS_UPDATE, FIND_LATEST_LOG, GET_DROPS_CATEGORY, GET_INVENTORY_BY_ID, GET_STORE_DETAILS, GET_UPDATE_CODES_STATUS, SYNC_DISCOUNT_CODES, DROPS_ACTIVITY,
 } from '@/graphql/store.graphql';
-import { useMutation, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
@@ -50,6 +50,7 @@ import TabPanel from '@mui/lab/TabPanel';
 import Tab from '@mui/material/Tab';
 import Tabs from '@/components/Tabs/tabs';
 import { AuthContext } from '@/contexts/auth.context';
+import DynamicAuditHistory from 'pages/components/forms/dynamicAuditHistory';
 import DropKlaviyoForm from '../components/forms/klaviyoForm';
 import DynamicCartRewards from '../components/forms/dynamicCartRewards';
 
@@ -62,6 +63,7 @@ export enum CodeUpdateStatusTypeEnum {
 
 const Drops = () => {
   const router = useRouter();
+  const currentRoute = router.pathname;
   const { sid } = router.query;
   const { user } = useContext(AuthContext);
   const dropsUpdatedMessage = 'Drops updated successfully!';
@@ -82,6 +84,7 @@ const Drops = () => {
   const [intervalID, setIntervalID] = useState<any>('');
   const [dropsCount, setdropsCount] = useState<number>(0);
   const [sectionData, setSectionData] = useState<any[]>([]);
+  const [activityLogs, setActivityLogs] = useState<any[]>([]);
   const [collectionEditData, setCollectionEditData] = useState<any>('');
   const [sectionModal, setSectionModal] = useState<boolean>(false);
   const [deleteIdModal, setDeleteIdModal] = useState<boolean>(false);
@@ -151,6 +154,17 @@ const Drops = () => {
       setlatestLogDate(getDMYFormatedDate(latestLogData?.findLatestLog.createdAt));
     }
   }, [latestLogData]);
+
+  const [getActivity, { data: dataActivity }] = useLazyQuery(DROPS_ACTIVITY, {
+    fetchPolicy: 'network-only',
+    onCompleted: (allActivity) => {
+      setActivityLogs(allActivity.dropsActivity);
+    },
+  });
+
+  useEffect(() => {
+    getActivity({ variables: { route: currentRoute, storeId: sid } });
+  }, [sid, currentRoute]);
 
   const { data: rdata, refetch: progressStatus } = useQuery(GET_UPDATE_CODES_STATUS, {
     skip: !sid,
@@ -319,7 +333,7 @@ const Drops = () => {
         variables: {
           updateStoreInput: {
             id: sid,
-            userId: user?.userRole,
+            userId: user?.userId,
             activity: 'Drops Milestone Management',
             drops: {
               ...storeData?.drops,
@@ -353,7 +367,7 @@ const Drops = () => {
       variables: {
         updateStoreInput: {
           id: sid,
-          userId: user?.userRole,
+          userId: user?.userId,
           activity: 'Klaviyo Integration',
           drops: {
             ...storeData?.drops,
@@ -420,7 +434,7 @@ const Drops = () => {
       variables: {
         updateStoreInput: {
           id: sid,
-          userId: user?.userRole,
+          userId: user?.userId,
           drops: {
             ...storeData.drops,
             status: value,
@@ -495,7 +509,7 @@ const Drops = () => {
           await removeDropsCategory({
             variables: {
               id: tempDeleteIds,
-              userId: user?.userRole,
+              userId: user?.userId,
               storeId: sid,
               collectionUpdateMsg,
             },
@@ -550,7 +564,7 @@ const Drops = () => {
           variables: {
             CreateDropsCategoryForFront: {
               id: sid,
-              userId: user?.userRole,
+              userId: user?.userId,
               activity: 'Update Sorting Order',
               categoryData: updatedCategoryData,
             },
@@ -836,11 +850,19 @@ const Drops = () => {
     <DynamicCartRewards storeData={storeData} getStore={refetch} showToast={setSuccessToast} />
   </Grid>,
             },
+            {
+              label: 'Audit Logs',
+              value: '5',
+              component:
+  <Grid item xs={6}>
+    <DynamicAuditHistory activityLogs={activityLogs} />
+  </Grid>,
+            },
           ]}
         />
       </Container>
       <Footer />
-      {sectionModal ? <SectionModal show={sectionModal} close={(data: any) => handleSectionModal(data)} sectionData={sectionData} collectionEditData={collectionEditData} userRole={user?.userRole} /> : ''}
+      {sectionModal ? <SectionModal show={sectionModal} close={(data: any) => handleSectionModal(data)} sectionData={sectionData} collectionEditData={collectionEditData} userRole={user?.userId} /> : ''}
       {deleteIdModal ? <RemoveIdsModal show={deleteIdModal} close={(data: any) => hanleRemove(data)} childData={removeNavigationMngData?.children} removedDropsCategoryLoading={removedDropsCategoryLoading} /> : ''}
     </>
   );

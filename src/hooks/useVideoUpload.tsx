@@ -200,7 +200,7 @@ const useVideoUpload = (gridRef: any) => {
                 await videoPost({
                   variables: {
                     createVideoInput: {
-                      userId: user?.userRole,
+                      userId: user?.userId,
                       activity: 'Video Management',
                       storeId: sid,
                       type: el.Location,
@@ -253,7 +253,7 @@ const useVideoUpload = (gridRef: any) => {
                 await videoPost({
                   variables: {
                     createVideoInput: {
-                      userId: user?.userRole,
+                      userId: user?.userId,
                       activity: 'Video Management',
                       storeId: sid,
                       type: el.Location,
@@ -323,7 +323,7 @@ const useVideoUpload = (gridRef: any) => {
     videoStatusUpdate({
       variables: {
         updateVideoInput: {
-          userId: user?.userRole,
+          userId: user?.userId,
           activity: 'Video Management',
           selectedIds: selectedVideoIds,
           storeId: sid,

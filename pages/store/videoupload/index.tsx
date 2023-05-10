@@ -21,16 +21,36 @@ import useVideoUpload from '@/hooks/useVideoUpload';
 import LinearIndeterminate from '@/components/Progress/Linear';
 import 'react-data-grid/lib/styles.css';
 import { AgGridReact } from 'ag-grid-react';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { CodeUpdateStatusTypeEnum } from 'pages/drops';
 import Tabs from '@/components/Tabs/tabs';
+import DynamicAuditHistory from 'pages/components/forms/dynamicAuditHistory';
+import { useRouter } from 'next/router';
+import { DROPS_ACTIVITY } from '@/graphql/store.graphql';
+import { useLazyQuery } from '@apollo/client';
 
 function Videoupload() {
   const gridRef = useRef();
+  const router = useRouter();
+  const { sid } = router.query;
+  const currentRoute = router.pathname;
+  const [activityLogs, setActivityLogs] = useState<any[]>([]);
+
+  const [getActivity, { data: dataActivity }] = useLazyQuery(DROPS_ACTIVITY, {
+    fetchPolicy: 'network-only',
+    onCompleted: (allActivity) => {
+      setActivityLogs(allActivity.dropsActivity);
+    },
+  });
+
+  useEffect(() => {
+    getActivity({ variables: { route: currentRoute, storeId: sid } });
+  }, [sid, currentRoute]);
+
   const {
     rows,
     errFlag,
@@ -194,6 +214,14 @@ function Videoupload() {
         </CardContent>
       </Card>
     </Grid>
+  </Grid>,
+          },
+          {
+            label: 'Audit Logs',
+            value: '5',
+            component:
+  <Grid item xs={6}>
+    <DynamicAuditHistory activityLogs={activityLogs} />
   </Grid>,
           }]}
         />

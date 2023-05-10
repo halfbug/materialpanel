@@ -505,6 +505,48 @@ query findById($id: String!) {
 }
 `;
 
+const DROPS_ACTIVITY = gql`
+query dropsActivity($route: String!, $storeId: String!) {
+  dropsActivity(route: $route, storeId: $storeId) {
+    id
+    context
+    operation
+    user{
+      firstName
+      lastName
+      email
+    }
+    changes{
+      id
+      parentTitle
+      fieldname
+      oldvalue
+      newValue
+      title
+      parentId
+      sortOrder
+      status      
+      rewardTitle      
+      rewardValue
+      name
+      type
+      orderId
+      brandName
+      discoveryTool{
+        id
+        brandName
+      }
+      collections{
+        name
+        shopifyId
+        type
+      }
+    }
+    createdAt  
+  }
+}
+`;
+
 export {
   ALL_STORES, ALL_LOGS, VIDEO_POST, GET_ALL_VIDEOS, VIDEOS_UPDATE, DISCOVERYTOOLS_UPDATE,
   DROPS_UPDATE, GET_STORE_DETAILS, DEFAULT_DISCOUNT, ALL_DROPS, DROPS_PAGE, GET_UPDATE_CODES_STATUS,
@@ -512,5 +554,5 @@ export {
   DROPS_CATEGORY_REMOVE, ALL_USERS, GET_USER, UPDATE_ADMIN_USER, CREATE_ADMIN_USER,
   CREATE_ADMIN_USER_ROLE, ALL_ADMIN_USERS_ROLES, UPDATE_ADMIN_USER_ROLE, FIND_ADMIN_ROLE_BY_NAME,
   FIND_ADMIN_PERMISSION, SYNC_DISCOUNT_CODES, FIND_LATEST_LOG, REMOVE_USER, REMOVE_ROLE,
-  GET_INVENTORY_BY_ID,
+  GET_INVENTORY_BY_ID, DROPS_ACTIVITY,
 };

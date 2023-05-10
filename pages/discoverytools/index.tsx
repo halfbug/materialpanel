@@ -23,7 +23,7 @@ import {
 } from '@mui/material';
 import Footer from '@/components/Footer';
 import Box from '@mui/material/Box';
-import { ALL_STORES, DISCOVERYTOOLS_UPDATE } from '@/graphql/store.graphql';
+import { ALL_STORES, DISCOVERYTOOLS_UPDATE, DROPS_ACTIVITY } from '@/graphql/store.graphql';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import MenuTwoToneIcon from '@mui/icons-material/MenuTwoTone';
 import { useRouter } from 'next/router';
@@ -34,6 +34,7 @@ import DraggableList from 'react-draggable-list';
 import { StoreContext } from '@/store/store.context';
 import Tabs from '@/components/Tabs/tabs';
 import { AuthContext } from '@/contexts/auth.context';
+import DynamicAuditHistory from 'pages/components/forms/dynamicAuditHistory';
 
 const Item: any = ({ item, dragHandleProps }: any) => {
   const { onMouseDown, onTouchStart } = dragHandleProps;
@@ -81,6 +82,7 @@ const Discoverytools = () => {
   const { sid } = router.query;
   const { user } = useContext(AuthContext);
   const [getAllStore, setGetAllStore] = useState<any>();
+  const [activityLogs, setActivityLogs] = useState<any[]>([]);
   const [refetch] = useLazyQuery(ALL_STORES, {
     fetchPolicy: 'network-only',
     onCompleted: (allStore) => {
@@ -95,12 +97,23 @@ const Discoverytools = () => {
   const [matchingBrandName, setMatchingBrandName] = useState<any[]>([]);
   const [selectDiscoverBrandName, setSelectDiscoverBrandName] = useState<any>({});
   const [status, setStatus] = useState<string>('');
-
+  const currentRoute = router.pathname;
   const containerRef = useRef();
 
   useEffect(() => {
     refetch();
   }, []);
+
+  const [getActivity, { data: dataActivity }] = useLazyQuery(DROPS_ACTIVITY, {
+    fetchPolicy: 'network-only',
+    onCompleted: (allActivity) => {
+      setActivityLogs(allActivity.dropsActivity);
+    },
+  });
+
+  useEffect(() => {
+    getActivity({ variables: { route: currentRoute, storeId: sid } });
+  }, [sid, currentRoute]);
 
   useEffect(() => {
     if (store?.matchingBrandNameEvent) {
@@ -158,7 +171,7 @@ const Discoverytools = () => {
       variables: {
         updateDiscoveryTools: {
           id: sid,
-          userId: user?.userRole,
+          userId: user?.userId,
           activity: 'Discovery Tools Management',
           discoveryTool: {
             matchingBrandName: data,
@@ -302,6 +315,14 @@ const Discoverytools = () => {
         </CardContent>
       </Card>
     </Grid>
+  </Grid>,
+            },
+            {
+              label: 'Audit Logs',
+              value: '5',
+              component:
+  <Grid item xs={6}>
+    <DynamicAuditHistory activityLogs={activityLogs} />
   </Grid>,
             },
           ]}
