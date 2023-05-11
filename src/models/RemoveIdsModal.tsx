@@ -46,7 +46,7 @@ const RemoveIdsModal = ({
         ) : ''}
         <div style={{ textAlign: 'end' }}>
           <Button variant="contained" style={{ height: '30px', marginTop: '20px' }} onClick={() => close('')}>Cancel</Button>
-          <Button variant="contained" disabled={removedDropsCategoryLoading} style={{ height: '30px', marginTop: '20px', marginLeft: '10px' }} onClick={() => close('delete')}>Delete</Button>
+          <Button variant="contained" color="error" disabled={removedDropsCategoryLoading} style={{ height: '30px', marginTop: '20px', marginLeft: '10px' }} onClick={() => close('delete')}>Delete</Button>
         </div>
       </Box>
     </Modal>
