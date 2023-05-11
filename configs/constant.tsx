@@ -22,5 +22,11 @@ export enum CategoryStatus {
     DRAFT = 'DRAFT',
 }
 
+export enum LogsLevel {
+    LOG = 'log',
+    ERROR = 'error',
+    WARN = 'warn',
+}
+
 export const BESTSELLERSKEY = 'bestsellers';
 export const CARTREWARDERR = 'Please fill first of all field';

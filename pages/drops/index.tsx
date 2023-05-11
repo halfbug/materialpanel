@@ -337,6 +337,7 @@ const Drops = () => {
             activity: 'Drops Milestone Management',
             drops: {
               ...storeData?.drops,
+              cartRewards: storeData?.drops?.cartRewards ?? [],
               codeUpdateStatus: storeData?.drops?.codeUpdateStatus ?? 'none',
               status: storeData?.drops?.status ?? status,
               collections: [{ name: BESTSELLERSKEY, shopifyId: `gid://shopify/Collection/${values.bestSellers}` }],
@@ -416,7 +417,7 @@ const Drops = () => {
   }, [dropsUpdateData]);
 
   const handleChangeStatus = (e: any) => {
-    if (getDropsCategoryData?.findByStoreId.find((ele: any) => ele.status === CategoryStatus.ACTIVE)) {
+    if (getDropsCategoryData?.findByStoreId.find((ele: any) => ele.status === CategoryStatus.ACTIVE) && storeData?.drops?.collections.find((col: any) => col.name === BESTSELLERSKEY)) {
       if (e.target.value === '1') {
         setStatus('Active');
         updateStatus('Active');

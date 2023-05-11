@@ -10,7 +10,7 @@ function Logs() {
   const [sorting, setSorting] = useState<any[]>([]);
 
   const {
-    logs, pageInfo, loading, error,
+    logs, pageInfo, loading, error, clearLogs, clearLogsLoading, clearLogsData,
   } = useLogsQuery(pagination, filters, sorting);
 
   const handlePageChange = (page) => {
@@ -37,12 +37,14 @@ function Logs() {
     <LogsList
       pagination={pagination}
       onPageChange={handlePageChange}
-      loading={loading}
+      loading={loading || clearLogsLoading}
       logs={logs}
       pageInfo={pageInfo}
       onPageSizeChange={handlePageSize}
       onFilterModelChange={handleFilterModelChange}
       onSortModelChange={handleSortModelChange}
+      clearLogs={clearLogs}
+      clearLogsData={clearLogsData}
     />
   );
 }
