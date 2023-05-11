@@ -243,7 +243,7 @@ function SidebarMenu() {
                 onClick={closeSidebar}
                 startIcon={<BrightnessLowTwoToneIcon />}
               >
-                Dashboard
+                Stores
               </Button>
             </NextLink>
           </ListItem>
