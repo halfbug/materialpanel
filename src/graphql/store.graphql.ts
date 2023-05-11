@@ -500,7 +500,6 @@ query findById($id: String!) {
   findById(id: $id) {
     id
     title
-    type
   }
 }
 `;
