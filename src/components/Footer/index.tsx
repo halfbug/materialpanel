@@ -20,7 +20,7 @@ function Footer() {
       >
         <Box>
           <Typography variant="subtitle1">
-            &copy; 2022 - GS Admin
+            &copy; 2023 - GS Admin
           </Typography>
         </Box>
         {/* <Typography
