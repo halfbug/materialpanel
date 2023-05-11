@@ -40,7 +40,7 @@ function PageHeader({
       )
         : (
           <Grid item>
-            <Typography variant="h3" component="h3" gutterBottom>
+            <Typography variant="h3" component="h3" mt={2} gutterBottom>
               {title ?? 'Dashboard'}
             </Typography>
             <Typography variant="subtitle2" className="title_case">
