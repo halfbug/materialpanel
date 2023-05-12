@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-param-reassign */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
@@ -27,7 +28,7 @@ import {
 } from '@mui/material';
 import Footer from '@/components/Footer';
 import {
-  DEFAULT_DISCOUNT, DROPS_CATEGORY_REMOVE, DROPS_CATEGORY_UPDATE, DROPS_UPDATE, FIND_LATEST_LOG, GET_DROPS_CATEGORY, GET_INVENTORY_BY_ID, GET_STORE_DETAILS, GET_UPDATE_CODES_STATUS, SYNC_DISCOUNT_CODES, DROPS_ACTIVITY,
+  DEFAULT_DISCOUNT, DROPS_CATEGORY_REMOVE, DROPS_CATEGORY_UPDATE, DROPS_UPDATE, FIND_LATEST_LOG, GET_DROPS_CATEGORY, GET_INVENTORY_BY_ID, GET_STORE_DETAILS, GET_UPDATE_CODES_STATUS, SYNC_DISCOUNT_CODES, DROPS_ACTIVITY, SYNC_COLLECTIONS, GET_UPDATE_COLLECTION_STATUS,
 } from '@/graphql/store.graphql';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
@@ -61,6 +62,11 @@ export enum CodeUpdateStatusTypeEnum {
   completed = 'completed',
 }
 
+export enum CollectionStatusTypeEnum {
+  PROGRESS = 'PROGRESS',
+  COMPLETE = 'COMPLETE',
+}
+
 const Drops = () => {
   const router = useRouter();
   const currentRoute = router.pathname;
@@ -81,7 +87,9 @@ const Drops = () => {
   const [storeData, setStoreData] = useState<any>({});
   const [lastSync, setlastsync] = useState<any>(null);
   const [codeUpdateStatus, setcodeUpdateStatus] = useState<CodeUpdateStatusTypeEnum>(CodeUpdateStatusTypeEnum.none);
+  const [collectionStatus, setCollectionStatus] = useState<CollectionStatusTypeEnum>(CollectionStatusTypeEnum.COMPLETE);
   const [intervalID, setIntervalID] = useState<any>('');
+  const [collectionIntervalID, setCollectionIntervalID] = useState<any>('');
   const [dropsCount, setdropsCount] = useState<number>(0);
   const [sectionData, setSectionData] = useState<any[]>([]);
   const [activityLogs, setActivityLogs] = useState<any[]>([]);
@@ -146,6 +154,10 @@ const Drops = () => {
     fetchPolicy: 'network-only',
   });
 
+  const [syncCollections, { data: syncCollectionsData }] = useLazyQuery(SYNC_COLLECTIONS, {
+    fetchPolicy: 'network-only',
+  });
+
   useEffect(() => {
     if (latestLogData?.findLatestLog) {
       const arr = latestLogData?.findLatestLog.message.split('\n');
@@ -175,6 +187,27 @@ const Drops = () => {
     onError() {
       setcodeUpdateStatus(CodeUpdateStatusTypeEnum.none);
       clearInterval(intervalID);
+    },
+  });
+
+  // const { data: collectionProgressStatusData, refetch: collectionProgressStatus } = useQuery(GET_UPDATE_COLLECTION_STATUS, {
+  //   skip: !sid,
+  //   // skip: (!sid && collectionStatus === CollectionStatusTypeEnum.PROGRESS),
+  //   variables: {
+  //     storeId: sid,
+  //   },
+  //   fetchPolicy: 'network-only',
+  //   onError() {
+  //     setCollectionStatus(CollectionStatusTypeEnum.COMPLETE);
+  //     clearInterval(collectionIntervalID);
+  //   },
+  // });
+
+  const [collectionProgressStatus, { data: collectionProgressStatusData }] = useLazyQuery(GET_UPDATE_COLLECTION_STATUS, {
+    fetchPolicy: 'network-only',
+    onError: () => {
+      setCollectionStatus(CollectionStatusTypeEnum.COMPLETE);
+      clearInterval(collectionIntervalID);
     },
   });
 
@@ -223,10 +256,26 @@ const Drops = () => {
     }
   }, [syncDiscountCodesData]);
 
+  useEffect(() => {
+    if (syncCollectionsData?.syncCollection[0]?.status === CollectionStatusTypeEnum.PROGRESS) {
+      setCollectionStatus(CollectionStatusTypeEnum.PROGRESS);
+    }
+  }, [syncCollectionsData]);
+
   const syncDiscountCodesFun = () => {
     (async () => {
       try {
         await syncDiscountCodes();
+      } catch (err) {
+        console.log(err);
+      }
+    })();
+  };
+
+  const handleSyncCollections = () => {
+    (async () => {
+      try {
+        await syncCollections({ variables: { storeId: sid } });
       } catch (err) {
         console.log(err);
       }
@@ -272,14 +321,32 @@ const Drops = () => {
   }, [JSON.stringify(rdata)]);
 
   useEffect(() => {
+    if (collectionProgressStatusData?.getUpdateCollectionStatus?.collectionUpdateStatus === CollectionStatusTypeEnum.COMPLETE) {
+      setCollectionStatus(CollectionStatusTypeEnum.COMPLETE);
+      clearInterval(collectionIntervalID);
+    }
+  }, [JSON.stringify(collectionProgressStatusData)]);
+
+  useEffect(() => {
     if (codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress) {
       const myIntervalID = setInterval(progressFunction, 5000);
       setIntervalID(myIntervalID);
     }
   }, [codeUpdateStatus]);
 
+  useEffect(() => {
+    if (collectionStatus === CollectionStatusTypeEnum.PROGRESS) {
+      const myIntervalID = setInterval(collectionProgressFunction, 5000);
+      setCollectionIntervalID(myIntervalID);
+    }
+  }, [collectionStatus]);
+
   const progressFunction = () => {
     progressStatus();
+  };
+
+  const collectionProgressFunction = () => {
+    collectionProgressStatus({ variables: { storeId: sid } });
   };
 
   const handleForm = (field: string, value: string) => {
@@ -657,7 +724,7 @@ const Drops = () => {
           ) : ''}
         </div>
       </PageTitleWrapper>
-      <Container maxWidth="lg" style={{ marginBottom: '20px' }}>
+      <Container maxWidth="lg" style={{ marginBottom: '35px' }}>
         <Grid
           container
           direction="row"
@@ -702,13 +769,24 @@ const Drops = () => {
         >
           <Grid item xs={12}>
             <Card style={{ paddingLeft: '20px', paddingRight: '20px' }}>
+              {collectionStatus === CollectionStatusTypeEnum.PROGRESS && <LinearIndeterminate />}
               <div>
-                <h4 style={{ whiteSpace: 'nowrap' }}>
-                  <>
-                    Last update in collection ids
-                    {latestLogDate ? ` - (${latestLogDate})` : ''}
-                  </>
-                </h4>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <h4 style={{ whiteSpace: 'nowrap' }}>
+                    <>
+                      Last update in collection ids
+                      {latestLogDate ? ` - (${latestLogDate})` : ''}
+                    </>
+                  </h4>
+                  <Button
+                    variant="contained"
+                    disabled={collectionStatus === CollectionStatusTypeEnum.PROGRESS}
+                    style={{ marginTop: '10px', marginBottom: '10px' }}
+                    onClick={() => handleSyncCollections()}
+                  >
+                    Sync Collections
+                  </Button>
+                </div>
                 <p>{latestLogMSG.map((m) => <div key={m}>{m}</div>)}</p>
               </div>
             </Card>

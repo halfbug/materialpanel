@@ -37,9 +37,9 @@ export const AuthContextProvider = ({
   useEffect(() => { verify(); }, []);
   const verify = async () => {
     const res = await fetch('/api/user');
-    const data: {user : IUser, token : string} = await res.json();
 
     if (res.ok) {
+      const data: {user : IUser, token : string} = await res.json();
       setUser({
         ...data.user,
         name: `${data.user.first_name} ${data.user.last_name}`,
