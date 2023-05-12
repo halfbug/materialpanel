@@ -34,7 +34,7 @@ import DraggableList from 'react-draggable-list';
 import { StoreContext } from '@/store/store.context';
 import Tabs from '@/components/Tabs/tabs';
 import { AuthContext } from '@/contexts/auth.context';
-import DynamicAuditHistory from 'pages/components/forms/dynamicAuditHistory';
+import DynamicAuditHistory from '@/components/forms/dynamicAuditHistory';
 
 const Item: any = ({ item, dragHandleProps }: any) => {
   const { onMouseDown, onTouchStart } = dragHandleProps;

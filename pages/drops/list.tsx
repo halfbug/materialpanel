@@ -26,7 +26,8 @@ function Drops() {
 
   const handleFilterModelChange = (mode) => {
     console.log('handleFilterModelChange', mode);
-    setFilters(mode.items);
+    const filterMode = mode?.items?.filter((ele: any) => ele?.value);
+    setFilters(filterMode);
   };
 
   const handleSortModelChange = (mode) => {

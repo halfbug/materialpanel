@@ -28,7 +28,7 @@ import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { CodeUpdateStatusTypeEnum } from 'pages/drops';
 import Tabs from '@/components/Tabs/tabs';
-import DynamicAuditHistory from 'pages/components/forms/dynamicAuditHistory';
+import DynamicAuditHistory from '@/components/forms/dynamicAuditHistory';
 import { useRouter } from 'next/router';
 import { DROPS_ACTIVITY } from '@/graphql/store.graphql';
 import { useLazyQuery } from '@apollo/client';

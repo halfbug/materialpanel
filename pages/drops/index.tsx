@@ -50,9 +50,9 @@ import TabPanel from '@mui/lab/TabPanel';
 import Tab from '@mui/material/Tab';
 import Tabs from '@/components/Tabs/tabs';
 import { AuthContext } from '@/contexts/auth.context';
-import DynamicAuditHistory from 'pages/components/forms/dynamicAuditHistory';
-import DropKlaviyoForm from '../components/forms/klaviyoForm';
-import DynamicCartRewards from '../components/forms/dynamicCartRewards';
+import DynamicAuditHistory from '@/components/forms/dynamicAuditHistory';
+import DropKlaviyoForm from '../../src/components/forms/klaviyoForm';
+import DynamicCartRewards from '../../src/components/forms/dynamicCartRewards';
 
 // eslint-disable-next-line no-shadow
 export enum CodeUpdateStatusTypeEnum {
