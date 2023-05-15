@@ -10,7 +10,8 @@ import { useFormik, FormikProps } from 'formik';
 import * as yup from 'yup';
 import { ALL_ADMIN_USERS_ROLES, ALL_USERS, CREATE_ADMIN_USER } from '@/graphql/store.graphql';
 import { useMutation, useQuery } from '@apollo/client';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { AuthContext } from '@/contexts/auth.context';
 import { useRouter } from 'next/router';
 import { AdminUser } from '@/types/groupshop';
 
@@ -34,6 +35,8 @@ const AddUser = () => {
   const [userStatus, setUserStatus] = useState('Active');
   const [userAdminRole, setUserAdminRole] = useState('');
   const router = useRouter();
+  const { user: cuser } = useContext(AuthContext);
+
   const {
     loading, data: usersData,
   } = useQuery(ALL_USERS);
@@ -105,11 +108,12 @@ const AddUser = () => {
               email,
               password,
               status,
+              userId: cuser?.userId,
               userRole: userAdminRole,
             },
           },
         });
-        setSuccessToast({ toastTog: true, toastMessage: 'User Role added successfully!' });
+        setSuccessToast({ toastTog: true, toastMessage: 'Admin User added successfully!' });
         resetForm();
         setTimeout(() => {
           router.push('/users');

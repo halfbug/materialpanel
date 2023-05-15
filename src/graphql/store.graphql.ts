@@ -480,8 +480,8 @@ query findLatestLog($storeId: String!, $context: String!){
 `;
 
 const REMOVE_USER = gql`
-  mutation removeAdminUser($id: String!) {
-    removeAdminUser(id: $id) {      
+  mutation removeAdminUser($userId: String!, $id: String!) {
+    removeAdminUser(userId: $userId, id: $id) {      
       status
   }
 }
@@ -570,6 +570,36 @@ query getUpdateCollectionStatus($storeId: String!) {
 }
 `;
 
+const ADMIN_ACTIVITY = gql`
+query adminActivity($route: String!) {
+  adminActivity(route: $route) {
+    id
+    context
+    operation
+    user{
+      firstName
+      lastName
+      email
+    }
+    adminRole{
+      roleName
+    }
+    changes{
+      id
+      parentTitle
+      fieldname
+      oldvalue
+      newValue
+      firstName
+      lastName
+      email
+      userRole
+    }
+    createdAt  
+  }
+}
+`;
+
 export {
   ALL_STORES, ALL_LOGS, VIDEO_POST, GET_ALL_VIDEOS, VIDEOS_UPDATE, DISCOVERYTOOLS_UPDATE,
   DROPS_UPDATE, GET_STORE_DETAILS, DEFAULT_DISCOUNT, ALL_DROPS, DROPS_PAGE, GET_UPDATE_CODES_STATUS,
@@ -578,5 +608,5 @@ export {
   CREATE_ADMIN_USER_ROLE, ALL_ADMIN_USERS_ROLES, UPDATE_ADMIN_USER_ROLE, FIND_ADMIN_ROLE_BY_NAME,
   FIND_ADMIN_PERMISSION, SYNC_DISCOUNT_CODES, FIND_LATEST_LOG, REMOVE_USER, REMOVE_ROLE,
   GET_INVENTORY_BY_ID, DROPS_ACTIVITY, CLEAR_LOG_BY_LEVEL, SYNC_COLLECTIONS,
-  GET_UPDATE_COLLECTION_STATUS,
+  GET_UPDATE_COLLECTION_STATUS, ADMIN_ACTIVITY,
 };

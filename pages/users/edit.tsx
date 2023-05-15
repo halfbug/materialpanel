@@ -10,7 +10,8 @@ import { useFormik, FormikProps } from 'formik';
 import * as yup from 'yup';
 import { ALL_ADMIN_USERS_ROLES, ALL_USERS, UPDATE_ADMIN_USER } from '@/graphql/store.graphql';
 import { useMutation, useQuery } from '@apollo/client';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { AuthContext } from '@/contexts/auth.context';
 import { useRouter } from 'next/router';
 import { AdminUserUpdate } from '@/types/groupshop';
 
@@ -23,7 +24,7 @@ const UserEdit = () => {
     toastTog: false,
     toastMessage: '',
   });
-
+  const { user: cuser } = useContext(AuthContext);
   const [adminUserUpdate, { data }] = useMutation<AdminUserUpdate>(UPDATE_ADMIN_USER);
   const router = useRouter();
   const { query: { sid } } = useRouter();
@@ -98,6 +99,7 @@ const UserEdit = () => {
           variables: {
             updateAdminUserInput: {
               id: sid,
+              userId: cuser?.userId,
               email,
               firstName,
               lastName,
@@ -107,7 +109,7 @@ const UserEdit = () => {
           },
         });
         refetch();
-        setSuccessToast({ toastTog: true, toastMessage: 'User updated successfully!' });
+        setSuccessToast({ toastTog: true, toastMessage: 'Admin User updated successfully!' });
         setTimeout(() => {
           router.push('/users');
         }, 2000);
