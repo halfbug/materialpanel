@@ -10,11 +10,11 @@ import { useFormik, FormikProps } from 'formik';
 import * as yup from 'yup';
 import { ALL_ADMIN_USERS_ROLES, CREATE_ADMIN_USER_ROLE, FIND_ADMIN_PERMISSION } from '@/graphql/store.graphql';
 import { useMutation, useQuery } from '@apollo/client';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { AuthContext } from '@/contexts/auth.context';
 import { useRouter } from 'next/router';
 import Multiselect from 'multiselect-react-dropdown';
 import { AdminUserRoles } from '@/types/groupshop';
-import { createIdentifier } from 'typescript';
 
 const AddRole = () => {
   const router = useRouter();
@@ -23,6 +23,7 @@ const AddRole = () => {
   const [permissiomError, setPermissiomError] = useState('');
   const [createAdminRole, { data }] = useMutation<AdminUserRoles>(CREATE_ADMIN_USER_ROLE);
   const [selectedValue, setSelectedValue] = useState([]);
+  const { user: cuser } = useContext(AuthContext);
   const [successToast, setSuccessToast] = useState<any>({
     toastTog: false,
     toastMessage: '',
@@ -84,6 +85,7 @@ const AddRole = () => {
           createAdminRole({
             variables: {
               createAdminRoleInput: {
+                userId: cuser?.userId,
                 roleName: valz.roleName,
                 permission: selectedValue,
               },

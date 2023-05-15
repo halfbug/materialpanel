@@ -917,7 +917,7 @@ const Drops = () => {
       </Card>
     </Grid>
     <Grid item xs={6}>
-      {setting.flag ? <CollectionTable settingData={setting.settingData} saveData={(data: string) => handleSaveCollectionId(data)} findLatestLog={findLatestLogFun} /> : ''}
+      {setting.flag ? <CollectionTable settingData={setting.settingData} saveData={(data: string) => handleSaveCollectionId(data)} findLatestLog={findLatestLogFun} userRole={user?.userId} /> : ''}
     </Grid>
   </Grid>,
             },
@@ -926,7 +926,7 @@ const Drops = () => {
               value: '4',
               component:
   <Grid item xs={6}>
-    <DynamicCartRewards storeData={storeData} getStore={refetch} showToast={setSuccessToast} />
+    <DynamicCartRewards storeData={storeData} getStore={refetch} showToast={setSuccessToast} userRole={user?.userId} />
   </Grid>,
             },
             {

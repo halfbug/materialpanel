@@ -8,8 +8,10 @@ import SidebarLayout from '@/layouts/SidebarLayout';
 import PageHeader from '@/content/Management/Transactions/PageHeader';
 import PageTitleWrapper from '@/components/PageTitleWrapper';
 import Footer from '@/components/Footer';
-import { ALL_ADMIN_USERS_ROLES, ALL_USERS, REMOVE_ROLE } from '@/graphql/store.graphql';
-import { useMutation, useQuery } from '@apollo/client';
+import {
+  ADMIN_ACTIVITY, ALL_ADMIN_USERS_ROLES, ALL_USERS, REMOVE_ROLE,
+} from '@/graphql/store.graphql';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import LinearIndeterminate from '@/components/Progress/Linear';
 import { DeleteForeverOutlined, EditRounded, PeopleOutlineOutlined } from '@mui/icons-material';
 import {
@@ -17,13 +19,17 @@ import {
 } from '@mui/x-data-grid';
 import { NextPage } from 'next';
 import NextLink from 'next/link';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { AuthContext } from '@/contexts/auth.context';
+import DynamicAuditHistory from '@/components/forms/dynamicAuditHistory';
 import usePermission from '@/hooks/usePermission';
 import RemoveIdsModal from '@/models/RemoveIdsModal';
 import Tabs from '@/components/Tabs/tabs';
+import { useRouter } from 'next/router';
 
 const RoleList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
   const [columnData, setColumnData] = useState([]);
+  const [activityLogs, setActivityLogs] = useState<any[]>([]);
   const [deleteIdModal, setDeleteIdModal] = useState(false);
   const [deletePermissionId, setDeletePermissionId] = useState('');
   const [successToast, setSuccessToast] = useState<any>({
@@ -31,6 +37,9 @@ const RoleList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
     toastMessage: '',
     toastColor: '',
   });
+  const { user: cuser } = useContext(AuthContext);
+  const router = useRouter();
+  const currentRoute = router.pathname;
   const { userPermissions } = usePermission();
   const {
     loading, data, error, refetch,
@@ -50,6 +59,17 @@ const RoleList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
   useEffect(() => {
     refetch();
   }, []);
+
+  const [adminActivity, { data: dataActivity }] = useLazyQuery(ADMIN_ACTIVITY, {
+    fetchPolicy: 'network-only',
+    onCompleted: (allActivity) => {
+      setActivityLogs(allActivity.adminActivity);
+    },
+  });
+
+  useEffect(() => {
+    adminActivity({ variables: { route: currentRoute } });
+  }, [currentRoute]);
 
   const columns: GridColDef[] = [
 
@@ -130,6 +150,7 @@ const RoleList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
       if (close) {
         await removeAdminRole({
           variables: {
+            userId: cuser?.userId,
             id: deletePermissionId,
           },
         });
@@ -219,6 +240,14 @@ const RoleList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
       </Grid>
     </Grid>
   </>,
+            },
+            {
+              label: 'Audit Logs',
+              value: '2',
+              component:
+  <Grid item xs={12}>
+    <DynamicAuditHistory activityLogs={activityLogs} />
+  </Grid>,
             },
           ]}
         />

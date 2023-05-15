@@ -488,8 +488,8 @@ const REMOVE_USER = gql`
 `;
 
 const REMOVE_ROLE = gql`
-  mutation removeAdminRole($id: String!) {
-    removeAdminRole(id: $id) {
+  mutation removeAdminRole($userId: String!, $id: String!) {
+    removeAdminRole(userId: $userId, id: $id) {
       roleName
   }
 }
@@ -594,6 +594,10 @@ query adminActivity($route: String!) {
       lastName
       email
       userRole
+      roleName
+      permission{
+        name
+      }
     }
     createdAt  
   }

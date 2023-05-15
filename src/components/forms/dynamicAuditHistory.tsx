@@ -124,7 +124,7 @@ function Row(props: { row: any }) {
                         )}
 
                         {(typeof row.changes[0][mkey] === 'object' && row.changes[0][mkey] !== null && row.changes[0][mkey].length > 0
-                        && (
+                        && mkey !== 'permission' && (
                           <>
                             {Object.keys(row.changes[0][mkey][row.changes[0][mkey].length - 1]).map((inkey) => (
                               <TableRow>
@@ -132,6 +132,21 @@ function Row(props: { row: any }) {
                                 <TableCell />
                                 <TableCell>{row.operation === 'REMOVE' ? row.changes[0][mkey][row.changes[0][mkey].length - 1][inkey] : '-'}</TableCell>
                                 <TableCell>{row.operation === 'CREATE' ? row.changes[0][mkey][row.changes[0][mkey].length - 1][inkey] : '-'}</TableCell>
+                              </TableRow>
+                            ))}
+                          </>
+                        )
+                        )}
+
+                        {(typeof row.changes[0][mkey] === 'object' && row.changes[0][mkey] !== null && row.changes[0][mkey].length > 0
+                        && mkey === 'permission' && (
+                          <>
+                            {Object.keys(row.changes[0][mkey]).map((inkey, index) => (
+                              <TableRow>
+                                <TableCell>Permission</TableCell>
+                                <TableCell />
+                                <TableCell>{row.operation === 'REMOVE' ? row.changes[0][mkey][index].name : '-'}</TableCell>
+                                <TableCell>{row.operation === 'CREATE' ? row.changes[0][mkey][index].name : '-'}</TableCell>
                               </TableRow>
                             ))}
                           </>
