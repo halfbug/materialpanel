@@ -22,12 +22,12 @@ function PageHeader({
     <Grid container justifyContent="space-between" alignItems="center">
       { meta && (
       <Grid item xs={12}>
-        <Alert severity={meta.billingStatus ? 'info' : 'warning'}>
+        {/* <Alert severity={meta.billingStatus ? 'info' : 'warning'}>
           Billing status is
           {' '}
           {meta.billingStatus ? 'true' : 'false'}
           !
-        </Alert>
+        </Alert> */}
       </Grid>
       )}
 

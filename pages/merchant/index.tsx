@@ -1,9 +1,14 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable max-len */
+// import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 import Head from 'next/head';
 import {
-  Grid, Container, Card, IconButton, Box, Tab,
+  Grid, Container, Card, IconButton, Box, Tab, Typography, Alert, Button,
+
 } from '@mui/material';
+// import Alert from '@mui/joy/Alert';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import NotificationsNoneTwoToneIcon from '@mui/icons-material/NotificationsNoneTwoTone';
 import SidebarLayout from '@/layouts/SidebarLayout';
 import PageHeader from '@/content/Management/Transactions/PageHeader';
 import PageTitleWrapper from '@/components/PageTitleWrapper';
@@ -13,7 +18,7 @@ import { ALL_STORES, ALL_USERS, UPDATE_ADMIN_USER } from '@/graphql/store.graphq
 import { useMutation, useQuery } from '@apollo/client';
 import LinearIndeterminate from '@/components/Progress/Linear';
 import {
-  Dashboard, RemoveRedEyeOutlined, VideoCameraFront,
+  Dashboard, RemoveRedEyeOutlined, VideoCameraFront, AlarmOn,
 } from '@mui/icons-material';
 // import { IStore } from '@/types/groupshop';
 import { NextPage } from 'next';
@@ -188,6 +193,147 @@ const StoreList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
       <PageTitleWrapper>
         <PageHeader meta={meta} pagetitle="" />
       </PageTitleWrapper>
+
+      <Container maxWidth="lg">
+        <Grid
+          container
+          direction="row"
+          justifyContent="start"
+          alignItems="center"
+          spacing={1}
+          mb={0}
+          style={{ marginTop: '10px' }}
+        >
+          <Grid
+            item
+            xs={12}
+            mb={1}
+            direction="row"
+            justifyContent="start"
+            alignItems="center"
+          >
+            {/* <Button color="success" variant="contained" startIcon={<NotificationsActiveIcon />}>
+              Live Alert
+            </Button> */}
+            <IconButton size="medium" >
+              <NotificationsActiveIcon
+                color="success"
+              />
+              <Typography variant="h4" sx={{ my: 2 }} ml={2}>
+                Live Alert
+              </Typography>
+              <Typography ml={1} color="neutral" fontSize="xs">(5)</Typography>
+            </IconButton>
+          </Grid>
+
+          <Container maxWidth="lg">
+            <Tabs
+              tabList={[
+                {
+                  label: 'Active Store (4)',
+                  value: '1',
+                  component:
+  <Grid
+    container
+    direction="row"
+    justifyContent="center"
+    alignItems="stretch"
+    spacing={3}
+    style={{ marginTop: '10px' }}
+  >
+    <Grid item xs={12}>
+
+      <Card sx={{ padding: 3 }}>
+        <Typography variant="h4" sx={{ my: 2 }} ml={2}>
+          Active Store
+        </Typography>
+      </Card>
+    </Grid>
+  </Grid>,
+                },
+
+                {
+                  label: 'Billing Status (1)',
+                  value: '2',
+                  component:
+  <Grid
+    container
+    direction="row"
+    justifyContent="center"
+    alignItems="stretch"
+    spacing={3}
+    style={{ marginTop: '10px' }}
+  >
+    <Grid item xs={12}>
+
+      <Card sx={{ padding: 3 }}>
+        <Typography variant="h4" sx={{ my: 2 }} ml={2}>
+          Billing Status of Stores
+        </Typography>
+        <Alert severity={meta.billingStatus ? 'info' : 'warning'}>
+          Billing status is
+          {' '}
+          {meta.billingStatus ? 'true' : 'false'}
+          !
+        </Alert>
+        {' '}
+        {' '}
+
+      </Card>
+    </Grid>
+  </Grid>,
+                },
+
+                {
+                  label: 'New Drops (0) ',
+                  value: '3',
+                  component:
+  <Grid
+    container
+    direction="row"
+    justifyContent="center"
+    alignItems="stretch"
+    spacing={3}
+    style={{ marginTop: '10px' }}
+  >
+    <Grid item xs={12}>
+
+      <Card sx={{ padding: 3 }}>
+        <Typography variant="h4" sx={{ my: 2 }} ml={2}>
+          New Drops
+        </Typography>
+      </Card>
+    </Grid>
+  </Grid>,
+                },
+
+                {
+                  label: 'Discount Code (0)',
+                  value: '4',
+                  component:
+  <Grid
+    container
+    direction="row"
+    justifyContent="center"
+    alignItems="stretch"
+    spacing={3}
+    style={{ marginTop: '10px' }}
+  >
+    <Grid item xs={12}>
+
+      <Card sx={{ padding: 3 }}>
+        <Typography variant="h4" sx={{ my: 2 }} ml={2}>
+          Discount Code
+        </Typography>
+      </Card>
+    </Grid>
+  </Grid>,
+                },
+              ]}
+            />
+          </Container>
+        </Grid>
+      </Container>
       <Container maxWidth="lg">
         <Tabs
           tabList={[
