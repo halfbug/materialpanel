@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-
+import StorefrontIcon from '@mui/icons-material/Storefront';
 import {
   ListSubheader,
   alpha,
@@ -241,7 +241,7 @@ function SidebarMenu() {
                 disableRipple
                 component="a"
                 onClick={closeSidebar}
-                startIcon={<BrightnessLowTwoToneIcon />}
+                startIcon={<StorefrontIcon />}
               >
                 Stores
               </Button>
