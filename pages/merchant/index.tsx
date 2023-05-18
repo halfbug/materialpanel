@@ -215,7 +215,7 @@ const StoreList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
             {/* <Button color="success" variant="contained" startIcon={<NotificationsActiveIcon />}>
               Live Alert
             </Button> */}
-            <IconButton size="medium" >
+            <IconButton size="medium">
               <NotificationsActiveIcon
                 color="success"
               />
