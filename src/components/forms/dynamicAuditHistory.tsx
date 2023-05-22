@@ -14,7 +14,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import moment from 'moment';
 
 const DynamicAuditHistory = ({
-  activityLogs, setfilters, activityFilters,
+  activityLogs, adminRoles, setfilters, activityFilters,
 }: any) => (
   <div>
     <h2 style={{ alignItems: 'center' }}>
@@ -52,7 +52,7 @@ const DynamicAuditHistory = ({
           </TableHead>
           <TableBody>
             {activityLogs.map((activity) => (
-              <Row key={activity.id} row={activity} />
+              <Row key={activity.id} adminRoles={adminRoles} row={activity} />
             ))}
           </TableBody>
         </Table>
@@ -61,8 +61,8 @@ const DynamicAuditHistory = ({
   </div>
 );
 
-function Row(props: { row: any }) {
-  const { row } = props;
+function Row(props: { row: any, adminRoles:any }) {
+  const { row, adminRoles } = props;
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -122,8 +122,28 @@ function Row(props: { row: any }) {
                         {historyRow.fieldname}
                       </TableCell>
                       <TableCell>{historyRow.parentTitle}</TableCell>
-                      <TableCell>{historyRow.oldvalue}</TableCell>
-                      <TableCell>{historyRow.newValue}</TableCell>
+                      <TableCell>
+                        {(historyRow.fieldname === 'userRole' && historyRow.oldvalue !== '') ? (
+                          <>
+                            {adminRoles.filter((adminRole) => adminRole.id === historyRow.oldvalue).map((filtered) => (
+                              filtered?.roleName
+                            ))}
+                          </>
+                        ) : (
+                          historyRow.oldvalue
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {(historyRow.fieldname === 'userRole' && historyRow.newValue !== '') ? (
+                          <>
+                            {adminRoles.filter((adminRole) => adminRole.id === historyRow.newValue).map((filtered) => (
+                              filtered?.roleName
+                            ))}
+                          </>
+                        ) : (
+                          historyRow.newValue
+                        )}
+                      </TableCell>
                     </TableRow>
                   ))}
 
@@ -190,5 +210,9 @@ function Row(props: { row: any }) {
     </>
   );
 }
+
+DynamicAuditHistory.defaultProps = {
+  adminRoles: [],
+};
 
 export default DynamicAuditHistory;

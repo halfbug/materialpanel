@@ -8,7 +8,7 @@ import PageHeader from '@/content/Management/Transactions/PageHeader';
 import PageTitleWrapper from '@/components/PageTitleWrapper';
 import Footer from '@/components/Footer';
 import EnhancedTable, { HeadCell } from '@/components/tables/enhancedTable';
-import { ADMIN_ACTIVITY, ALL_USERS, REMOVE_USER } from '@/graphql/store.graphql';
+import { ALL_ADMIN_USERS_ROLES, ALL_USERS, REMOVE_USER } from '@/graphql/store.graphql';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import LinearIndeterminate from '@/components/Progress/Linear';
 import {
@@ -33,6 +33,7 @@ const UserList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
   const [columnData, setColumnData] = useState([]);
   const [filters, setFilters] = useState('All Fields');
   const [activityLogs, setActivityLogs] = useState<any[]>([]);
+  const [adminRoles, setAdminRoles] = useState<any[]>([]);
   const [successToast, setSuccessToast] = useState<any>({
     toastTog: false,
     toastMessage: '',
@@ -46,6 +47,16 @@ const UserList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
   const {
     loading, data, error, refetch,
   } = useQuery(ALL_USERS);
+
+  const {
+    data: adRoles,
+  } = useQuery(ALL_ADMIN_USERS_ROLES);
+
+  useEffect(() => {
+    if (adRoles?.getAdminRoles) {
+      setAdminRoles(adRoles?.getAdminRoles);
+    }
+  }, [adRoles]);
 
   const [removeAdminUser, {
     data: updatedDropsCategoryData,
@@ -235,6 +246,7 @@ const UserList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
     <DynamicAuditHistory
       activityLogs={activityLogs}
       setfilters={setFilters}
+      adminRoles={adminRoles}
       activityFilters={activityFilters}
     />
   </Grid>,
