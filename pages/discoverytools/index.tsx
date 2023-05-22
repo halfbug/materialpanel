@@ -35,6 +35,7 @@ import { StoreContext } from '@/store/store.context';
 import Tabs from '@/components/Tabs/tabs';
 import { AuthContext } from '@/contexts/auth.context';
 import DynamicAuditHistory from '@/components/forms/dynamicAuditHistory';
+import useAuditLogsQuery from '@/hooks/useAuditLogsQuery';
 
 const Item: any = ({ item, dragHandleProps }: any) => {
   const { onMouseDown, onTouchStart } = dragHandleProps;
@@ -97,23 +98,22 @@ const Discoverytools = () => {
   const [matchingBrandName, setMatchingBrandName] = useState<any[]>([]);
   const [selectDiscoverBrandName, setSelectDiscoverBrandName] = useState<any>({});
   const [status, setStatus] = useState<string>('');
+  const [filters, setFilters] = useState('All Fields');
   const currentRoute = router.pathname;
   const containerRef = useRef();
+  const isDrops = true;
 
   useEffect(() => {
     refetch();
   }, []);
 
-  const [getActivity, { data: dataActivity }] = useLazyQuery(DROPS_ACTIVITY, {
-    fetchPolicy: 'network-only',
-    onCompleted: (allActivity) => {
-      setActivityLogs(allActivity.dropsActivity);
-    },
-  });
+  const {
+    auditActivity, loading, error, activityFilters,
+  } = useAuditLogsQuery(currentRoute, sid, filters, isDrops);
 
   useEffect(() => {
-    getActivity({ variables: { route: currentRoute, storeId: sid } });
-  }, [sid, currentRoute]);
+    setActivityLogs(auditActivity);
+  }, [auditActivity]);
 
   useEffect(() => {
     if (store?.matchingBrandNameEvent) {
@@ -322,7 +322,11 @@ const Discoverytools = () => {
               value: '5',
               component:
   <Grid item xs={6}>
-    <DynamicAuditHistory activityLogs={activityLogs} />
+    <DynamicAuditHistory
+      activityLogs={activityLogs}
+      setfilters={setFilters}
+      activityFilters={activityFilters}
+    />
   </Grid>,
             },
           ]}

@@ -1,8 +1,9 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable max-len */
 import {
   Button,
-  Card, Paper, Table, TableBody, TableCell, TableContainer, TableHead, Typography, TableRow,
+  Card, Paper, Table, TableBody, TableCell, TableContainer, TableHead, Typography, TableRow, MenuItem, Select,
 } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
@@ -12,11 +13,30 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import moment from 'moment';
 
-const DynamicAuditHistory = ({ activityLogs }: any) => (
+const DynamicAuditHistory = ({
+  activityLogs, setfilters, activityFilters,
+}: any) => (
   <div>
     <h2 style={{ alignItems: 'center' }}>
       Audit History
     </h2>
+    <div style={{ display: 'flex', marginBottom: '10px' }}>
+      <Select
+        id="filterBy"
+        displayEmpty
+        name="filterBy"
+        value="All Fields"
+        onChange={(e) => setfilters(e.target.value)}
+        style={{ width: '200px' }}
+      >
+        <MenuItem value="All Fields">All Fields</MenuItem>
+        {activityFilters?.map((mkey) => (
+          <MenuItem value={mkey}>{mkey}</MenuItem>
+        ))}
+        ;
+
+      </Select>
+    </div>
     <Card style={{ padding: '20px' }}>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -128,7 +148,11 @@ function Row(props: { row: any }) {
                           <>
                             {Object.keys(row.changes[0][mkey][row.changes[0][mkey].length - 1]).map((inkey) => (
                               <TableRow>
-                                <TableCell>{inkey}</TableCell>
+                                <TableCell>
+                                  {mkey}
+                                  {' '}
+                                  {inkey}
+                                </TableCell>
                                 <TableCell />
                                 <TableCell>{row.operation === 'REMOVE' ? row.changes[0][mkey][row.changes[0][mkey].length - 1][inkey] : '-'}</TableCell>
                                 <TableCell>{row.operation === 'CREATE' ? row.changes[0][mkey][row.changes[0][mkey].length - 1][inkey] : '-'}</TableCell>

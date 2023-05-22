@@ -20,6 +20,7 @@ import NextLink from 'next/link';
 import { useEffect, useState, useContext } from 'react';
 import usePermission from '@/hooks/usePermission';
 import { useRouter } from 'next/router';
+import useAuditLogsQuery from '@/hooks/useAuditLogsQuery';
 import RemoveIdsModal from '@/models/RemoveIdsModal';
 import { StoreContext } from '@/store/store.context';
 import Tabs from '@/components/Tabs/tabs';
@@ -30,6 +31,7 @@ const UserList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
   const { dispatch, store } = useContext(StoreContext);
   const [deleteIdModal, setDeleteIdModal] = useState(false);
   const [columnData, setColumnData] = useState([]);
+  const [filters, setFilters] = useState('All Fields');
   const [activityLogs, setActivityLogs] = useState<any[]>([]);
   const [successToast, setSuccessToast] = useState<any>({
     toastTog: false,
@@ -37,6 +39,7 @@ const UserList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
   });
 
   const { user: cuser } = useContext(AuthContext);
+  const isDrops = false;
   const router = useRouter();
   const currentRoute = router.pathname;
   const { userPermissions } = usePermission();
@@ -55,16 +58,13 @@ const UserList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
     refetch();
   }, []);
 
-  const [adminActivity, { data: dataActivity }] = useLazyQuery(ADMIN_ACTIVITY, {
-    fetchPolicy: 'network-only',
-    onCompleted: (allActivity) => {
-      setActivityLogs(allActivity.adminActivity);
-    },
-  });
+  const {
+    auditActivity, activityFilters,
+  } = useAuditLogsQuery(currentRoute, '', filters, isDrops);
 
   useEffect(() => {
-    adminActivity({ variables: { route: currentRoute } });
-  }, [currentRoute]);
+    setActivityLogs(auditActivity);
+  }, [auditActivity]);
 
   const optionData = () => {
     const tempOption = [];
@@ -232,7 +232,11 @@ const UserList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
               value: '2',
               component:
   <Grid item xs={12}>
-    <DynamicAuditHistory activityLogs={activityLogs} />
+    <DynamicAuditHistory
+      activityLogs={activityLogs}
+      setfilters={setFilters}
+      activityFilters={activityFilters}
+    />
   </Grid>,
             },
           ]}

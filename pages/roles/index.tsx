@@ -21,6 +21,7 @@ import { NextPage } from 'next';
 import NextLink from 'next/link';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '@/contexts/auth.context';
+import useAuditLogsQuery from '@/hooks/useAuditLogsQuery';
 import DynamicAuditHistory from '@/components/forms/dynamicAuditHistory';
 import usePermission from '@/hooks/usePermission';
 import RemoveIdsModal from '@/models/RemoveIdsModal';
@@ -37,8 +38,10 @@ const RoleList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
     toastMessage: '',
     toastColor: '',
   });
+  const [filters, setFilters] = useState('All Fields');
   const { user: cuser } = useContext(AuthContext);
   const router = useRouter();
+  const isDrops = false;
   const currentRoute = router.pathname;
   const { userPermissions } = usePermission();
   const {
@@ -60,16 +63,13 @@ const RoleList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
     refetch();
   }, []);
 
-  const [adminActivity, { data: dataActivity }] = useLazyQuery(ADMIN_ACTIVITY, {
-    fetchPolicy: 'network-only',
-    onCompleted: (allActivity) => {
-      setActivityLogs(allActivity.adminActivity);
-    },
-  });
+  const {
+    auditActivity, activityFilters,
+  } = useAuditLogsQuery(currentRoute, '', filters, isDrops);
 
   useEffect(() => {
-    adminActivity({ variables: { route: currentRoute } });
-  }, [currentRoute]);
+    setActivityLogs(auditActivity);
+  }, [auditActivity]);
 
   const columns: GridColDef[] = [
 
@@ -246,7 +246,11 @@ const RoleList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
               value: '2',
               component:
   <Grid item xs={12}>
-    <DynamicAuditHistory activityLogs={activityLogs} />
+    <DynamicAuditHistory
+      activityLogs={activityLogs}
+      setfilters={setFilters}
+      activityFilters={activityFilters}
+    />
   </Grid>,
             },
           ]}

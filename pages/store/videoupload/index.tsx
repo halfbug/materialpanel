@@ -32,6 +32,7 @@ import DynamicAuditHistory from '@/components/forms/dynamicAuditHistory';
 import { useRouter } from 'next/router';
 import { DROPS_ACTIVITY } from '@/graphql/store.graphql';
 import { useLazyQuery } from '@apollo/client';
+import useAuditLogsQuery from '@/hooks/useAuditLogsQuery';
 
 function Videoupload() {
   const gridRef = useRef();
@@ -39,17 +40,16 @@ function Videoupload() {
   const { sid } = router.query;
   const currentRoute = router.pathname;
   const [activityLogs, setActivityLogs] = useState<any[]>([]);
+  const [filters, setFilters] = useState('All Fields');
+  const isDrops = true;
 
-  const [getActivity, { data: dataActivity }] = useLazyQuery(DROPS_ACTIVITY, {
-    fetchPolicy: 'network-only',
-    onCompleted: (allActivity) => {
-      setActivityLogs(allActivity.dropsActivity);
-    },
-  });
+  const {
+    auditActivity, loading, error, activityFilters,
+  } = useAuditLogsQuery(currentRoute, sid, filters, isDrops);
 
   useEffect(() => {
-    getActivity({ variables: { route: currentRoute, storeId: sid } });
-  }, [sid, currentRoute]);
+    setActivityLogs(auditActivity);
+  }, [auditActivity]);
 
   const {
     rows,
@@ -221,7 +221,11 @@ function Videoupload() {
             value: '5',
             component:
   <Grid item xs={6}>
-    <DynamicAuditHistory activityLogs={activityLogs} />
+    <DynamicAuditHistory
+      activityLogs={activityLogs}
+      setfilters={setFilters}
+      activityFilters={activityFilters}
+    />
   </Grid>,
           }]}
         />

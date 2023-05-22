@@ -505,8 +505,8 @@ query findById($id: String!) {
 `;
 
 const DROPS_ACTIVITY = gql`
-query dropsActivity($route: String!, $storeId: String!) {
-  dropsActivity(route: $route, storeId: $storeId) {
+query dropsActivity($route: String!, $storeId: String!, $filter: String!) {
+  dropsActivity(route: $route, storeId: $storeId, filter: $filter) {
     id
     context
     operation
@@ -571,8 +571,8 @@ query getUpdateCollectionStatus($storeId: String!) {
 `;
 
 const ADMIN_ACTIVITY = gql`
-query adminActivity($route: String!) {
-  adminActivity(route: $route) {
+query adminActivity($route: String!, $filter: String!) {
+  adminActivity(route: $route, filter: $filter) {
     id
     context
     operation
