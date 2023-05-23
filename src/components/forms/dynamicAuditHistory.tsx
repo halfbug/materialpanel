@@ -157,8 +157,48 @@ function Row(props: { row: any, adminRoles:any }) {
                         <TableRow>
                           <TableCell>{mkey}</TableCell>
                           <TableCell>{row.context === 'Manage Section Content' ? row.changes[0][mkey] : ''}</TableCell>
-                          <TableCell>{row.operation === 'REMOVE' && row.context !== 'Manage Section Content' ? row.changes[0][mkey] : '-'}</TableCell>
-                          <TableCell>{row.operation === 'CREATE' && row.context !== 'Manage Section Content' ? row.changes[0][mkey] : '-'}</TableCell>
+                          <TableCell>
+
+                            {(row.operation === 'REMOVE' && row.context !== 'Manage Section Content') ? (
+                              // eslint-disable-next-line react/jsx-no-useless-fragment
+                              <>
+                                {(mkey === 'userRole') ? (
+                                  <>
+                                    {adminRoles.filter((adminRole) => adminRole.id === row.changes[0][mkey]).map((filtered) => (
+                                      `${filtered?.roleName}`
+                                    ))}
+                                  </>
+                                ) : (
+                                  `${row.changes[0][mkey]}`
+
+                                )}
+                              </>
+
+                            ) : (
+                              '-'
+                            )}
+
+                          </TableCell>
+                          <TableCell>
+                            {(row.operation === 'CREATE' && row.context !== 'Manage Section Content') ? (
+                              // eslint-disable-next-line react/jsx-no-useless-fragment
+                              <>
+                                {(mkey === 'userRole') ? (
+                                  <>
+                                    {adminRoles.filter((adminRole) => adminRole.id === row.changes[0][mkey]).map((filtered) => (
+                                      `${filtered?.roleName}`
+                                    ))}
+                                  </>
+                                ) : (
+                                  `${row.changes[0][mkey]}`
+
+                                )}
+                              </>
+                            ) : (
+                              '-'
+                            )}
+
+                          </TableCell>
                         </TableRow>
                         )
                         )}
