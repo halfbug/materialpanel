@@ -39,7 +39,7 @@ export default function useAuditLogsQuery(
 
   const activityFiterList = useCallback(
     (activityLogs: any[]): any[] => {
-      const filterOpts = ['id', 'context', 'operation', 'fieldname', 'oldvalue', 'newValue', 'createdAt'];
+      const filterOpts = ['id', 'context', 'operation', 'fieldname', 'oldvalue', 'newValue', 'createdAt', 'parentTitle'];
       activityLogs.forEach((cid: any, index) => {
         Object.keys(cid).forEach((mkey) => {
           if (typeof cid[mkey] === 'string') {
@@ -72,7 +72,7 @@ export default function useAuditLogsQuery(
           }
         });
       });
-      return filterOpts.slice(7);
+      return filterOpts.slice(8);
     },
     [data],
   );
