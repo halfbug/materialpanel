@@ -28,7 +28,7 @@ import {
 } from '@mui/material';
 import Footer from '@/components/Footer';
 import {
-  DEFAULT_DISCOUNT, DROPS_CATEGORY_REMOVE, DROPS_CATEGORY_UPDATE, DROPS_UPDATE, FIND_LATEST_LOG, GET_DROPS_CATEGORY, GET_INVENTORY_BY_ID, GET_STORE_DETAILS, GET_UPDATE_CODES_STATUS, SYNC_DISCOUNT_CODES, DROPS_ACTIVITY, SYNC_COLLECTIONS, GET_UPDATE_COLLECTION_STATUS,
+  DEFAULT_DISCOUNT, DROPS_CATEGORY_REMOVE, DROPS_CATEGORY_UPDATE, DROPS_UPDATE, FIND_LATEST_LOG, GET_DROPS_CATEGORY, GET_INVENTORY_BY_ID, GET_STORE_DETAILS, GET_UPDATE_CODES_STATUS, SYNC_DISCOUNT_CODES, DROPS_ACTIVITY, SYNC_COLLECTIONS, GET_UPDATE_COLLECTION_STATUS, GET_APP_LOGGER_DATA_VIA_CONTEXT,
 } from '@/graphql/store.graphql';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
@@ -52,6 +52,8 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@/components/Tabs/tabs';
 import { AuthContext } from '@/contexts/auth.context';
 import DynamicAuditHistory from '@/components/forms/dynamicAuditHistory';
+import CollectionManagement from '@/components/forms/collectionManagement';
+import moment from 'moment';
 import useAuditLogsQuery from '@/hooks/useAuditLogsQuery';
 import DropKlaviyoForm from '../../src/components/forms/klaviyoForm';
 import DynamicCartRewards from '../../src/components/forms/dynamicCartRewards';
@@ -66,6 +68,12 @@ export enum CodeUpdateStatusTypeEnum {
 export enum CollectionStatusTypeEnum {
   PROGRESS = 'PROGRESS',
   COMPLETE = 'COMPLETE',
+}
+
+interface CronTime {
+  lastAutoSync: string;
+  nextAutoSync: string;
+  lastCollectionUpdate: string;
 }
 
 const Drops = () => {
@@ -98,6 +106,11 @@ const Drops = () => {
   const [sectionModal, setSectionModal] = useState<boolean>(false);
   const [deleteIdModal, setDeleteIdModal] = useState<boolean>(false);
   const [removeNavigationMngData, setRemoveNavigationMngData] = useState<any>('');
+  const [cronTime, setCronTime] = useState<CronTime>({
+    lastCollectionUpdate: '',
+    nextAutoSync: '',
+    lastAutoSync: '',
+  });
   const [setting, setSetting] = useState<any>({
     flag: false,
     settingData: '',
@@ -223,6 +236,10 @@ const Drops = () => {
     variables: { type: 'drops' },
   });
 
+  const { data: autoSyncData } = useQuery(GET_APP_LOGGER_DATA_VIA_CONTEXT, {
+    variables: { context: ['SYNC_COLLECTION_CRON', 'COLLECTION_UPDATE_RECEIVE'] },
+  });
+
   const [updateStore, { data: dropsUpdateData, loading: dropsUpdateLoading }] = useMutation<any>(DROPS_UPDATE, {
     fetchPolicy: 'network-only',
   });
@@ -242,6 +259,21 @@ const Drops = () => {
     variables: { storeId: sid },
     fetchPolicy: 'network-only',
   });
+
+  useEffect(() => {
+    if (autoSyncData) {
+      const { getAppLoggerData: { lastAutoSync } } = autoSyncData;
+      const autoSyncTIme = moment(lastAutoSync?.find((ele) => ele.context === 'SYNC_COLLECTION_CRON')?.createdAt).format('LLL');
+      const nextAutoSync = moment(autoSyncTIme).add(1, 'h').format('LLL');
+      const temp = lastAutoSync?.find((ele) => ele.context === 'COLLECTION_UPDATE_RECEIVE')?.createdAt;
+      const lastCollectionUpdate = temp ? moment(temp).format('LLL') : '-';
+      setCronTime({
+        lastAutoSync: autoSyncTIme,
+        nextAutoSync,
+        lastCollectionUpdate,
+      });
+    }
+  }, [autoSyncData]);
 
   useEffect(() => {
     if (removedDropsCategoryData?.removeDropsCategory) {
@@ -275,12 +307,16 @@ const Drops = () => {
   const handleSyncCollections = () => {
     (async () => {
       try {
-        await syncCollections({ variables: { storeId: sid } });
+        await syncCollections({ variables: { storeId: sid } }).then(() => {
+          refetchSyncCollections();
+        });
       } catch (err) {
         console.log(err);
       }
     })();
   };
+
+  const refetchSyncCollections = () => { };
 
   useEffect(() => {
     if (getDropsCategoryData?.findByStoreId?.length > 0) {
@@ -755,6 +791,17 @@ const Drops = () => {
 
                 </Button>
               </div>
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <h4 style={{ whiteSpace: 'nowrap' }}>
+                    <>
+                      Last update in collection ids
+                      {latestLogDate ? ` - (${latestLogDate})` : ''}
+                    </>
+                  </h4>
+                </div>
+                <p>{latestLogMSG.map((m) => <div key={m}>{m}</div>)}</p>
+              </div>
             </Card>
           </Grid>
         </Grid>
@@ -768,26 +815,34 @@ const Drops = () => {
           spacing={3}
         >
           <Grid item xs={12}>
-            <Card style={{ paddingLeft: '20px', paddingRight: '20px' }}>
+            <Card style={{ padding: '10px 20px' }}>
               {collectionStatus === CollectionStatusTypeEnum.PROGRESS && <LinearIndeterminate />}
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <h4 style={{ whiteSpace: 'nowrap' }}>
-                    <>
-                      Last update in collection ids
-                      {latestLogDate ? ` - (${latestLogDate})` : ''}
-                    </>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                <Grid xs={8}>
+                  <h4>
+                    Last auto synced on:
+                    {' '}
+                    {cronTime.lastAutoSync ?? '-'}
                   </h4>
-                  <Button
-                    variant="contained"
-                    disabled={collectionStatus === CollectionStatusTypeEnum.PROGRESS}
-                    style={{ marginTop: '10px', marginBottom: '10px' }}
-                    onClick={() => handleSyncCollections()}
-                  >
-                    Sync Collections
-                  </Button>
-                </div>
-                <p>{latestLogMSG.map((m) => <div key={m}>{m}</div>)}</p>
+                  <h4>
+                    Next auto sync on:
+                    {' '}
+                    {cronTime.nextAutoSync ?? '-'}
+                  </h4>
+                  <h4>
+                    Last collection update recieved on:
+                    {' '}
+                    {cronTime.lastCollectionUpdate ?? '-'}
+                  </h4>
+                </Grid>
+                <Button
+                  variant="contained"
+                  disabled={collectionStatus === CollectionStatusTypeEnum.PROGRESS}
+                  style={{ marginTop: '10px', marginBottom: '10px' }}
+                  onClick={() => handleSyncCollections()}
+                >
+                  Sync Collections
+                </Button>
               </div>
             </Card>
           </Grid>
@@ -930,8 +985,16 @@ const Drops = () => {
   </Grid>,
             },
             {
-              label: 'Audit Logs',
+              label: 'Collection Management',
               value: '5',
+              component:
+  <Grid item xs={6}>
+    <CollectionManagement fetch={refetchSyncCollections} />
+  </Grid>,
+            },
+            {
+              label: 'Audit Logs',
+              value: '6',
               component:
   <Grid item xs={6}>
     <DynamicAuditHistory activityLogs={activityLogs} setfilters={setFilters} activityFilters={activityFilters} />

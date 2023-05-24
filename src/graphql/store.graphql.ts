@@ -604,6 +604,28 @@ query adminActivity($route: String!, $filter: String!) {
 }
 `;
 
+const GET_COLLECTION_LIST = gql`
+query getCollectionList($shop: String!) {
+  getCollectionList(shop: $shop) {
+    collectionTitle
+    collectionId
+    isSynced
+    productCount
+  }
+}
+`;
+
+const GET_APP_LOGGER_DATA_VIA_CONTEXT = gql`
+query getAppLoggerData($context: [String!]!) {
+  getAppLoggerData(context: $context) {
+    lastAutoSync {
+      createdAt
+      context
+    }
+  }
+}
+`;
+
 export {
   ALL_STORES, ALL_LOGS, VIDEO_POST, GET_ALL_VIDEOS, VIDEOS_UPDATE, DISCOVERYTOOLS_UPDATE,
   DROPS_UPDATE, GET_STORE_DETAILS, DEFAULT_DISCOUNT, ALL_DROPS, DROPS_PAGE, GET_UPDATE_CODES_STATUS,
@@ -612,5 +634,6 @@ export {
   CREATE_ADMIN_USER_ROLE, ALL_ADMIN_USERS_ROLES, UPDATE_ADMIN_USER_ROLE, FIND_ADMIN_ROLE_BY_NAME,
   FIND_ADMIN_PERMISSION, SYNC_DISCOUNT_CODES, FIND_LATEST_LOG, REMOVE_USER, REMOVE_ROLE,
   GET_INVENTORY_BY_ID, DROPS_ACTIVITY, CLEAR_LOG_BY_LEVEL, SYNC_COLLECTIONS,
-  GET_UPDATE_COLLECTION_STATUS, ADMIN_ACTIVITY,
+  GET_UPDATE_COLLECTION_STATUS, ADMIN_ACTIVITY, GET_COLLECTION_LIST,
+  GET_APP_LOGGER_DATA_VIA_CONTEXT,
 };
