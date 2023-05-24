@@ -388,7 +388,7 @@ const EnhancedTable = <T extends {}>(props : ITableProps<T>) => {
                                   favourite, ...rest
                                 }) => {
                                   if (icon) { return <IconButton aria-label="icon" color="primary" onClick={() => callback(row[perm])}>{icon}</IconButton>; }
-                                  if (changeIcon) { return <NextLink href={`${link as string}?sid=${row?.id}`} passHref><a {...rest}><IconButton aria-label="delete" color={row?.drops?.status === 'Active' ? 'success' : 'primary'}><StorefrontOutlined /></IconButton></a></NextLink>; }
+                                  if (changeIcon) { return <NextLink href={`${link as string}?sid=${row?.id}&shop=${row.shop}`} passHref><a {...rest}><IconButton aria-label="delete" color={row?.drops?.status === 'Active' ? 'success' : 'primary'}><StorefrontOutlined /></IconButton></a></NextLink>; }
                                   if (favourite) {
                                     return <IconButton aria-label="delete" color="primary" onClick={() => callback(row)}>{allUser?.includes(row?.id) ? <StarOutlined /> : <StarOutlineOutlined />}</IconButton>;
                                   }

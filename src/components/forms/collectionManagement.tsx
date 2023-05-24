@@ -2,14 +2,14 @@
 import { GET_COLLECTION_LIST } from '@/graphql/store.graphql';
 import { useQuery } from '@apollo/client';
 import {
-  Button, Card, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  Card, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
 } from '@mui/material';
 import {
-  useState, useEffect, useCallback, useContext,
+  useState, useEffect, useCallback,
 } from 'react';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import { StoreContext } from '@/store/store.context';
+import { useRouter } from 'next/router';
 
 interface CollectioList {
   collectionTitle: string;
@@ -20,16 +20,17 @@ interface CollectioList {
 
 const CollectionManagement = ({ fetch }: any) => {
   const [collectionData, setCollectionData] = useState<CollectioList[]>([]);
-  const { store } = useContext(StoreContext);
+  const router = useRouter();
+  const { shop } = router.query;
   const {
     data, refetch,
   } = useQuery(
     GET_COLLECTION_LIST,
     {
       variables: {
-        shop: store?.removeUserData?.shop,
+        shop,
       },
-      skip: !store?.removeUserData?.shop,
+      skip: !shop,
     },
   );
 
