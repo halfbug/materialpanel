@@ -224,6 +224,7 @@ function Videoupload() {
     <DynamicAuditHistory
       activityLogs={activityLogs}
       setfilters={setFilters}
+      filters={filters}
       activityFilters={activityFilters}
     />
   </Grid>,

@@ -14,7 +14,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import moment from 'moment';
 
 const DynamicAuditHistory = ({
-  activityLogs, adminRoles, setfilters, activityFilters,
+  activityLogs, adminRoles, setfilters, filters, activityFilters,
 }: any) => (
   <div>
     <h2 style={{ alignItems: 'center' }}>
@@ -25,7 +25,7 @@ const DynamicAuditHistory = ({
         id="filterBy"
         displayEmpty
         name="filterBy"
-        value="All Fields"
+        value={filters}
         onChange={(e) => setfilters(e.target.value)}
         style={{ width: '200px' }}
       >

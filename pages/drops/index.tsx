@@ -999,7 +999,7 @@ const Drops = () => {
               value: '6',
               component:
   <Grid item xs={6}>
-    <DynamicAuditHistory activityLogs={activityLogs} setfilters={setFilters} activityFilters={activityFilters} />
+    <DynamicAuditHistory activityLogs={activityLogs} setfilters={setFilters} filters={filters} activityFilters={activityFilters} />
   </Grid>,
             },
           ]}

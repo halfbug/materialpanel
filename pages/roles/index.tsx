@@ -249,6 +249,7 @@ const RoleList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
     <DynamicAuditHistory
       activityLogs={activityLogs}
       setfilters={setFilters}
+      filters={filters}
       activityFilters={activityFilters}
     />
   </Grid>,

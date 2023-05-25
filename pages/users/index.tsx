@@ -246,6 +246,7 @@ const UserList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
     <DynamicAuditHistory
       activityLogs={activityLogs}
       setfilters={setFilters}
+      filters={filters}
       adminRoles={adminRoles}
       activityFilters={activityFilters}
     />
