@@ -12,6 +12,8 @@ import {
   Button,
   lighten,
   darken,
+  Typography,
+  Grid,
 } from '@mui/material';
 
 import Logo from 'src/components/LogoSign';
@@ -78,7 +80,20 @@ function Sidebar() {
             background: theme.colors.alpha.trueWhite[10],
           }}
         />
-        <Box p={2}>
+        <Box
+          p={2}
+        >
+          <Grid
+            container
+            direction="row"
+            justifyContent="center"
+            alignItems="stretch"
+            my={1}
+          >
+            <Typography variant="h5" color="#A7C737">
+              Version 1.0
+            </Typography>
+          </Grid>
           {/* <Button
             href="https://bloomui.com"
             target="_blank"
@@ -132,6 +147,7 @@ function Sidebar() {
           </Scrollbar>
         </SidebarWrapper>
       </Drawer>
+
     </>
   );
 }
