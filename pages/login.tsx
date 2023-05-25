@@ -11,6 +11,8 @@ import {
   TextField,
   Grid,
   Alert,
+  Typography,
+  ButtonProps,
 } from '@mui/material';
 import Head from 'next/head';
 import { ReactElement, useContext, useEffect } from 'react';
@@ -19,6 +21,8 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useRouter } from 'next/router';
 import { AuthContext } from '@/contexts/auth.context';
+import * as React from 'react';
+import { purple } from '@mui/material/colors';
 
 const MainContent = styled(Box)(
   () => `
@@ -103,6 +107,15 @@ function Login() {
     if (user?.first_name) { console.log(user.first_name); void router.push('/merchant'); }
   }, [router, user]);
 
+  const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
+    color: theme.palette.getContrastText(purple[500]),
+    height: '53.13px',
+    backgroundColor: '#5429FF',
+    '&:hover': {
+      backgroundColor: '#4320CD',
+    },
+  }));
+
   return (
     <>
       <Head>
@@ -110,11 +123,16 @@ function Login() {
       </Head>
       <MainContent>
         <TopWrapper>
-          <Container maxWidth="md">
+          <Container maxWidth="sm">
             <Box textAlign="center" />
             <Container maxWidth="sm">
-              <Card sx={{ textAlign: 'center', mt: 3, p: 4 }}>
-                <img alt="logo" height={80} src={`${process.env.NEXT_PUBLIC_IMAGE_PATH}/default-logo.png`} />
+              <Card sx={{
+                textAlign: 'center', mt: 3, p: 4, borderRadius: 3,
+              }}
+              >
+                <img alt="logo" height={138} src="./images/logo/logo-shadow.svg" />
+                {/* <img alt="logo"
+                height={80} src={`${process.env.NEXT_PUBLIC_IMAGE_PATH}/default-logo.png`} /> */}
                 {formik.values.message && <Alert severity={formik.values.token ? 'success' : 'error'}>{formik.values.message}</Alert>}
 
                 {/* <FormControl variant="outlined" fullWidth>
@@ -135,9 +153,15 @@ function Login() {
 
                   </Grid>
                 </FormControl> */}
+                <Typography mt={1} variant="h3" component="h4">
+                  Super Administration
+                </Typography>
+                <Typography mt={1} mb={3} variant="h5" component="h6" color="#667085" fontWeight={500}>
+                  Enter your credentials to continue
+                </Typography>
                 <form onSubmit={formik.handleSubmit}>
                   <Grid mt={2}>
-                    <Grid item mb={1}>
+                    <Grid item mb={3}>
                       <TextField
                         fullWidth
                         id="email"
@@ -149,7 +173,7 @@ function Login() {
                         helperText={formik.touched.email && formik.errors.email}
                       />
                     </Grid>
-                    <Grid item mb={1}>
+                    <Grid item mb={3}>
                       <TextField
                         fullWidth
                         id="password"
@@ -162,14 +186,25 @@ function Login() {
                         helperText={formik.touched.password && formik.errors.password}
                       />
                     </Grid>
-                    <Grid item>
-                      <Button color="primary" variant="contained" fullWidth type="submit">
-                        Submit
-                      </Button>
+                    <Grid item mb={3}>
+                      <ColorButton variant="contained" fullWidth type="submit">
+                        Sign In
+                      </ColorButton>
                     </Grid>
                   </Grid>
                 </form>
               </Card>
+              <Typography
+                sx={{
+                  textAlign: 'center', mt: 3, p: 4, borderRadius: 3,
+                }}
+                py={1}
+                variant="h5"
+                component="h6"
+                color="#5429FF"
+              >
+                Version 1.0
+              </Typography>
             </Container>
           </Container>
         </TopWrapper>
