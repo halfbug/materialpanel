@@ -104,6 +104,7 @@ const Drops = () => {
   const [activityLogs, setActivityLogs] = useState<any[]>([]);
   const [collectionEditData, setCollectionEditData] = useState<any>('');
   const [sectionModal, setSectionModal] = useState<boolean>(false);
+  const [notDisable, setnotDisable] = useState<boolean>(false);
   const [deleteIdModal, setDeleteIdModal] = useState<boolean>(false);
   const [removeNavigationMngData, setRemoveNavigationMngData] = useState<any>('');
   const [cronTime, setCronTime] = useState<CronTime>({
@@ -549,6 +550,7 @@ const Drops = () => {
   };
 
   const handleTreeChange = (newTreeData: any) => {
+    setnotDisable(true);
     const tempData = newTreeData.map((ele: any) => {
       if (ele.status === CategoryStatus.DRAFT) {
         if (ele?.children?.length) {
@@ -968,7 +970,7 @@ const Drops = () => {
           />
         </div>
         <Button variant="contained" style={{ marginTop: '10px' }} onClick={() => setSectionModal(true)}>Add Navigation</Button>
-        {sectionData.length ? <Button variant="contained" style={{ marginTop: '10px', marginLeft: '10px' }} onClick={() => handleSectionSave()}>Update Sorting Order</Button> : ''}
+        {sectionData.length && notDisable ? <Button variant="contained" style={{ marginTop: '10px', marginLeft: '10px' }} onClick={() => handleSectionSave()}>Update Sorting Order</Button> : ''}
       </Card>
     </Grid>
     <Grid item xs={6}>

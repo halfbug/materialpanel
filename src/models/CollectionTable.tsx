@@ -70,6 +70,7 @@ const CollectionTable = ({
   const [collection, setCollection] = useState([]);
   const [addCollectionIdsModal, setAddCollectionIdsModal] = useState<boolean>(false);
   const [editData, setEditData] = useState<any>('');
+  const [notDisable, setnotDisable] = useState<boolean>(false);
   const [editId, setEditId] = useState<any>('');
   const [deleteIdModal, setDeleteIdModal] = useState<boolean>(false);
   const [updateOrder, setUpdateOrder] = useState<boolean>(false);
@@ -263,6 +264,7 @@ const CollectionTable = ({
   };
 
   const handleRLDDChange = (newList: any) => {
+    setnotDisable(true);
     const newOrderData = newList.filter(
       (ele: any) => ele.type !== CollectionType.ALLPRODUCT,
     );
@@ -315,7 +317,7 @@ const CollectionTable = ({
           />
         </div>
         <Button variant="contained" style={{ marginTop: '10px' }} onClick={() => setAddCollectionIdsModal(true)}>Add Collection</Button>
-        {collection.length > 0 ? <Button variant="contained" style={{ marginTop: '10px', marginLeft: '10px' }} onClick={() => hanldeSave()}>Update Sorting Order</Button> : ''}
+        {collection.length > 0 && notDisable ? <Button variant="contained" style={{ marginTop: '10px', marginLeft: '10px' }} onClick={() => hanldeSave()}>Update Sorting Order</Button> : ''}
         {addCollectionIdsModal ? (
           <AddCollectionIdModal
             show={addCollectionIdsModal}
