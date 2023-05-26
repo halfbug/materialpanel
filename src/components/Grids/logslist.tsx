@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import {
-  Grid, Container, Card, Select, MenuItem, Button, Snackbar, Alert,
+  Grid, Container, Card, Select, MenuItem, Button, Snackbar, Alert, IconButton,
 } from '@mui/material';
 import Box from '@mui/material/Box';
 import PageHeader from '@/content/Management/Transactions/PageHeader';
@@ -14,6 +14,8 @@ import Label from '@/components/Label';
 import { useState, useEffect } from 'react';
 import { LogsLevel } from 'configs/constant';
 import usePermission from '@/hooks/usePermission';
+import { RemoveRedEyeOutlined } from '@mui/icons-material';
+import LogsDetailModal from '@/models/LogsDetailModal';
 import Tabs from '../Tabs/tabs';
 
 function LogsList({
@@ -25,6 +27,9 @@ function LogsList({
   const { userPermissions } = usePermission();
 
   const [level, setLevel] = useState<string>('');
+  const [logDetails, setLogDetails] = useState(false);
+  const [logMessage, setLogMessage] = useState<string>('');
+  const [stackMessage, setstackMessage] = useState<string>('');
   const [successToast, setSuccessToast] = useState<any>({
     toastTog: false,
     toastMessage: '',
@@ -80,8 +85,21 @@ function LogsList({
     {
       field: 'message',
       headerName: 'Message',
-      width: 550,
+      width: 450,
       valueGetter: (params: GridValueGetterParams) => params.row.message || '',
+    },
+    {
+      field: 'edit',
+      headerName: 'Option',
+      width: 70,
+      renderCell: (params: GridValueGetterParams) => (
+        <div>
+          <IconButton onClick={() => { setLogDetails(true); setLogMessage(params.row.message); setstackMessage(params.row.stack); }} aria-label="delete" color="primary">
+            <RemoveRedEyeOutlined />
+          </IconButton>
+        </div>
+      ),
+      type: 'string',
     },
   ];
 
@@ -191,7 +209,14 @@ function LogsList({
         />
       </Container>
       <Footer />
+      <LogsDetailModal
+        show={logDetails}
+        close={(e) => setLogDetails(false)}
+        logMessage={logMessage}
+        stackMessage={stackMessage}
+      />
     </>
+
   );
 }
 
