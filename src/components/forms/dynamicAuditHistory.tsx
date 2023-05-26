@@ -15,56 +15,141 @@ import moment from 'moment';
 
 const DynamicAuditHistory = ({
   activityLogs, adminRoles, setfilters, filters, activityFilters,
-}: any) => (
-  <div>
-    <h2 style={{ alignItems: 'center' }}>
-      Audit History
-    </h2>
-    <div style={{ display: 'flex', marginBottom: '10px' }}>
-      <Select
-        id="filterBy"
-        displayEmpty
-        name="filterBy"
-        value={filters}
-        onChange={(e) => setfilters(e.target.value)}
-        style={{ width: '200px' }}
-      >
-        <MenuItem value="All Fields">All Fields</MenuItem>
-        {activityFilters?.map((mkey) => (
-          <MenuItem value={mkey}>{mkey}</MenuItem>
-        ))}
-        ;
+}: any) => {
+  const [logsData, setLogsData] = useState<any[]>([]);
 
-      </Select>
+  useEffect(() => {
+    const temp = [];
+    activityLogs.forEach((row:any) => {
+      const tempInner = [];
+      if (row.operation === 'UPDATE') {
+        row.changes.forEach((inrow:any) => {
+          let { newValue, oldvalue } = inrow;
+          if (inrow.fieldname === 'userRole' && inrow.oldvalue !== '') {
+            const getRole = adminRoles.filter((adminRole) => adminRole.id === inrow.oldvalue);
+            oldvalue = getRole[0].roleName;
+          }
+          if (inrow.fieldname === 'userRole' && inrow.newValue !== '') {
+            const getRole = adminRoles.filter((adminRole) => adminRole.id === inrow.newValue);
+            newValue = getRole[0].roleName;
+          }
+          tempInner.push({
+            fieldname: inrow.fieldname,
+            parentTitle: inrow.parentTitle,
+            oldValue: oldvalue,
+            newValue,
+          });
+        });
+      }
+      if (row.operation !== 'UPDATE') {
+        Object.keys(row.changes[0]).forEach((mrow:any) => {
+          if (typeof row.changes[0][mrow] === 'string' && row.changes[0][mrow] !== null) {
+            let oldValue = row.changes[0][mrow];
+            if ((row.operation === 'REMOVE' || row.operation === 'CREATE') && row.context !== 'Manage Section Content') {
+              if (mrow === 'userRole') {
+                const getRole = adminRoles.filter((adminRole) => adminRole.id === row.changes[0][mrow]);
+                oldValue = getRole[0].roleName;
+              } else {
+                oldValue = row.changes[0][mrow];
+              }
+            } else {
+              oldValue = '-';
+            }
+            tempInner.push({
+              fieldname: mrow,
+              parentTitle: row.context === 'Manage Section Content' ? row.changes[0][mrow] : '',
+              oldValue: row.operation === 'REMOVE' ? oldValue : '-',
+              newValue: row.operation === 'CREATE' ? oldValue : '-',
+            });
+          }
+
+          if (typeof row.changes[0][mrow] === 'object' && row.changes[0][mrow] !== null && row.changes[0][mrow].length > 0
+          && mrow !== 'permission') {
+            Object.keys(row.changes[0][mrow][row.changes[0][mrow].length - 1]).forEach((inkey) => {
+              tempInner.push({
+                fieldname: `${mrow}${' '}${inkey}`,
+                parentTitle: null,
+                oldValue: row.operation === 'REMOVE' ? row.changes[0][mrow][row.changes[0][mrow].length - 1][inkey] : '-',
+                newValue: row.operation === 'CREATE' ? row.changes[0][mrow][row.changes[0][mrow].length - 1][inkey] : '-',
+              });
+            });
+          }
+
+          if (typeof row.changes[0][mrow] === 'object' && row.changes[0][mrow] !== null && row.changes[0][mrow].length > 0
+          && mrow === 'permission') {
+            Object.keys(row.changes[0][mrow]).forEach((inkey, dindex) => {
+              tempInner.push({
+                fieldname: 'Permission',
+                parentTitle: null,
+                oldValue: row.operation === 'REMOVE' ? row.changes[0][mrow][dindex].name : '-',
+                newValue: row.operation === 'CREATE' ? row.changes[0][mrow][dindex].name : '-',
+              });
+            });
+          }
+        });
+      }
+      temp.push({
+        id: row.id,
+        context: row.context,
+        operation: row.operation,
+        user: row.user,
+        changes: tempInner,
+        createdAt: row.createdAt,
+      });
+    });
+    setLogsData(temp);
+  }, [activityLogs]);
+
+  return (
+    <div>
+      <h2 style={{ alignItems: 'center' }}>
+        Audit History
+      </h2>
+      <div style={{ display: 'flex', marginBottom: '10px' }}>
+        <Select
+          id="filterBy"
+          displayEmpty
+          name="filterBy"
+          value={filters}
+          onChange={(e) => setfilters(e.target.value)}
+          style={{ width: '200px' }}
+        >
+          <MenuItem value="All Fields">All Fields</MenuItem>
+          {activityFilters?.map((mkey) => (
+            <MenuItem value={mkey}>{mkey}</MenuItem>
+          ))}
+          ;
+
+        </Select>
+      </div>
+      <Card style={{ padding: '20px' }}>
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell />
+                <TableCell>Changed Date</TableCell>
+                <TableCell>Operation</TableCell>
+                <TableCell>Context</TableCell>
+                <TableCell>Value Changed</TableCell>
+                <TableCell>Changed By</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {logsData.map((activity, index) => (
+                <Row key={activity.id} row={logsData[index]} />
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Card>
     </div>
-    <Card style={{ padding: '20px' }}>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell />
-              <TableCell>Changed Date</TableCell>
-              <TableCell>Operation</TableCell>
-              <TableCell>Context</TableCell>
-              <TableCell>Value Changed</TableCell>
-              <TableCell>Changed By</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {activityLogs.map((activity) => (
-              <Row key={activity.id} adminRoles={adminRoles} row={activity} />
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Card>
-  </div>
-);
+  );
+};
 
-function Row(props: { row: any, adminRoles:any }) {
-  const { row, adminRoles } = props;
+function Row(props: { row: any }) {
+  const { row } = props;
   const [open, setOpen] = React.useState(false);
-
   return (
     <>
       <TableRow
@@ -93,9 +178,9 @@ function Row(props: { row: any, adminRoles:any }) {
           {row.changes.length}
         </TableCell>
         <TableCell component="th" scope="row">
-          {row.user.firstName}
+          {row?.user?.firstName}
           {' '}
-          {row.user.lastName}
+          {row?.user?.lastName}
         </TableCell>
       </TableRow>
       <TableRow>
@@ -116,131 +201,16 @@ function Row(props: { row: any, adminRoles:any }) {
 
                 </TableHead>
                 <TableBody>
-                  {(row.operation === 'UPDATE') && row.changes.map((historyRow) => (
+                  {row.changes.map((historyRow) => (
                     <TableRow>
                       <TableCell component="th" scope="row">
                         {historyRow.fieldname}
                       </TableCell>
                       <TableCell>{historyRow.parentTitle}</TableCell>
-                      <TableCell>
-                        {(historyRow.fieldname === 'userRole' && historyRow.oldvalue !== '') ? (
-                          <>
-                            {adminRoles.filter((adminRole) => adminRole.id === historyRow.oldvalue).map((filtered) => (
-                              filtered?.roleName
-                            ))}
-                          </>
-                        ) : (
-                          historyRow.oldvalue
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {(historyRow.fieldname === 'userRole' && historyRow.newValue !== '') ? (
-                          <>
-                            {adminRoles.filter((adminRole) => adminRole.id === historyRow.newValue).map((filtered) => (
-                              filtered?.roleName
-                            ))}
-                          </>
-                        ) : (
-                          historyRow.newValue
-                        )}
-                      </TableCell>
+                      <TableCell>{historyRow.oldValue}</TableCell>
+                      <TableCell>{historyRow.newValue}</TableCell>
                     </TableRow>
                   ))}
-
-                  {(row.operation !== 'UPDATE') && (
-                  <>
-                    {Object.keys(row.changes[0]).map((mkey) => (
-                      // eslint-disable-next-line react/jsx-no-useless-fragment
-                      <>
-                        {(typeof row.changes[0][mkey] === 'string' && row.changes[0][mkey] !== null
-                        && (
-                        <TableRow>
-                          <TableCell>{mkey}</TableCell>
-                          <TableCell>{row.context === 'Manage Section Content' ? row.changes[0][mkey] : ''}</TableCell>
-                          <TableCell>
-
-                            {(row.operation === 'REMOVE' && row.context !== 'Manage Section Content') ? (
-                              // eslint-disable-next-line react/jsx-no-useless-fragment
-                              <>
-                                {(mkey === 'userRole') ? (
-                                  <>
-                                    {adminRoles.filter((adminRole) => adminRole.id === row.changes[0][mkey]).map((filtered) => (
-                                      `${filtered?.roleName}`
-                                    ))}
-                                  </>
-                                ) : (
-                                  `${row.changes[0][mkey]}`
-
-                                )}
-                              </>
-
-                            ) : (
-                              '-'
-                            )}
-
-                          </TableCell>
-                          <TableCell>
-                            {(row.operation === 'CREATE' && row.context !== 'Manage Section Content') ? (
-                              // eslint-disable-next-line react/jsx-no-useless-fragment
-                              <>
-                                {(mkey === 'userRole') ? (
-                                  <>
-                                    {adminRoles.filter((adminRole) => adminRole.id === row.changes[0][mkey]).map((filtered) => (
-                                      `${filtered?.roleName}`
-                                    ))}
-                                  </>
-                                ) : (
-                                  `${row.changes[0][mkey]}`
-
-                                )}
-                              </>
-                            ) : (
-                              '-'
-                            )}
-
-                          </TableCell>
-                        </TableRow>
-                        )
-                        )}
-
-                        {(typeof row.changes[0][mkey] === 'object' && row.changes[0][mkey] !== null && row.changes[0][mkey].length > 0
-                        && mkey !== 'permission' && (
-                          <>
-                            {Object.keys(row.changes[0][mkey][row.changes[0][mkey].length - 1]).map((inkey) => (
-                              <TableRow>
-                                <TableCell>
-                                  {mkey}
-                                  {' '}
-                                  {inkey}
-                                </TableCell>
-                                <TableCell />
-                                <TableCell>{row.operation === 'REMOVE' ? row.changes[0][mkey][row.changes[0][mkey].length - 1][inkey] : '-'}</TableCell>
-                                <TableCell>{row.operation === 'CREATE' ? row.changes[0][mkey][row.changes[0][mkey].length - 1][inkey] : '-'}</TableCell>
-                              </TableRow>
-                            ))}
-                          </>
-                        )
-                        )}
-
-                        {(typeof row.changes[0][mkey] === 'object' && row.changes[0][mkey] !== null && row.changes[0][mkey].length > 0
-                        && mkey === 'permission' && (
-                          <>
-                            {Object.keys(row.changes[0][mkey]).map((inkey, index) => (
-                              <TableRow>
-                                <TableCell>Permission</TableCell>
-                                <TableCell />
-                                <TableCell>{row.operation === 'REMOVE' ? row.changes[0][mkey][index].name : '-'}</TableCell>
-                                <TableCell>{row.operation === 'CREATE' ? row.changes[0][mkey][index].name : '-'}</TableCell>
-                              </TableRow>
-                            ))}
-                          </>
-                        )
-                        )}
-
-                      </>
-                    ))}
-                  </>
-                  )}
                 </TableBody>
               </Table>
             </Box>
