@@ -2,6 +2,7 @@
 /* eslint-disable max-len */
 // import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 import Head from 'next/head';
+import * as React from 'react';
 import {
   Grid, Container, Card, IconButton, Box, Tab, Typography, Alert, Button,
 
@@ -27,6 +28,10 @@ import usePermission from '@/hooks/usePermission';
 import { AuthContext } from '@/contexts/auth.context';
 import { StoreContext } from '@/store/store.context';
 import Tabs from '@/components/Tabs/tabs';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FavouriteStore from './FavouriteStore';
 
 interface THeader {
@@ -201,7 +206,7 @@ const StoreList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
           justifyContent="start"
           alignItems="center"
           spacing={1}
-          mb={0}
+          mb={3}
           style={{ marginTop: '10px' }}
         >
           <Grid
@@ -212,27 +217,34 @@ const StoreList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
             justifyContent="start"
             alignItems="center"
           >
-            {/* <Button color="success" variant="contained" startIcon={<NotificationsActiveIcon />}>
-              Live Alert
-            </Button> */}
-            <IconButton size="medium">
-              <NotificationsActiveIcon
-                color="success"
-              />
-              <Typography variant="h4" sx={{ my: 2 }} ml={2}>
-                Live Alert
-              </Typography>
-              <Typography ml={1} color="neutral" fontSize="xs">(5)</Typography>
-            </IconButton>
-          </Grid>
+            <div>
+              <Accordion>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <Typography>
+                    <IconButton size="medium">
+                      <NotificationsActiveIcon
+                        color="success"
+                      />
+                      <Typography variant="h4" sx={{ my: 2 }} ml={2}>
+                        Live Alert
+                      </Typography>
+                      <Typography ml={1} color="neutral" fontSize="xs">(5)</Typography>
+                    </IconButton>
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
 
-          <Container maxWidth="lg">
-            <Tabs
-              tabList={[
-                {
-                  label: 'Active Store (4)',
-                  value: '1',
-                  component:
+                  <Container maxWidth="lg">
+                    <Tabs
+                      tabList={[
+                        {
+                          label: 'Active Store (4)',
+                          value: '1',
+                          component:
   <Grid
     container
     direction="row"
@@ -250,12 +262,12 @@ const StoreList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
       </Card>
     </Grid>
   </Grid>,
-                },
+                        },
 
-                {
-                  label: 'Billing Status (1)',
-                  value: '2',
-                  component:
+                        {
+                          label: 'Billing Status (1)',
+                          value: '2',
+                          component:
   <Grid
     container
     direction="row"
@@ -282,12 +294,12 @@ const StoreList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
       </Card>
     </Grid>
   </Grid>,
-                },
+                        },
 
-                {
-                  label: 'New Drops (0) ',
-                  value: '3',
-                  component:
+                        {
+                          label: 'New Drops (0) ',
+                          value: '3',
+                          component:
   <Grid
     container
     direction="row"
@@ -305,12 +317,12 @@ const StoreList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
       </Card>
     </Grid>
   </Grid>,
-                },
+                        },
 
-                {
-                  label: 'Discount Code (0)',
-                  value: '4',
-                  component:
+                        {
+                          label: 'Discount Code (0)',
+                          value: '4',
+                          component:
   <Grid
     container
     direction="row"
@@ -328,10 +340,40 @@ const StoreList: NextPage<{ meta?: any }> = ({ meta }: { meta: any }) => {
       </Card>
     </Grid>
   </Grid>,
-                },
-              ]}
-            />
-          </Container>
+                        },
+                      ]}
+                    />
+                  </Container>
+                </AccordionDetails>
+              </Accordion>
+              {/* <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel2a-content"
+            id="panel2a-header"
+          >
+            <Typography>Accordion 2</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+              malesuada lacus ex, sit amet blandit leo lobortis eget.
+            </Typography>
+          </AccordionDetails>
+        </Accordion> */}
+              {/* <Accordion disabled>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel3a-content"
+            id="panel3a-header"
+          >
+            <Typography>Disabled Accordion</Typography>
+          </AccordionSummary>
+        </Accordion> */}
+            </div>
+
+          </Grid>
+
         </Grid>
       </Container>
       <Container maxWidth="lg">
