@@ -127,7 +127,7 @@ function Login() {
             <Box textAlign="center" />
             <Container maxWidth="sm">
               <Card sx={{
-                textAlign: 'center', mt: 3, p: 4, borderRadius: 3,
+                textAlign: 'center', mt: 0, px: 5, py: 3, borderRadius: 2,
               }}
               >
                 <img alt="logo" height={138} src="./images/logo/logo-shadow.svg" />
@@ -186,7 +186,7 @@ function Login() {
                         helperText={formik.touched.password && formik.errors.password}
                       />
                     </Grid>
-                    <Grid item mb={3}>
+                    <Grid item mb={2}>
                       <ColorButton variant="contained" fullWidth type="submit">
                         Sign In
                       </ColorButton>
@@ -194,18 +194,18 @@ function Login() {
                   </Grid>
                 </form>
               </Card>
-              <Typography
-                sx={{
-                  textAlign: 'center', mt: 3, p: 4, borderRadius: 3,
-                }}
-                py={1}
-                variant="h5"
-                component="h6"
-                color="#5429FF"
-              >
-                Version 1.0
-              </Typography>
             </Container>
+            <Typography
+              sx={{
+                textAlign: 'center', mt: 1, p: 1, borderRadius: 3,
+              }}
+              py={1}
+              variant="h5"
+              component="h6"
+              color="#5429FF"
+            >
+              Version 1.0
+            </Typography>
           </Container>
         </TopWrapper>
       </MainContent>
