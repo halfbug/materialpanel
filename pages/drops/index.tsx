@@ -785,7 +785,7 @@ const Drops = () => {
                 </h4>
                 <Button
                   variant="contained"
-                  disabled={codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress}
+                  disabled={codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress || (latestLogDate > lastSync)}
                   style={{ marginTop: '10px', marginBottom: '10px' }}
                   onClick={syncDiscountCodesFun}
                 >
@@ -839,7 +839,7 @@ const Drops = () => {
                 </Grid>
                 <Button
                   variant="contained"
-                  disabled={collectionStatus === CollectionStatusTypeEnum.PROGRESS}
+                  disabled={collectionStatus === CollectionStatusTypeEnum.PROGRESS || (cronTime.lastCollectionUpdate > cronTime.lastAutoSync)}
                   style={{ marginTop: '10px', marginBottom: '10px' }}
                   onClick={() => handleSyncCollections()}
                 >
