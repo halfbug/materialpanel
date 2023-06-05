@@ -48,7 +48,7 @@ const DynamicAuditHistory = ({
             if ((row.operation === 'REMOVE' || row.operation === 'CREATE') && row.context !== 'Manage Section Content') {
               if (mrow === 'userRole') {
                 const getRole = adminRoles.filter((adminRole) => adminRole.id === row.changes[0][mrow]);
-                oldValue = getRole[0].roleName;
+                oldValue = getRole[0]?.roleName;
               } else {
                 oldValue = row.changes[0][mrow];
               }

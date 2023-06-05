@@ -124,6 +124,7 @@ const Drops = () => {
     publicKey: '',
     privateKey: '',
     listId: '',
+    codeUpdateStatus: CodeUpdateStatusTypeEnum.none,
     subscriberListId: '',
     signup1: '',
     signup2: '',
@@ -476,6 +477,7 @@ const Drops = () => {
           activity: 'Klaviyo Integration',
           drops: {
             ...storeData?.drops,
+            codeUpdateStatus: storeData.drops?.codeUpdateStatus ?? CodeUpdateStatusTypeEnum.none,
             klaviyo: {
               publicKey: values.publicKey,
               privateKey: values.privateKey,
@@ -504,6 +506,7 @@ const Drops = () => {
         privateKey: storeData.drops?.klaviyo?.privateKey,
         listId: storeData.drops?.klaviyo?.listId,
         subscriberListId: storeData.drops?.klaviyo?.subscriberListId ?? subscriberListId,
+        codeUpdateStatus: storeData.drops?.codeUpdateStatus ?? 0,
         signup1: storeData.drops?.klaviyo?.signup1,
         signup2: storeData.drops?.klaviyo?.signup2,
         signup3: storeData.drops?.klaviyo?.signup3,
