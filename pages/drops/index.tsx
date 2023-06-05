@@ -28,7 +28,7 @@ import {
 } from '@mui/material';
 import Footer from '@/components/Footer';
 import {
-  DEFAULT_DISCOUNT, DROPS_CATEGORY_REMOVE, DROPS_CATEGORY_UPDATE, DROPS_UPDATE, FIND_LATEST_LOG, GET_DROPS_CATEGORY, GET_INVENTORY_BY_ID, GET_STORE_DETAILS, GET_UPDATE_CODES_STATUS, SYNC_DISCOUNT_CODES, DROPS_ACTIVITY, SYNC_COLLECTIONS, GET_UPDATE_COLLECTION_STATUS, GET_APP_LOGGER_DATA_VIA_CONTEXT,
+  DEFAULT_DISCOUNT, DROPS_CATEGORY_REMOVE, DROPS_CATEGORY_UPDATE, DROPS_UPDATE, FIND_LATEST_LOG, GET_DROPS_CATEGORY, GET_INVENTORY_BY_ID, GET_STORE_DETAILS, GET_UPDATE_CODES_STATUS, SYNC_DISCOUNT_CODES, DROPS_ACTIVITY, SYNC_COLLECTIONS, GET_UPDATE_COLLECTION_STATUS, GET_APP_LOGGER_DATA_VIA_CONTEXT, GET_DISCOUNT_LOGGER_DATA_VIA_CONTEXT,
 } from '@/graphql/store.graphql';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
@@ -108,6 +108,11 @@ const Drops = () => {
   const [deleteIdModal, setDeleteIdModal] = useState<boolean>(false);
   const [removeNavigationMngData, setRemoveNavigationMngData] = useState<any>('');
   const [cronTime, setCronTime] = useState<CronTime>({
+    lastCollectionUpdate: '',
+    nextAutoSync: '',
+    lastAutoSync: '',
+  });
+  const [cronDiscountTime, setCronDiscountTime] = useState<CronTime>({
     lastCollectionUpdate: '',
     nextAutoSync: '',
     lastAutoSync: '',
@@ -242,6 +247,10 @@ const Drops = () => {
     variables: { context: ['SYNC_COLLECTION_CRON', 'COLLECTION_UPDATE_RECEIVE'] },
   });
 
+  const { data: autoSyncDiscoutAfterColUpdate } = useQuery(GET_DISCOUNT_LOGGER_DATA_VIA_CONTEXT, {
+    variables: { context: 'SYNC_DISCOUNT_AFTER_COLLECTION_UPDATE' },
+  });
+
   const [updateStore, { data: dropsUpdateData, loading: dropsUpdateLoading }] = useMutation<any>(DROPS_UPDATE, {
     fetchPolicy: 'network-only',
   });
@@ -276,7 +285,31 @@ const Drops = () => {
       });
     }
   }, [autoSyncData]);
-
+  console.log('lastAutoSync', cronDiscountTime);
+  useEffect(() => {
+    if (autoSyncDiscoutAfterColUpdate) {
+      const id = autoSyncDiscoutAfterColUpdate.getDiscountLoggerData.id === 'null' ? null : autoSyncDiscoutAfterColUpdate.getDiscountLoggerData.id;
+      console.log('🚀 ~ file: index.tsx:291 ~ useEffect ~ id:', id);
+      console.log('🚀 ~ file: index.tsx:291 ~ useEffect ~ lastAutoSync:', autoSyncDiscoutAfterColUpdate);
+      const lastAutoSync = id
+        ? moment(autoSyncDiscoutAfterColUpdate.getDiscountLoggerData.createdAt).format('LLL')
+        : '--';
+      const nextAutoSync = moment(autoSyncDiscoutAfterColUpdate.getDiscountLoggerData.createdAt).add(1, 'h').format('LLL');
+      // const temp = lastAutoSync?.find((ele) => ele.context === 'COLLECTION_UPDATE_RECEIVE')?.createdAt;
+      // const lastCollectionUpdate = temp ? moment(temp).format('LLL') : '-';
+      setCronDiscountTime({
+        lastAutoSync,
+        nextAutoSync,
+        lastCollectionUpdate: '',
+      });
+    } else {
+      setCronDiscountTime({
+        lastAutoSync: '',
+        nextAutoSync: '',
+        lastCollectionUpdate: '',
+      });
+    }
+  }, [autoSyncDiscoutAfterColUpdate]);
   useEffect(() => {
     if (removedDropsCategoryData?.removeDropsCategory) {
       getDropsCategory();
@@ -784,6 +817,7 @@ const Drops = () => {
                     {codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress ? 'In Progress' : 'Completed '}
                     {codeUpdateStatus !== CodeUpdateStatusTypeEnum.inprogress && lastSync ? `(${lastSync})` : ''}
                     {codeUpdateStatus !== CodeUpdateStatusTypeEnum.inprogress && dropsCount ? `(${dropsCount})` : ''}
+
                   </>
                 </h4>
                 <Button
@@ -795,6 +829,22 @@ const Drops = () => {
                   Sync Discount Codes
 
                 </Button>
+              </div>
+              <div>
+                <h4>
+                  Last discount code auto synced on:
+                  {' '}
+                  {cronDiscountTime.lastAutoSync}
+
+                </h4>
+                <h4>
+                  <>
+                    Next discount code auto sync on:
+                    {' '}
+                    {cronDiscountTime.nextAutoSync}
+                  </>
+                </h4>
+
               </div>
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -825,12 +875,12 @@ const Drops = () => {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                 <Grid xs={8}>
                   <h4>
-                    Last auto synced on:
+                    Last collection auto synced on:
                     {' '}
                     {cronTime.lastAutoSync ?? '-'}
                   </h4>
                   <h4>
-                    Next auto sync on:
+                    Next collection auto sync on:
                     {' '}
                     {cronTime.nextAutoSync ?? '-'}
                   </h4>
