@@ -194,7 +194,7 @@ const Drops = () => {
       const arr = latestLogData?.findLatestLog.message.split('\n');
       arr.shift();
       setlatestLogMSG(arr);
-      setlatestLogDate(getDMYFormatedDate(latestLogData?.findLatestLog.createdAt));
+      setlatestLogDate(moment(latestLogData?.findLatestLog.createdAt).format('LLL'));
     }
   }, [latestLogData]);
 
@@ -385,7 +385,7 @@ const Drops = () => {
       if (rdata?.getUpdateDiscountStatus?.codeUpdateStatus === CodeUpdateStatusTypeEnum.completed) {
         setcodeUpdateStatus(CodeUpdateStatusTypeEnum.completed);
         setdropsCount(rdata?.getUpdateDiscountStatus?.dropsCount ?? 0);
-        setlastsync(getDMYFormatedDate(rdata?.getUpdateDiscountStatus?.lastSync));
+        setlastsync(moment(rdata?.getUpdateDiscountStatus?.lastSync).format('LLL'));
         clearInterval(intervalID);
       }
     }
@@ -427,7 +427,7 @@ const Drops = () => {
 
   useEffect(() => {
     if (getStoreData?.store) {
-      setlastsync(getDMYFormatedDate(getStoreData?.store?.drops?.lastSync));
+      setlastsync(moment(getStoreData?.store?.drops?.lastSync).format('LLL'));
       setdropsCount(getStoreData?.store?.drops?.dropsCount ?? 0);
       setcodeUpdateStatus(getStoreData?.store?.drops?.codeUpdateStatus ?? CodeUpdateStatusTypeEnum.none);
       setStoreData(getStoreData?.store);
@@ -735,7 +735,8 @@ const Drops = () => {
       setFieldValue(e.target.name, tempVal);
     }
   };
-
+  console.log('===2771', !!(codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress), !!(latestLogDate > lastSync));
+  console.log('===2771', !!(codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress || (latestLogDate > lastSync)));
   return (
     <>
       <Snackbar
@@ -822,7 +823,8 @@ const Drops = () => {
                 </h4>
                 <Button
                   variant="contained"
-                  disabled={codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress || (latestLogDate > lastSync)}
+                  disabled={!!(codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress || (latestLogDate < lastSync))}
+                  // cronDiscountTime.lastAutoSync
                   style={{ marginTop: '10px', marginBottom: '10px' }}
                   onClick={syncDiscountCodesFun}
                 >
