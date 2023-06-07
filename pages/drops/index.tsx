@@ -894,7 +894,7 @@ const Drops = () => {
                 </Grid>
                 <Button
                   variant="contained"
-                  disabled={collectionStatus === CollectionStatusTypeEnum.PROGRESS || (cronTime.lastCollectionUpdate > cronTime.lastAutoSync)}
+                  disabled={!!(collectionStatus === CollectionStatusTypeEnum.PROGRESS || (cronTime.lastCollectionUpdate < cronTime.lastAutoSync))}
                   style={{ marginTop: '10px', marginBottom: '10px' }}
                   onClick={() => handleSyncCollections()}
                 >
