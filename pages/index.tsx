@@ -40,59 +40,68 @@ function Overview() {
   const { user } = useContext(AuthContext);
   const router = useRouter();
   useEffect(() => {
-    if (user?.first_name) { console.log(user.first_name); void router.push('/merchant'); }
+    if (user?.first_name) {
+      console.log(user.first_name);
+      void router.push('/merchant');
+    } else {
+      void router.push('/login');
+    }
   }, [router, user]);
+
+  // return (
+  //   <OverviewWrapper>
+  //     <Head>
+  //       <title>GSADMIN</title>
+  //     </Head>
+  //     <HeaderWrapper>
+  //       <Container maxWidth="lg">
+  //         <Box display="flex" alignItems="center">
+  //           <Logo />
+  //           <Box
+  //             display="flex"
+  //             alignItems="center"
+  //             justifyContent="space-between"
+  //             flex={1}
+  //           >
+  //             <Box />
+  //             <Box>
+  //               <Button
+  //                 component={Link}
+  //                 href="/login" // "/dashboards/crypto"
+  //                 variant="contained"
+  //                 sx={{ ml: 2 }}
+  //               >
+  //                 Login
+  //               </Button>
+  //             </Box>
+  //           </Box>
+  //         </Box>
+  //       </Container>
+  //     </HeaderWrapper>
+
+  //     <Hero />
+  //     <Box
+  //       display="flex"
+  //       alignItems="center"
+  //       justifyContent="space-between"
+  //       flex={1}
+  //     />
+  //     <Container maxWidth="lg" sx={{ mt: 8 }}>
+  //       <Typography textAlign="center" variant="subtitle1">
+
+  //         <Link
+  //           href="https://groupshop.co"
+  //           target="_blank"
+  //           rel="noopener noreferrer"
+  //         >
+  //           groupshop.co
+  //         </Link>
+  //       </Typography>
+  //     </Container>
+  //   </OverviewWrapper>
+  // );
   return (
-    <OverviewWrapper>
-      <Head>
-        <title>GSADMIN</title>
-      </Head>
-      <HeaderWrapper>
-        <Container maxWidth="lg">
-          <Box display="flex" alignItems="center">
-            <Logo />
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-              flex={1}
-            >
-              <Box />
-              <Box>
-                <Button
-                  component={Link}
-                  href="/login" // "/dashboards/crypto"
-                  variant="contained"
-                  sx={{ ml: 2 }}
-                >
-                  Login
-                </Button>
-              </Box>
-            </Box>
-          </Box>
-        </Container>
-      </HeaderWrapper>
-
-      <Hero />
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="space-between"
-        flex={1}
-      />
-      <Container maxWidth="lg" sx={{ mt: 8 }}>
-        <Typography textAlign="center" variant="subtitle1">
-
-          <Link
-            href="https://groupshop.co"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            groupshop.co
-          </Link>
-        </Typography>
-      </Container>
-    </OverviewWrapper>
+    <div />
   );
 }
 

@@ -116,19 +116,29 @@ function Login() {
     },
   }));
 
+  let sideBackgroundColor;
+  if (process.env.ENV === 'production') {
+    sideBackgroundColor = '#11192a';
+  } else if (process.env.ENV === 'stage') {
+    sideBackgroundColor = '#363636';
+  } else {
+    sideBackgroundColor = '#19430e';
+  }
+
   return (
     <>
       <Head>
         <title>GSADMIN</title>
       </Head>
-      <MainContent>
+      <MainContent style={{ backgroundColor: sideBackgroundColor }}>
         <TopWrapper>
           <Container maxWidth="sm">
             <Box textAlign="center" />
             <Container maxWidth="sm">
-              <Card sx={{
-                textAlign: 'center', mt: 0, px: 5, py: 3, borderRadius: 2,
-              }}
+              <Card
+                sx={{
+                  textAlign: 'center', mt: 0, px: 5, py: 3, borderRadius: 2,
+                }}
               >
                 <img alt="logo" height={138} src="./images/logo/logo-shadow.svg" />
                 {/* <img alt="logo"
@@ -156,7 +166,7 @@ function Login() {
                 <Typography mt={1} variant="h3" component="h4">
                   Super Administration
                 </Typography>
-                <Typography mt={1} mb={3} variant="h5" component="h6" color="#667085" fontWeight={500}>
+                <Typography mt={1} mb={3} variant="h5" component="h6" fontWeight={500}>
                   Enter your credentials to continue
                 </Typography>
                 <form onSubmit={formik.handleSubmit}>
