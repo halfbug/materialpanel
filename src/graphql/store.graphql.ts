@@ -463,8 +463,8 @@ query getAdminPermissions{
 `;
 
 const SYNC_DISCOUNT_CODES = gql`
-mutation syncDiscountCodes($storeId: String!) {
-  syncDiscountCodes(storeId: $storeId) {
+mutation syncDiscountCodes($storeId: String!, $userId: String!) {
+  syncDiscountCodes(storeId: $storeId, userId: $userId) {
     codeUpdateStatus
   }
 }

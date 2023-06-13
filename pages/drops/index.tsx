@@ -172,7 +172,10 @@ const Drops = () => {
   const [syncDiscountCodes, { data: syncDiscountCodesData }] = useMutation<any>(
     SYNC_DISCOUNT_CODES,
     {
-      variables: { storeId: sid },
+      variables: {
+        storeId: sid,
+        userId: user?.userId,
+      },
     },
   );
 
