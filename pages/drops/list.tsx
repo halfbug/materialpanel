@@ -10,10 +10,12 @@ function Drops() {
   const [pageSize, setPageSize] = useState<number>(25);
   const [filters, setFilters] = useState<any[]>([]);
   const [sorting, setSorting] = useState<any[]>([]);
+  const [startdate, setStartDate] = useState<Date>();
+  const [endDate, setEndDate] = useState<Date>();
 
   const {
     drops, pageInfo, loading, error,
-  } = useDropsQuery(pagination, filters, sorting);
+  } = useDropsQuery(pagination, filters, sorting, startdate, endDate);
 
   const handlePageChange = (page) => {
     setPagination({ skip: page * pageSize, take: pageSize });
@@ -34,6 +36,15 @@ function Drops() {
     console.log('handleSortModelChange', mode);
     setSorting(mode);
   };
+  const handleDate = (dateSet) => {
+    console.log('handleDate', dateSet.split(' - '));
+    const dateArray = dateSet.split(' - ');
+    const sdate = new Date(dateArray[0]);
+    const edate = new Date(dateArray[1]);
+    edate.setDate(edate.getDate() + 1);
+    setStartDate(sdate);
+    setEndDate(edate);
+  };
 
   return (
     <SidebarLayout>
@@ -46,6 +57,7 @@ function Drops() {
         onPageSizeChange={handlePageSize}
         onFilterModelChange={handleFilterModelChange}
         onSortModelChange={handleSortModelChange}
+        onHandleDate={handleDate}
       />
     </SidebarLayout>
   );

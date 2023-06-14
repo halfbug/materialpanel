@@ -14,13 +14,21 @@ import LinearIndeterminate from '@/components/Progress/Linear';
 import Label from '@/components/Label';
 import { useState, useEffect } from 'react';
 import { random } from 'lodash';
+import getWeeks from '@/utils/getWeeks';
 import Tabs from '../Tabs/tabs';
 
 function DropsList({
   pagination, onPageChange, drops, loading, pageInfo,
-  onPageSizeChange, onFilterModelChange, onSortModelChange,
+  onPageSizeChange, onFilterModelChange, onSortModelChange, onHandleDate,
 
 }) {
+  const weeksDrops = getWeeks();
+  useEffect(() => {
+    const date = weeksDrops[0];
+    onHandleDate(date);
+    console.log('🚀 ~ file: droplist.tsx:30 ~ useEffect ~ date:', date);
+  }, []);
+  console.log('🚀 ~ file: droplist.tsx:26 ~ weeksDrops:', weeksDrops);
   const getStatusLabel = (props: GridRenderCellParams<String>) => {
     const { hasFocus, value } = props;
     let color : 'black' | 'primary' | 'secondary' | 'error' | 'warning' | 'success' | 'info';
@@ -102,7 +110,18 @@ function DropsList({
     spacing={3}
     style={{ marginTop: '10px' }}
   >
-    <Grid item xs={12}>
+    <Grid item xs={3}>
+      <Grid
+        container
+        spacing={3}
+        direction="column"
+        justifyContent="space-around"
+        alignItems="stretch"
+      >
+        { weeksDrops.map((item) => (<Grid item><Button variant="contained" onClick={() => onHandleDate(item)}>{item}</Button></Grid>)) }
+      </Grid>
+    </Grid>
+    <Grid item xs={9}>
       <Card sx={{ padding: 3 }}>
         <Box sx={{ height: 1150, width: '100%' }}>
           {loading && <LinearIndeterminate />}
