@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import {
-  Grid, Container, Card, Button,
+  Grid, Container, Card, Button, Typography,
 } from '@mui/material';
 import Box from '@mui/material/Box';
 import PageHeader from '@/content/Management/Transactions/PageHeader';
@@ -15,7 +15,31 @@ import Label from '@/components/Label';
 import { useState, useEffect } from 'react';
 import { random } from 'lodash';
 import getWeeks from '@/utils/getWeeks';
+import * as React from 'react';
+import { styled } from '@mui/material/styles';
+import Paper from '@mui/material/Paper';
+import { makeStyles } from '@material-ui/core/styles';
 import Tabs from '../Tabs/tabs';
+
+const useStyles = makeStyles({
+  container: {
+    height: '1150px', // Set a fixed height for the container
+    overflowY: 'auto', // Add a vertical scrollbar when content exceeds the container height
+  },
+  button: {
+    '&:focus': {
+      backgroundColor: '#A7C737', // Customize the background color for the active state
+    },
+  },
+});
+
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+}));
 
 function DropsList({
   pagination, onPageChange, drops, loading, pageInfo,
@@ -86,6 +110,7 @@ function DropsList({
       valueGetter: (params: GridValueGetterParams) => params.row.discountCode?.title || '',
     },
   ];
+  const classes = useStyles();
 
   return (
     <>
@@ -95,63 +120,68 @@ function DropsList({
       <PageTitleWrapper>
         <PageHeader pagetitle="Drops List" />
       </PageTitleWrapper>
-      <Container maxWidth="lg">
-        <Tabs
-          tabList={[
-            {
-              label: 'Drops List',
-              value: '1',
-              component:
-  <Grid
-    container
-    direction="row"
-    justifyContent="center"
-    alignItems="stretch"
-    spacing={3}
-    style={{ marginTop: '10px' }}
-  >
-    <Grid item xs={3}>
-      <Grid
-        container
-        spacing={3}
-        direction="column"
-        justifyContent="space-around"
-        alignItems="stretch"
-      >
-        { weeksDrops.map((item) => (<Grid item><Button variant="contained" onClick={() => onHandleDate(item)}>{item}</Button></Grid>)) }
-      </Grid>
-    </Grid>
-    <Grid item xs={9}>
-      <Card sx={{ padding: 3 }}>
-        <Box sx={{ height: 1150, width: '100%' }}>
-          {loading && <LinearIndeterminate />}
+      <Container maxWidth="xl">
+        <Button variant="contained" style={{ marginBottom: '25px' }}>Drops List</Button>
 
-          <DataGrid
-            rows={drops ?? []}
-            columns={columns}
-            rowsPerPageOptions={[25, 50, 100]}
-            disableSelectionOnClick
-            experimentalFeatures={{ newEditingApi: true }}
-            pagination
-            pageSize={pagination?.take ?? 25}
-            rowCount={pageInfo?.total ?? 0}
-            paginationMode="server"
-            loading={loading}
-            {...pageInfo}
-            onPageChange={onPageChange}
-            onPageSizeChange={onPageSizeChange}
-            filterMode="server"
-            onFilterModelChange={onFilterModelChange}
-            sortingMode="server"
-            onSortModelChange={onSortModelChange}
-          />
+        <Box sx={{ width: 1 }}>
+          <Box display="grid" gridTemplateColumns="repeat(12, 1fr)" gap={2}>
+            <Box gridColumn="span 1">
+              <div className={classes.container} style={{ width: '100%' }}>
+                { weeksDrops.map((item) => (
+                  <Grid item ml={0} pl={0}>
+                    <Button
+                      className={classes.button}
+                      color="primary"
+                      focusVisibleClassName={classes.button}
+                      size="medium"
+                      style={{ marginBottom: '10px' }}
+                      variant="contained"
+                      onClick={() => onHandleDate(item)}
+                    >
+                      <Typography variant="body2" style={{ fontSize: '12px' }}>
+                        {item.split(' - ')[0]}
+                        {' '}
+                        <br />
+                        {item.split(' - ')[1]}
+                        {' '}
+                      </Typography>
+                    </Button>
+                  </Grid>
+                )) }
+                {' '}
+
+              </div>
+
+            </Box>
+            <Box gridColumn="span 11">
+              <Item>
+                <Box sx={{ height: 1150, width: '100%' }}>
+                  {loading && <LinearIndeterminate />}
+
+                  <DataGrid
+                    rows={drops ?? []}
+                    columns={columns}
+                    rowsPerPageOptions={[25, 50, 100]}
+                    disableSelectionOnClick
+                    experimentalFeatures={{ newEditingApi: true }}
+                    pagination
+                    pageSize={pagination?.take ?? 25}
+                    rowCount={pageInfo?.total ?? 0}
+                    paginationMode="server"
+                    loading={loading}
+                    {...pageInfo}
+                    onPageChange={onPageChange}
+                    onPageSizeChange={onPageSizeChange}
+                    filterMode="server"
+                    onFilterModelChange={onFilterModelChange}
+                    sortingMode="server"
+                    onSortModelChange={onSortModelChange}
+                  />
+                </Box>
+              </Item>
+            </Box>
+          </Box>
         </Box>
-      </Card>
-    </Grid>
-  </Grid>,
-            },
-          ]}
-        />
       </Container>
       <Footer />
     </>
