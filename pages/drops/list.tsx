@@ -41,7 +41,7 @@ function Drops() {
     const dateArray = dateSet.split(' - ');
     const sdate = new Date(dateArray[0]);
     const edate = new Date(dateArray[1]);
-    edate.setDate(edate.getDate() + 1);
+    // edate.setDate(edate.getDate() + 1);
     setStartDate(sdate);
     setEndDate(edate);
   };
