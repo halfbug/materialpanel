@@ -28,7 +28,7 @@ import {
 } from '@mui/material';
 import Footer from '@/components/Footer';
 import {
-  DEFAULT_DISCOUNT, DROPS_CATEGORY_REMOVE, DROPS_CATEGORY_UPDATE, DROPS_UPDATE, FIND_LATEST_LOG, GET_DROPS_CATEGORY, GET_INVENTORY_BY_ID, GET_STORE_DETAILS, GET_UPDATE_CODES_STATUS, SYNC_DISCOUNT_CODES, DROPS_ACTIVITY, SYNC_COLLECTIONS, GET_UPDATE_COLLECTION_STATUS, GET_APP_LOGGER_DATA_VIA_CONTEXT, GET_DISCOUNT_LOGGER_DATA_VIA_CONTEXT,
+  DEFAULT_DISCOUNT, DROPS_CATEGORY_REMOVE, DROPS_CATEGORY_UPDATE, DROPS_UPDATE, FIND_LATEST_LOG, GET_DROPS_CATEGORY, GET_INVENTORY_BY_ID, GET_STORE_DETAILS, GET_UPDATE_CODES_STATUS, SYNC_DISCOUNT_CODES, DROPS_ACTIVITY, SYNC_COLLECTIONS, GET_UPDATE_COLLECTION_STATUS, GET_APP_LOGGER_DATA_VIA_CONTEXT, GET_DISCOUNT_LOGGER_DATA_VIA_CONTEXT, GET_SYNC_BTN_DATE_VIA_CONTEXT,
 } from '@/graphql/store.graphql';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
@@ -107,6 +107,9 @@ const Drops = () => {
   const [notDisable, setnotDisable] = useState<boolean>(false);
   const [deleteIdModal, setDeleteIdModal] = useState<boolean>(false);
   const [removeNavigationMngData, setRemoveNavigationMngData] = useState<any>('');
+  const [lastCollectionUpdate, setLastCollectionUpdate] = useState<any>('');
+  const [lastAutoSync, setLastAutoSync] = useState<any>('');
+  const [syncCollectionButtonDate, setSyncCollectionButtonDate] = useState<any>('');
   const [cronTime, setCronTime] = useState<CronTime>({
     lastCollectionUpdate: '',
     nextAutoSync: '',
@@ -148,6 +151,7 @@ const Drops = () => {
   const [latestLogDate, setlatestLogDate] = useState<string>('');
   const [getByIdFlag, setGetByIdFlag] = useState<string>('');
   const [filters, setFilters] = useState('All Fields');
+  const [synced, setSynced] = useState(false);
   const isDrops = true;
 
   const {
@@ -253,6 +257,9 @@ const Drops = () => {
   const { data: autoSyncDiscoutAfterColUpdate } = useQuery(GET_DISCOUNT_LOGGER_DATA_VIA_CONTEXT, {
     variables: { context: 'SYNC_DISCOUNT_AFTER_COLLECTION_UPDATE' },
   });
+  const { data: syncColBtnDate } = useQuery(GET_SYNC_BTN_DATE_VIA_CONTEXT, {
+    variables: { context: 'COLLECTIONTOUPDATBULK' },
+  });
 
   const [updateStore, { data: dropsUpdateData, loading: dropsUpdateLoading }] = useMutation<any>(DROPS_UPDATE, {
     fetchPolicy: 'network-only',
@@ -277,7 +284,8 @@ const Drops = () => {
   useEffect(() => {
     if (autoSyncData) {
       const { getAppLoggerData: { lastAutoSync } } = autoSyncData;
-      const autoSyncTIme = moment(lastAutoSync?.find((ele) => ele.context === 'SYNC_COLLECTION_CRON')?.createdAt).format('LLL');
+      const autoSyncTImeOriginal = moment(lastAutoSync?.find((ele) => ele.context === 'SYNC_COLLECTION_CRON')?.createdAt);
+      const autoSyncTIme = autoSyncTImeOriginal.format('LLL');
       const nextAutoSync = moment(autoSyncTIme).add(1, 'h').format('LLL');
       const temp = lastAutoSync?.find((ele) => ele.context === 'COLLECTION_UPDATE_RECEIVE')?.createdAt;
       const lastCollectionUpdate = temp ? moment(temp).format('LLL') : '-';
@@ -286,6 +294,8 @@ const Drops = () => {
         nextAutoSync,
         lastCollectionUpdate,
       });
+      setLastAutoSync(autoSyncTIme);
+      setLastCollectionUpdate(temp);
     }
   }, [autoSyncData]);
   console.log('lastAutoSync', cronDiscountTime);
@@ -313,6 +323,13 @@ const Drops = () => {
       });
     }
   }, [autoSyncDiscoutAfterColUpdate]);
+
+  useEffect(() => {
+    if (syncColBtnDate) {
+      console.log('🚀 ~ file: index.tsx:291 ~ useEffect ~ syncColBtnDate:', syncColBtnDate);
+      setSyncCollectionButtonDate(syncColBtnDate.getDiscountLoggerData.createdAt);
+    }
+  }, [syncColBtnDate]);
   useEffect(() => {
     if (removedDropsCategoryData?.removeDropsCategory) {
       getDropsCategory();
@@ -347,6 +364,7 @@ const Drops = () => {
       try {
         await syncCollections({ variables: { storeId: sid } }).then(() => {
           refetchSyncCollections();
+          setSynced(true);
         });
       } catch (err) {
         console.log(err);
@@ -739,7 +757,12 @@ const Drops = () => {
     }
   };
   console.log('===2771', !!(codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress), !!(latestLogDate > lastSync));
-  console.log('===2771', !!(codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress || (latestLogDate > lastSync)));
+  console.log('2771 synced', synced);
+  console.log('2771 cronTime.lastCollectionUpdate < cronTime.lastAutoSync', cronTime.lastCollectionUpdate < cronTime.lastAutoSync);
+  console.log('2771 cronTime.lastCollectionUpdate < cronTime.lastAutoSync', cronTime.lastCollectionUpdate, cronTime.lastAutoSync);
+  console.log('2771 lastCollectionUpdate < lastAutoSync', lastCollectionUpdate < lastAutoSync);
+  console.log('2771 lastCollectionUpdate < lastAutoSync', lastCollectionUpdate, lastAutoSync);
+  console.log('2771', syncCollectionButtonDate > lastCollectionUpdate && syncCollectionButtonDate > lastAutoSync, moment(syncCollectionButtonDate).format('LLL'));
   return (
     <>
       <Snackbar
@@ -894,10 +917,15 @@ const Drops = () => {
                     {' '}
                     {cronTime.lastCollectionUpdate ?? '-'}
                   </h4>
+                  <h4>
+                    Manual Sync Collection:
+                    {' '}
+                    {moment(syncCollectionButtonDate).format('LLL') ?? '-'}
+                  </h4>
                 </Grid>
                 <Button
                   variant="contained"
-                  disabled={!!(collectionStatus === CollectionStatusTypeEnum.PROGRESS || (cronTime.lastCollectionUpdate < cronTime.lastAutoSync))}
+                  disabled={!!(collectionStatus === CollectionStatusTypeEnum.PROGRESS || (lastCollectionUpdate < lastAutoSync) || synced || (syncCollectionButtonDate > lastCollectionUpdate && syncCollectionButtonDate > lastAutoSync))}
                   style={{ marginTop: '10px', marginBottom: '10px' }}
                   onClick={() => handleSyncCollections()}
                 >

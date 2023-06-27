@@ -635,6 +635,16 @@ query getDiscountLoggerData($context: String!) {
   }
 }
 `;
+const GET_SYNC_BTN_DATE_VIA_CONTEXT = gql`
+query getDiscountLoggerData($context: String!) {
+  getDiscountLoggerData(context: $context) {
+    id
+    message
+    context
+    createdAt
+  }
+}
+`;
 
 export {
   ALL_STORES, ALL_LOGS, VIDEO_POST, GET_ALL_VIDEOS, VIDEOS_UPDATE, DISCOVERYTOOLS_UPDATE,
@@ -646,4 +656,5 @@ export {
   GET_INVENTORY_BY_ID, DROPS_ACTIVITY, CLEAR_LOG_BY_LEVEL, SYNC_COLLECTIONS,
   GET_UPDATE_COLLECTION_STATUS, ADMIN_ACTIVITY, GET_COLLECTION_LIST,
   GET_APP_LOGGER_DATA_VIA_CONTEXT, GET_DISCOUNT_LOGGER_DATA_VIA_CONTEXT,
+  GET_SYNC_BTN_DATE_VIA_CONTEXT,
 };
