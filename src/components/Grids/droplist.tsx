@@ -47,6 +47,7 @@ function DropsList({
 
 }) {
   const weeksDrops = getWeeks();
+  const [selectedDate, setselectedDate] = useState(weeksDrops[0]);
   useEffect(() => {
     const date = weeksDrops[0];
     onHandleDate(date);
@@ -126,17 +127,20 @@ function DropsList({
         <Box sx={{ width: 1 }}>
           <Box display="grid" gridTemplateColumns="repeat(12, 1fr)" gap={2}>
             <Box gridColumn="span 1">
-              <div className={classes.container} style={{ width: '100%' }}>
+              <div className={classes.container} style={{ width: '100%', height: 1150 }}>
                 { weeksDrops.map((item) => (
                   <Grid item ml={0} pl={0}>
                     <Button
                       className={classes.button}
-                      color="primary"
+                      color={item === selectedDate ? 'success' : 'primary'}
                       focusVisibleClassName={classes.button}
                       size="medium"
                       style={{ marginBottom: '10px' }}
                       variant="contained"
-                      onClick={() => onHandleDate(item)}
+                      onClick={() => {
+                        setselectedDate(item);
+                        onHandleDate(item);
+                      }}
                     >
                       <Typography variant="body2" style={{ fontSize: '12px' }}>
                         {item.split(' - ')[0]}
