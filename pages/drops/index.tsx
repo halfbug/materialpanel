@@ -152,6 +152,7 @@ const Drops = () => {
   const [getByIdFlag, setGetByIdFlag] = useState<string>('');
   const [filters, setFilters] = useState('All Fields');
   const [synced, setSynced] = useState(false);
+  const [allCollectionSync, setAllCollectionSync] = useState(false);
   const isDrops = true;
 
   const {
@@ -448,6 +449,8 @@ const Drops = () => {
 
   useEffect(() => {
     if (getStoreData?.store) {
+      console.log('🚀 ~ file: index.tsx:452 ~ useEffect ~ getStoreData?.store:', getStoreData?.store);
+      setAllCollectionSync(!getStoreData?.store?.collectionsToUpdate.length);
       setlastsync(moment(getStoreData?.store?.drops?.lastSync).format('LLL'));
       setdropsCount(getStoreData?.store?.drops?.dropsCount ?? 0);
       setcodeUpdateStatus(getStoreData?.store?.drops?.codeUpdateStatus ?? CodeUpdateStatusTypeEnum.none);
@@ -925,7 +928,7 @@ const Drops = () => {
                 </Grid>
                 <Button
                   variant="contained"
-                  disabled={!!(collectionStatus === CollectionStatusTypeEnum.PROGRESS || (lastCollectionUpdate < lastAutoSync) || synced || (syncCollectionButtonDate > lastCollectionUpdate && syncCollectionButtonDate > lastAutoSync))}
+                  disabled={!!(collectionStatus === CollectionStatusTypeEnum.PROGRESS || (lastCollectionUpdate < lastAutoSync) || synced || (syncCollectionButtonDate > lastCollectionUpdate && syncCollectionButtonDate > lastAutoSync) || allCollectionSync)}
                   style={{ marginTop: '10px', marginBottom: '10px' }}
                   onClick={() => handleSyncCollections()}
                 >

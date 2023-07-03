@@ -224,6 +224,10 @@ query store($id: String!) {
         brandName
       }
     }
+    collectionsToUpdate {
+      collectionId
+      isSynced
+    }
     drops{
       isVideoEnabled,
       collections{
