@@ -1,60 +1,14 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { GET_COLLECTION_LIST } from '@/graphql/store.graphql';
-import { useQuery } from '@apollo/client';
 import {
   Card, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
 } from '@mui/material';
-import {
-  useState, useEffect, useCallback,
-} from 'react';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { useRouter } from 'next/router';
 
-interface CollectioList {
-  collectionTitle: string;
-  collectionId: string;
-  isSynced: boolean;
-  productCount: boolean;
-}
-
-const CollectionManagement = ({ fetch }: any) => {
-  const [collectionData, setCollectionData] = useState<CollectioList[]>([]);
+const CollectionManagement = ({ data: collectionData }: any) => {
   const router = useRouter();
   const { shop } = router.query;
-  const {
-    data, refetch,
-  } = useQuery(
-    GET_COLLECTION_LIST,
-    {
-      variables: {
-        shop,
-      },
-      skip: !shop,
-    },
-  );
-
-  const refetchData = useCallback(() => {
-    fetch(refetch());
-  }, [fetch]);
-
-  useEffect(() => {
-    refetchData();
-  }, [fetch]);
-
-  useEffect(() => {
-    if (data) {
-      const { getCollectionList } = data;
-      const temp = getCollectionList.slice()
-        .sort(
-          (
-            { isSynced: stateA = false },
-            { isSynced: stateB = false },
-          ) => Number(stateA) - Number(stateB),
-        );
-      setCollectionData(temp);
-    }
-  }, [data]);
 
   return (
     <div>
