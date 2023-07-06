@@ -225,6 +225,7 @@ query store($id: String!) {
       }
     }
     collectionsToUpdate {
+      collectionTitle
       collectionId
       isSynced
     }
@@ -611,10 +612,17 @@ query adminActivity($route: String!, $filter: String!) {
 const GET_COLLECTION_LIST = gql`
 query getCollectionList($shop: String!) {
   getCollectionList(shop: $shop) {
-    collectionTitle
-    collectionId
-    isSynced
-    productCount
+    collections {
+      collectionTitle
+      collectionId
+      isSynced
+      productCount
+    }
+    collectionsToUpdate {
+      collectionTitle
+      collectionId
+      isSynced
+    }
   }
 }
 `;

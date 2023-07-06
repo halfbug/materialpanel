@@ -159,40 +159,6 @@ const Drops = () => {
     auditActivity, activityFilters,
   } = useAuditLogsQuery(currentRoute, sid, filters, isDrops);
 
-  // COLLECTION MANAGEMENT CODE START
-  const { shop } = router.query;
-  const {
-    data, refetch: fetchAgain,
-  } = useQuery(
-    GET_COLLECTION_LIST,
-    {
-      variables: {
-        shop,
-      },
-      skip: !shop,
-      fetchPolicy: 'network-only',
-      notifyOnNetworkStatusChange: true,
-    },
-  );
-
-  useEffect(() => {
-    if (data) {
-      const { getCollectionList } = data;
-      const temp = getCollectionList.slice()
-        .sort(
-          (
-            { isSynced: stateA = false },
-            { isSynced: stateB = false },
-          ) => Number(stateA) - Number(stateB),
-        );
-      const isAllCollectionSynced = temp.filter((ele) => ele.isSynced === false);
-      setAllCollectionSync(!isAllCollectionSynced.length);
-      setCollectionData(temp);
-    }
-  }, [data]);
-
-  // COLLECTION MANAGEMENT CODE END
-
   useEffect(() => {
     setActivityLogs(auditActivity);
   }, [auditActivity]);
@@ -315,6 +281,63 @@ const Drops = () => {
     variables: { storeId: sid },
     fetchPolicy: 'network-only',
   });
+
+  // COLLECTION MANAGEMENT CODE START
+
+  useEffect(() => {
+    console.log('getStoreData', getStoreData);
+  }, [getStoreData]);
+  const { shop } = router.query;
+  const {
+    data, refetch: fetchAgain,
+  } = useQuery(
+    GET_COLLECTION_LIST,
+    {
+      variables: {
+        shop,
+      },
+      skip: !shop,
+      fetchPolicy: 'network-only',
+      notifyOnNetworkStatusChange: true,
+    },
+  );
+
+  useEffect(() => {
+    if (data && getStoreData) {
+      const { getCollectionList } = data;
+      const collArray = [...getCollectionList.collections, ...getCollectionList.collectionsToUpdate];
+
+      const uniqueArray = collArray.filter((item, index, self) => {
+        if (item.productCount <= 0) {
+          return false;
+        }
+
+        const firstIndex = self.findIndex((i) => i.collectionId === item.collectionId);
+
+        return index === firstIndex;
+      });
+
+      const temp = uniqueArray.slice()
+        .sort(
+          (
+            { isSynced: stateA = false },
+            { isSynced: stateB = false },
+          ) => Number(stateA) - Number(stateB),
+        );
+      const arr = temp.map((ele) => {
+        if (!ele.productCount) {
+          return { ...ele, productCount: 0 };
+        }
+        return ele;
+      });
+      console.log('🚀 ~ file: index.tsx:321 ~ arr ~ arr:', arr);
+      const isAllCollectionSynced = arr.filter((ele) => ele.isSynced === false);
+      setAllCollectionSync(!isAllCollectionSynced.length);
+      setCollectionData(arr);
+    }
+  }, [data, getStoreData]);
+
+  // COLLECTION MANAGEMENT CODE END
 
   useEffect(() => {
     if (autoSyncData) {
