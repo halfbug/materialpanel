@@ -36,11 +36,14 @@ function Drops() {
     console.log('handleSortModelChange', mode);
     setSorting(mode);
   };
-  const handleDate = (dateSet) => {
+  const handleDate = (dateSet, curWeek = false) => {
     console.log('handleDate', dateSet.split(' - '));
     const dateArray = dateSet.split(' - ');
     const sdate = new Date(dateArray[0]);
     const edate = new Date(dateArray[1]);
+    if (curWeek) {
+      edate.setHours(23);
+    }
     // edate.setDate(edate.getDate() + 1);
     setStartDate(sdate);
     setEndDate(edate);

@@ -16,6 +16,10 @@ const getWeeks = () => {
   const comingSunday = new Date(today.getTime() + (diff2 * 24 * 60 * 60 * 1000));
   console.log('🚀 ~ file: getWeeks.ts:15 ~ getWeeks ~ comingSunday:', comingSunday);
   const allWeeks = getWeeksBetween(firstSunday, comingSunday);
+  // console.log('🚀 ~ file: getWeeks.ts:19 ~ getWeeks ~ allWeeks:', allWeeks);
+  // allWeeks.map((week) => {
+  //   if(week)
+  // })
   return allWeeks;
 };
 function getWeeksBetween(startDate, endDate) {

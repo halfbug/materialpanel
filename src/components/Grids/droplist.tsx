@@ -50,7 +50,7 @@ function DropsList({
   const [selectedDate, setselectedDate] = useState(weeksDrops[0]);
   useEffect(() => {
     const date = weeksDrops[0];
-    onHandleDate(date);
+    onHandleDate(date, true);
     console.log('🚀 ~ file: droplist.tsx:30 ~ useEffect ~ date:', date);
   }, []);
   console.log('🚀 ~ file: droplist.tsx:26 ~ weeksDrops:', weeksDrops);
