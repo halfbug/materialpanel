@@ -28,6 +28,7 @@ import MmsTwoToneIcon from '@mui/icons-material/MmsTwoTone';
 // import EmojiEventsTwoToneIcon from '@mui/icons-material/EmojiEventsTwoTone';
 import FilterVintageTwoToneIcon from '@mui/icons-material/FilterVintageTwoTone';
 import usePermission from '@/hooks/usePermission';
+import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
 // import HowToVoteTwoToneIcon from '@mui/icons-material/HowToVoteTwoTone';
 // import LocalPharmacyTwoToneIcon from '@mui/icons-material/LocalPharmacyTwoTone';
 // import RedeemTwoToneIcon from '@mui/icons-material/RedeemTwoTone';
@@ -191,7 +192,7 @@ function SidebarMenu() {
   console.log('currentRoute', currentRoute);
   useEffect(() => {
     if (userPermissions?.length > 0) {
-      if (!userPermissions.includes(router.pathname)) {
+      if (!userPermissions.includes(router.pathname) && router.pathname !== '/settings') {
         router.push('/access-denied');
       }
       setAdminMenu(userPermissions);
@@ -316,6 +317,21 @@ function SidebarMenu() {
             </NextLink>
           </ListItem>
           )}
+          <ListItem component="div">
+            <NextLink href="/settings" passHref>
+              <Button
+                className={
+                      currentRoute === '/settings' ? 'active' : ''
+                    }
+                disableRipple
+                component="a"
+                onClick={closeSidebar}
+                startIcon={<SettingsApplicationsIcon />}
+              >
+                Settings
+              </Button>
+            </NextLink>
+          </ListItem>
         </List>
       </SubMenuWrapper>
       {/* </List> */}

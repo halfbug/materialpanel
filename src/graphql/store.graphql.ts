@@ -658,6 +658,36 @@ query getDiscountLoggerData($context: String!) {
 }
 `;
 
+const GET_DROP_BANNER = gql`
+query getDropBanner{
+  getDropBanner{
+    id
+    settings{
+      dropBanner
+    }
+  }
+}
+`;
+
+const UPDATE_DROPS_BANNER = gql`
+  mutation UpdateStore($updateStoreInput: UpdateStoreInput!) {
+    updateStore(updateStoreInput: $updateStoreInput) {
+      id
+      settings{
+        dropBanner        
+      }
+  }
+}
+`;
+
+const REMOVE_DROP_BANNER = gql`
+  mutation removeDropBanner($file: String!) {
+    removeDropBanner(file: $file) {
+      status    
+  }
+}
+`;
+
 export {
   ALL_STORES, ALL_LOGS, VIDEO_POST, GET_ALL_VIDEOS, VIDEOS_UPDATE, DISCOVERYTOOLS_UPDATE,
   DROPS_UPDATE, GET_STORE_DETAILS, DEFAULT_DISCOUNT, ALL_DROPS, DROPS_PAGE, GET_UPDATE_CODES_STATUS,
@@ -668,5 +698,5 @@ export {
   GET_INVENTORY_BY_ID, DROPS_ACTIVITY, CLEAR_LOG_BY_LEVEL, SYNC_COLLECTIONS,
   GET_UPDATE_COLLECTION_STATUS, ADMIN_ACTIVITY, GET_COLLECTION_LIST,
   GET_APP_LOGGER_DATA_VIA_CONTEXT, GET_DISCOUNT_LOGGER_DATA_VIA_CONTEXT,
-  GET_SYNC_BTN_DATE_VIA_CONTEXT,
+  GET_SYNC_BTN_DATE_VIA_CONTEXT, GET_DROP_BANNER, UPDATE_DROPS_BANNER, REMOVE_DROP_BANNER,
 };
