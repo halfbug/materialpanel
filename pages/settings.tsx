@@ -88,7 +88,7 @@ const Settings = () => {
         };
         const fileType = files[0].type;
         const fileSize = files[0].size;
-        if ((fileType === 'image/png' || fileType === 'image/jpg' || fileType === 'image/jpeg') && fileSize < 3000000) {
+        if ((fileType === 'image/png' || fileType === 'image/jpg' || fileType === 'image/jpeg') && fileSize < 515515) {
           const file = event.target.files[0];
           const imgExt = files[0].name.split('.');
           const imgExt1 = imgExt[imgExt.length - 1];
@@ -106,7 +106,7 @@ const Settings = () => {
             })
             .catch((err) => console.log(err));
         } else {
-          if (fileSize > 3000000) setImagefeedback('Please upload image under 3MB.');
+          if (fileSize > 515515) setImagefeedback('Please upload image under 500kb.');
           if (fileType !== 'image/png' && fileType !== 'image/jpg' && fileType !== 'image/jpeg') setImagefeedback('Please upload png, jpg, jpeg format only.');
         }
       }
@@ -153,12 +153,12 @@ const Settings = () => {
                 type="file"
               />
             </Box>
-            <div>
+            <div style={{ position: 'relative' }}>
               <div style={{ display: 'flex', width: '300px', justifyContent: 'space-between' }}>
-                {imageUrl !== null && <CancelIcon style={{ position: 'absolute', left: '300px' }} onClick={() => handleRemoveBanner()} /> }
+                {imageUrl !== null && <CancelIcon style={{ position: 'absolute', left: '285px', top: '-15px' }} onClick={() => handleRemoveBanner()} /> }
                 {imageUrl !== null && <img src={imageUrl} alt="banner" width="300" />}
               </div>
-              <div className="text-danger">{imagefeedback}</div>
+              <div className="permissiom-error">{imagefeedback}</div>
             </div>
           </Grid>
         </Grid>
