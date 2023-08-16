@@ -43,6 +43,7 @@ const Settings = () => {
         updateStoreInput: {
           id: data?.getDropBanner?.id,
           settings: {
+            ...data?.getDropBanner?.settings,
             dropBanner: banner,
           },
         },
@@ -63,6 +64,7 @@ const Settings = () => {
               updateStoreInput: {
                 id: data?.getDropBanner?.id,
                 settings: {
+                  ...data?.getDropBanner?.settings,
                   dropBanner: null,
 
                 },

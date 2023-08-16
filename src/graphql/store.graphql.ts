@@ -663,7 +663,10 @@ query getDropBanner{
   getDropBanner{
     id
     settings{
-      dropBanner
+      dropBanner     
+      layout{   
+        bannerSummaryPage
+      }      
     }
   }
 }
@@ -674,7 +677,10 @@ const UPDATE_DROPS_BANNER = gql`
     updateStore(updateStoreInput: $updateStoreInput) {
       id
       settings{
-        dropBanner        
+        dropBanner
+        layout{   
+          bannerSummaryPage
+        }         
       }
   }
 }
