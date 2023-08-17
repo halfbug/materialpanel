@@ -19,6 +19,7 @@ import { v4 as uuid } from 'uuid';
 const Settings = () => {
   const [imageUrl, setImageUrl] = useState(null);
   const [imagefeedback, setImagefeedback] = useState<null | string>(null);
+  const [imageSuccessMes, setImageSuccessMes] = useState<null | string>(null);
   const [progress, setprogress] = useState<boolean>(false);
 
   const {
@@ -49,6 +50,9 @@ const Settings = () => {
         },
       },
     });
+    setTimeout(() => {
+      setImageSuccessMes('');
+    }, 5000);
   };
 
   const handleRemoveBanner = () => {
@@ -72,6 +76,10 @@ const Settings = () => {
             },
           });
           setImageUrl(null);
+          setImageSuccessMes('Image has been deleted successfully!');
+          setTimeout(() => {
+            setImageSuccessMes('');
+          }, 5000);
         }
       })
       .catch((err) => {
@@ -82,6 +90,7 @@ const Settings = () => {
   const handleFileUpload = (event) => {
     try {
       console.log('im in upload');
+      setImageSuccessMes('');
       if (event.target.files) {
         setprogress(true);
         const files:any = Array.from(event.target.files);
@@ -104,6 +113,7 @@ const Settings = () => {
               setImageUrl(fileS3Url);
               setprogress(false);
               setImagefeedback('');
+              setImageSuccessMes('Image has been uploaded successfully!');
               updateBanner(fileS3Url);
             })
             .catch((err) => console.log(err));
@@ -161,6 +171,7 @@ const Settings = () => {
                 {imageUrl !== null && <img src={imageUrl} alt="banner" width="300" />}
               </div>
               <div className="permissiom-error">{imagefeedback}</div>
+              <div className="success-mes">{imageSuccessMes}</div>
             </div>
           </Grid>
         </Grid>

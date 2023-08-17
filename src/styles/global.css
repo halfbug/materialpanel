@@ -7,5 +7,11 @@
         color: #ff0000;
         font-weight: bold;
         width: 100%;
-        margin: 0px;
+        margin: 15px 0px;
+    }
+    .success-mes {
+        color: #4BB543;
+        font-weight: bold;
+        width: 100%;
+        margin: 15px 0px;
     }
