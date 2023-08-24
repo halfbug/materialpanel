@@ -29,6 +29,7 @@ export interface MStore {
     removeId?: any,
     removeUserData?: any,
     userData?: any,
+    visibleId?: any,
 }
 
 export interface DiscoveryTools {

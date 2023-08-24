@@ -744,6 +744,8 @@ const Drops = () => {
       setSuccessToast({ toastTog: true, toastMessage: addCollectionMessage, toastColor: 'success' });
     } else if (data === 'updateOrder') {
       setSuccessToast({ toastTog: true, toastMessage: collectionOrderMessage, toastColor: 'success' });
+    } else if (data === 'visible') {
+      setSuccessToast({ toastTog: true, toastMessage: editCollectionMessage, toastColor: 'success' });
     }
     getDropsCategory();
   };
@@ -803,12 +805,6 @@ const Drops = () => {
       setFieldValue(e.target.name, tempVal);
     }
   };
-  console.log('===2771', !!(codeUpdateStatus === CodeUpdateStatusTypeEnum.inprogress), !!(latestLogDate > lastSync));
-  console.log('2771 cronTime.lastCollectionUpdate < cronTime.lastAutoSync', cronTime.lastCollectionUpdate < cronTime.lastAutoSync);
-  console.log('2771 cronTime.lastCollectionUpdate < cronTime.lastAutoSync', cronTime.lastCollectionUpdate, cronTime.lastAutoSync);
-  console.log('2771 lastCollectionUpdate < lastAutoSync', new Date(lastCollectionUpdate).getTime() < new Date(lastAutoSync).getTime());
-  console.log('2771 lastCollectionUpdate < lastAutoSync', new Date(lastCollectionUpdate).getTime(), new Date(lastAutoSync).getTime());
-  console.log('2771', syncCollectionButtonDate > lastCollectionUpdate && syncCollectionButtonDate > lastAutoSync, moment(syncCollectionButtonDate).format('LLL'));
   return (
     <>
       <Snackbar

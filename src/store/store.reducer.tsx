@@ -1,7 +1,7 @@
 import { MStore } from '@/types/groupshop';
 
 export interface StoreAction {
-  type: 'UPDATE_BRANDNAME' | 'UPDATE_CLICK_DISCOVERBRAND' | 'UPDATE_EDITID' | 'UPDATE_REMOVEID' | 'UPDATE_COLLECTIONIDDATA' | 'REMOVE_USERDATA' | 'USER_DATA';
+  type: 'UPDATE_BRANDNAME' | 'UPDATE_CLICK_DISCOVERBRAND' | 'UPDATE_EDITID' | 'UPDATE_REMOVEID' | 'UPDATE_COLLECTIONIDDATA' | 'REMOVE_USERDATA' | 'USER_DATA' | 'UPDATE_VISIBLEID';
   payload: MStore;
 }
 
@@ -18,6 +18,8 @@ export const reducer = (
       return { ...state, editId: action.payload };
     case 'UPDATE_REMOVEID':
       return { ...state, removeId: action.payload };
+    case 'UPDATE_VISIBLEID':
+      return { ...state, visibleId: action.payload };
     case 'UPDATE_COLLECTIONIDDATA':
       return { ...state, collectionIdsData: action.payload };
     case 'REMOVE_USERDATA':
