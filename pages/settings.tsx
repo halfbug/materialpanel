@@ -167,8 +167,8 @@ const Settings = () => {
             </Box>
             <div style={{ position: 'relative' }}>
               <div style={{ display: 'flex', width: '300px', justifyContent: 'space-between' }}>
-                {imageUrl !== null && <CancelIcon style={{ position: 'absolute', left: '285px', top: '-15px' }} onClick={() => handleRemoveBanner()} /> }
-                {imageUrl !== null && <img src={imageUrl} alt="banner" width="300" />}
+                {imageUrl !== null && imageUrl !== undefined && <CancelIcon style={{ position: 'absolute', left: '285px', top: '-15px' }} onClick={() => handleRemoveBanner()} /> }
+                {imageUrl !== null && imageUrl !== undefined && <img src={imageUrl} alt="banner" width="300" />}
               </div>
               <div className="permissiom-error">{imagefeedback}</div>
               <div className="success-mes">{imageSuccessMes}</div>
