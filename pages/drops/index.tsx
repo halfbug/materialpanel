@@ -49,6 +49,7 @@ import DynamicAuditHistory from '@/components/forms/dynamicAuditHistory';
 import CollectionManagement from '@/components/forms/collectionManagement';
 import moment from 'moment';
 import useAuditLogsQuery from '@/hooks/useAuditLogsQuery';
+import useAutoGenerateCollections from '@/hooks/useAutoGenerateCollections';
 import DropKlaviyoForm from '../../src/components/forms/klaviyoForm';
 import DynamicCartRewards from '../../src/components/forms/dynamicCartRewards';
 
@@ -281,7 +282,9 @@ const Drops = () => {
     variables: { storeId: sid },
     fetchPolicy: 'network-only',
   });
-
+  const {
+    autoGenerateCollectionDataInAllProducts,
+  } = useAutoGenerateCollections(getDropsCategoryData, setting.settingData);
   // COLLECTION MANAGEMENT CODE START
 
   useEffect(() => {
@@ -725,6 +728,20 @@ const Drops = () => {
             },
           }).then(() => {
             findLatestLog();
+          });
+          const CollectionData = autoGenerateCollectionDataInAllProducts('remove', '', [], removeNavigationMngData.categoryId);
+          updateDropsCategory({
+            variables: {
+              CreateDropsCategoryForFront: {
+                id: sid,
+                userId: user?.userId,
+                activity: 'Drops Navigation Management',
+                categoryData: CollectionData,
+                collectionUpdateMsg: '',
+              },
+            },
+          }).then(() => { }).catch((err) => {
+            console.log(err);
           });
         } catch (err) {
           console.log(err);
