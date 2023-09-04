@@ -204,19 +204,21 @@ const CollectionTable = ({
       const autoDitectedSpotlight = FinalCollectionData
         .find((el) => el.type === CollectionType.SPOTLIGHT)?.shopifyId;
       const CollectionData = autoGenerateCollectionDataInAllProducts('add', autoDitectedAllProducts, [autoDitectedVault, autoDitectedSpotlight, autoDitectedAllProducts?.shopifyId], '');
-      updateDropsCategory({
-        variables: {
-          CreateDropsCategoryForFront: {
-            id: sid,
-            userId: userRole,
-            activity: 'Drops Navigation Management',
-            categoryData: CollectionData,
-            collectionUpdateMsg: '',
+      if (CollectionData.length) {
+        updateDropsCategory({
+          variables: {
+            CreateDropsCategoryForFront: {
+              id: sid,
+              userId: userRole,
+              activity: 'Drops Navigation Management',
+              categoryData: CollectionData,
+              collectionUpdateMsg: '',
+            },
           },
-        },
-      }).then(() => { }).catch((err) => {
-        console.log(err);
-      });
+        }).then(() => { }).catch((err) => {
+          console.log(err);
+        });
+      }
     } else {
       dispatch({ type: 'UPDATE_EDITID', payload: undefined });
       setEditData('');
@@ -285,19 +287,21 @@ const CollectionTable = ({
       const autoDitectedSpotlight = modifiedCollection
         .find((el) => el.type === CollectionType.SPOTLIGHT)?.shopifyId;
       const CollectionData = autoGenerateCollectionDataInAllProducts('remove', autoDitectedAllProducts, [autoDitectedVault, autoDitectedSpotlight, autoDitectedAllProducts?.shopifyId], '');
-      updateDropsCategory({
-        variables: {
-          CreateDropsCategoryForFront: {
-            id: sid,
-            userId: userRole,
-            activity: 'Drops Navigation Management',
-            categoryData: CollectionData,
-            collectionUpdateMsg: '',
+      if (CollectionData.length) {
+        updateDropsCategory({
+          variables: {
+            CreateDropsCategoryForFront: {
+              id: sid,
+              userId: userRole,
+              activity: 'Drops Navigation Management',
+              categoryData: CollectionData,
+              collectionUpdateMsg: '',
+            },
           },
-        },
-      }).then(() => { }).catch((err) => {
-        console.log(err);
-      });
+        }).then(() => { }).catch((err) => {
+          console.log(err);
+        });
+      }
     } else if (data === 'visible') {
       const UpdatedData = collection.map((el: any) => {
         if (el.name === store?.visibleId?.name) {
