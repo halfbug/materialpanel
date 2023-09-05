@@ -16,6 +16,7 @@ import { DROPS_CATEGORY_UPDATE, GET_DROPS_CATEGORY } from '@/graphql/store.graph
 import { useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import useAutoGenerateCollections from '@/hooks/useAutoGenerateCollections';
+import { uniqueId } from 'lodash';
 import AddCollectionIdModal from './AddCollectionIdModal';
 import RemoveIdsModal from './RemoveIdsModal';
 import VisibleIdsModal from './VisibleIdsModal';
@@ -107,7 +108,7 @@ const CollectionTable = ({
 
   useEffect(() => {
     if (settingData?.collections?.length) {
-      setCollection(settingData.collections.map((coll: any) => ({ ...coll, shopifyId: coll.shopifyId.split('/')[4] })));
+      setCollection(settingData.collections.map((coll: any) => ({ ...coll, shopifyId: coll.shopifyId.split('/')[4], id: uniqueId() })));
     } else if (!settingData?.collections?.length) {
       setCollection([]);
     }
@@ -415,7 +416,7 @@ const CollectionTable = ({
             <div>Action</div>
           </div>
           <DraggableList
-            itemKey="name"
+            itemKey="id"
             list={collection}
             onMoveEnd={(newList: any) => handleRLDDChange(newList)}
             container={() => contRef.current}
