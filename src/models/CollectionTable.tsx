@@ -108,7 +108,7 @@ const CollectionTable = ({
 
   useEffect(() => {
     if (settingData?.collections?.length) {
-      setCollection(settingData.collections.map((coll: any) => ({ ...coll, shopifyId: coll.shopifyId.split('/')[4], id: uniqueId() })));
+      setCollection(settingData.collections.map((coll: any) => ({ ...coll, shopifyId: coll.shopifyId.split('/')[4] })));
     } else if (!settingData?.collections?.length) {
       setCollection([]);
     }
@@ -417,8 +417,15 @@ const CollectionTable = ({
           </div>
           <DraggableList
             itemKey="id"
-            list={collection}
-            onMoveEnd={(newList: any) => handleRLDDChange(newList)}
+            list={collection.map((el) => ({ ...el, id: uniqueId() }))}
+            onMoveEnd={(newList: any) => {
+              const newData = newList.map((el: any) => {
+                // eslint-disable-next-line no-param-reassign
+                delete el.id;
+                return el;
+              });
+              handleRLDDChange(newData);
+            }}
             container={() => contRef.current}
             template={Item}
           />
